@@ -17,6 +17,7 @@ function connectSocket(camIp: string, camPort: number): any {
   ws.onopen = function open() {
     console.log('Connected to WebSocket');
 	ws.send(JSON.stringify("GetVolume"))
+	
 
   };
 
