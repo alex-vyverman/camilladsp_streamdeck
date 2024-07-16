@@ -23,6 +23,7 @@ streamDeck.settings.getGlobalSettings().then((settings) => {
 // Register the increment action.
 // streamDeck.actions.registerAction(new IncrementCounter());
 streamDeck.actions.registerAction(new volume());
+streamDeck.actions.registerAction(new mute())
 
 // Finally, connect to the Stream Deck.
 streamDeck.connect().then(() => {

@@ -47,9 +47,11 @@ function connectSocket(camIp: string, camPort: number): any {
 
     if (data.AdjustVolume) {
       volValue = data.AdjustVolume.value;
+	  volValue = Math.round(volValue)
       console.log(volValue);
     } else if (data.GetVolume) {
 		volValue = data.GetVolume.value;
+		volValue = Math.round(volValue)
 		console.log(volValue);
 	  } else {
 		console.log('Unknown message type:', data);

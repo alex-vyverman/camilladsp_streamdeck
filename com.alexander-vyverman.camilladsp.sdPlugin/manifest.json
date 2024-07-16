@@ -4,10 +4,10 @@
 	"Author": "Alexander Vyverman",
 	"Actions": [
 		{
-			"Name": "Counter",
-			"UUID": "com.alexander-vyverman.camilladsp.increment",
+			"Name": "Mute",
+			"UUID": "com.alexander-vyverman.camilladsp.mute",
 			"Icon": "imgs/actions/counter/icon",
-			"Tooltip": "Displays a count, which increments by one on press.",
+			"Tooltip": "Mutes the output.",
 			"Controllers": [
 				"Keypad"
 			],
