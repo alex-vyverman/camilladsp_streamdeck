@@ -1,7 +1,7 @@
 import streamDeck, { LogLevel } from "@elgato/streamdeck";
 import streamDeckClient from "@elgato/streamdeck";
 
-import { IncrementCounter } from "./actions/increment-counter";
+// import { IncrementCounter } from "./actions/increment-counter";
 import { volume } from "./actions/volume";
 import { mute } from "./actions/mute"
 import { log } from "console";
@@ -21,7 +21,7 @@ streamDeck.settings.getGlobalSettings().then((settings) => {
 
 
 // Register the increment action.
-streamDeck.actions.registerAction(new IncrementCounter());
+// streamDeck.actions.registerAction(new IncrementCounter());
 streamDeck.actions.registerAction(new volume());
 
 // Finally, connect to the Stream Deck.

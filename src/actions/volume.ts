@@ -1,5 +1,8 @@
 import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent } from "@elgato/streamdeck";
+import streamDeck from '@elgato/streamdeck';
 import WebSocket from 'ws';
+
+// / <reference path="@elgato/streamdeck" />
 
 let defVal = 50;
 let reconnectInterval = 5000;
@@ -11,13 +14,15 @@ let inContext: any = null;
 let volValue: any = null;
 
 
+
 function connectSocket(camIp: string, camPort: number): any {
   ws = new WebSocket(`ws://${camIp}:${camPort}`);
 
   ws.onopen = function open() {
     console.log('Connected to WebSocket');
-	ws.send(JSON.stringify("GetVolume"))
 	
+	ws.send(JSON.stringify("GetVolume"))
+
 
   };
 
