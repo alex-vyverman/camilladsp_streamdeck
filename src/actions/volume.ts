@@ -1,4 +1,4 @@
-import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent, DialDownEvent } from "@elgato/streamdeck";
+import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent, DialDownEvent, DidReceiveGlobalSettingsEvent } from "@elgato/streamdeck";
 import streamDeck from '@elgato/streamdeck';
 import WebSocket from 'ws';
 
@@ -14,6 +14,25 @@ let inContext: any = null;
 let volValue: any = null;
 let dimOn: boolean = false;
 
+streamDeck.settings.getGlobalSettings().then((settings) => {
+	console.log('Global settings:', settings);
+	if (settings.camillaIP) camIp = settings.camillaIP;
+	if (settings.camillaPORT) camPort = settings.camillaPORT;
+	console.log("Camilla IP: " + camIp);
+	console.log("Cammila port: " + camPort)
+
+	if (camIp && camPort) {
+		try {
+			connectSocket(camIp, camPort);
+
+		} catch (error) {
+			console.error("Failed to connect socket:", error);
+		}
+	}
+}).catch((error) => {
+	console.error('Failed to get global settings:', error);
+});
+
 
 
 function connectSocket(camIp: string, camPort: number): any {
@@ -21,6 +40,12 @@ function connectSocket(camIp: string, camPort: number): any {
 
 	ws.onopen = function open() {
 		console.log('Connected to WebSocket');
+		// streamDeck.settings.setGlobalSettings(
+		// 	{
+		// 		"camSocketOpen": true
+
+		// 	}
+		// )
 
 		ws.send(JSON.stringify("GetVolume"))
 
@@ -64,6 +89,11 @@ function connectSocket(camIp: string, camPort: number): any {
 
 @action({ UUID: "com.alexander-vyverman.camilladsp.volume" })
 export class volume extends SingletonAction {
+
+
+
+
+
 	async onDialRotate(ev: DialRotateEvent<object>) {
 		defVal += ev.payload.ticks;
 		if (ws && ws.readyState === WebSocket.OPEN) {
@@ -87,7 +117,7 @@ export class volume extends SingletonAction {
 			} else {
 				console.error('WebSocket is not open. Cannot send message.');
 			}
-			ev.action.setFeedback({ "title": "DIM ON"});
+			ev.action.setFeedback({ "title": "DIM ON" });
 		} else if (!dimOn) {
 			let dimVol = volValue + 20
 			volValue = dimVol
@@ -96,7 +126,7 @@ export class volume extends SingletonAction {
 			} else {
 				console.error('WebSocket is not open. Cannot send message.');
 			}
-			ev.action.setFeedback({ "title": "Volume"});
+			ev.action.setFeedback({ "title": "Volume" });
 
 		}
 
@@ -106,8 +136,8 @@ export class volume extends SingletonAction {
 	}
 
 
-	async onDidReceiveSettings(ev: DidReceiveSettingsEvent<object>): Promise<void> {
-		console.log("Received settings", ev.payload.settings);
+	async DidReceiveGlobalSettings(ev: DidReceiveGlobalSettingsEvent<object>): Promise<any> {
+		console.log("Received action global settings", ev.payload.settings);
 		camIp = ev.payload.settings.camillaIP;
 		camPort = ev.payload.settings.camillaPORT;
 		console.log("Camilla IP: " + camIp);
@@ -121,16 +151,11 @@ export class volume extends SingletonAction {
 			}
 		});
 
-		if (camIp && camPort) {
-			try {
-				await connectSocket(camIp, camPort);
 
-			} catch (error) {
-				console.error("Failed to connect socket:", error);
-			}
-		}
 
 	}
+
+
 }
 
 

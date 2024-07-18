@@ -10,11 +10,11 @@ import { log } from "console";
 // We can enable "trace" logging so that all messages between the Stream Deck, and the plugin are recorded. When storing sensitive information
 streamDeck.logger.setLevel(LogLevel.TRACE);
 
-streamDeck.settings.getGlobalSettings().then((settings) => {
-    console.log('Global settings:', settings);
-}).catch((error) => {
-    console.error('Failed to get global settings:', error);
-});
+// streamDeck.settings.getGlobalSettings().then((settings) => {
+//     console.log('Global settings:', settings);
+// }).catch((error) => {
+//     console.error('Failed to get global settings:', error);
+// });
 
 
 
