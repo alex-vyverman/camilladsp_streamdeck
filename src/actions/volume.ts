@@ -13,9 +13,22 @@ let ws: any = null; // Declare a variable to hold the WebSocket connection
 let inContext: any = null;
 let volValue: any = null;
 let dimOn: boolean = false;
+let camSocketOpen: boolean = false;
+let globSettings: GlobalSettings = {};
 
-streamDeck.settings.getGlobalSettings().then((settings) => {
+interface GlobalSettings {
+    camillaIP?: string;
+    camillaPORT?: string;
+	camSocketOpen?: boolean;
+    [key: string]: any; // Add this to allow for additional properties
+}
+
+
+
+streamDeck.settings.getGlobalSettings().then((settings: GlobalSettings) => {
 	console.log('Global settings:', settings);
+	globSettings = settings
+
 	if (settings.camillaIP) camIp = settings.camillaIP;
 	if (settings.camillaPORT) camPort = settings.camillaPORT;
 	console.log("Camilla IP: " + camIp);
@@ -37,15 +50,15 @@ streamDeck.settings.getGlobalSettings().then((settings) => {
 
 function connectSocket(camIp: string, camPort: number): any {
 	ws = new WebSocket(`ws://${camIp}:${camPort}`);
+	camSocketOpen = false
 
 	ws.onopen = function open() {
 		console.log('Connected to WebSocket');
-		// streamDeck.settings.setGlobalSettings(
-		// 	{
-		// 		"camSocketOpen": true
-
-		// 	}
-		// )
+		camSocketOpen = true
+		globSettings.camSocketOpen = camSocketOpen;
+		streamDeck.settings.setGlobalSettings(
+		globSettings
+		)
 
 		ws.send(JSON.stringify("GetVolume"))
 
@@ -53,6 +66,7 @@ function connectSocket(camIp: string, camPort: number): any {
 	};
 
 	ws.onclose = function close() {
+		camSocketOpen = false
 		console.log('Disconnected from WebSocket');
 	};
 
