@@ -11,6 +11,7 @@
 	"files.exclude": {
 		"node_modules": false
 	},
-	"CodeGPT.apiKey": "OpenAI",
-	"CodeGPT.Autocomplete.enabled": true
+	"CodeGPT.apiKey": "Ollama",
+	"CodeGPT.Autocomplete.enabled": true,
+	"idf.pythonInstallPath": "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/bin/python3"
 }

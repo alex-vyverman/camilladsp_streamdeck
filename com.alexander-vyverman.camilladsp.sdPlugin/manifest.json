@@ -37,6 +37,21 @@
 						"Image": "imgs/actions/mute/unmute",
 						"TitleAlignment": "middle"
 					}]
+		},
+		{
+			"Name": "Camilla Config",
+			"UUID": "com.alexander-vyverman.camilladsp.camconfig",
+			"Icon": "imgs/actions/counter/icon",
+			"Tooltip": "Sends config to CamillaDSP",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/counter/icon",
+					"TitleAlignment": "middle"
+				}
+			]
 		}
 	],
 	"Category": "CamillaDSP",
