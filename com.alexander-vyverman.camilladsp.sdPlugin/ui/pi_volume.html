@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+	<meta charset="utf-8" />
+	<script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
+</head>
+
+<body>
+	<sdpi-item>CamillaDSP Server configuration</sdpi-item>
+	<sdpi-item label="Hostname or ip">
+		<sdpi-textfield id="camillaIP" placeholder="localhost" required>
+		</sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item label="port">
+		<sdpi-textfield id="camillaPort" placeholder="1234" required>
+		</sdpi-textfield>
+	</sdpi-item>
+	<sdpi-item>
+		<sdpi-button id="saveButton">
+			Save Global Settings
+		</sdpi-button>
+	</sdpi-item>
+	<script src="pi.js"></script>
+</body>
+
+</html>
