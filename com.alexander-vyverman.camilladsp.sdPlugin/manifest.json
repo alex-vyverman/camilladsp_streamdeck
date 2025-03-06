@@ -26,6 +26,7 @@
 				"Controllers": [
 					"Keypad", "Encoder"
 				],
+				"PropertyInspectorPath": "ui/pi_volume.html",
 				"Encoder": {
 					"layout": "$B1"},
 				"States": [
@@ -77,6 +78,5 @@
 		"Version": "20",
 		"Debug": "enabled"
 	},
-	"UUID": "com.alexander-vyverman.camilladsp",
-	"PropertyInspectorPath": "bin/property-inspector/inspect.html"
+	"UUID": "com.alexander-vyverman.camilladsp"
 }
