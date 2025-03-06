@@ -1,159 +1,252 @@
-import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent, DialDownEvent, DidReceiveGlobalSettingsEvent } from "@elgato/streamdeck";
+import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent, DialDownEvent, DidReceiveGlobalSettingsEvent, WillAppearEvent } from "@elgato/streamdeck";
 import streamDeck from '@elgato/streamdeck';
 import WebSocket from 'ws';
 
 // / <reference path="@elgato/streamdeck" />
 
-let defVal = 50;
-let reconnectInterval = 5000;
+// let defVal = 50;
+// let reconnectInterval = 5000;
 let camIp: any = null;
 let camPort: any = null;
 const incrdB = 1; // dB change per tick
 let ws: any = null; // Declare a variable to hold the WebSocket connection
-let inContext: any = null;
+// let inContext: any = null;
 let volValue: any = null;
 let dimOn: boolean = false;
+let camSocketOpen: boolean = false;
+let globSettings: GlobalSettings = {};
+// let actionObj: object = {}
 
-streamDeck.settings.getGlobalSettings().then((settings) => {
-	console.log('Global settings:', settings);
-	if (settings.camillaIP) camIp = settings.camillaIP;
-	if (settings.camillaPORT) camPort = settings.camillaPORT;
-	console.log("Camilla IP: " + camIp);
-	console.log("Cammila port: " + camPort)
-
-	if (camIp && camPort) {
-		try {
-			connectSocket(camIp, camPort);
-
-		} catch (error) {
-			console.error("Failed to connect socket:", error);
-		}
-	}
-}).catch((error) => {
-	console.error('Failed to get global settings:', error);
-});
-
-
-
-function connectSocket(camIp: string, camPort: number): any {
-	ws = new WebSocket(`ws://${camIp}:${camPort}`);
-
-	ws.onopen = function open() {
-		console.log('Connected to WebSocket');
-		// streamDeck.settings.setGlobalSettings(
-		// 	{
-		// 		"camSocketOpen": true
-
-		// 	}
-		// )
-
-		ws.send(JSON.stringify("GetVolume"))
-
-
-	};
-
-	ws.onclose = function close() {
-		console.log('Disconnected from WebSocket');
-	};
-
-	ws.onerror = function error(err: any) {
-		console.error('WebSocket error:', err);
-	};
-
-	ws.onmessage = function message(event: { data: string }) {
-		console.log('Received message from WebSocket:', event.data);
-
-		let data;
-		try {
-			data = JSON.parse(event.data);
-		} catch (e) {
-			console.error('Failed to parse message:', event.data);
-			return;
-		}
-
-		if (data.AdjustVolume) {
-			volValue = data.AdjustVolume.value;
-			volValue = Math.round(volValue)
-			console.log(volValue);
-		} else if (data.GetVolume) {
-			volValue = data.GetVolume.value;
-			volValue = Math.round(volValue)
-			console.log(volValue);
-		} else {
-			console.log('Unknown message type:', data);
-		}
-	};
-
-	return ws;
+interface GlobalSettings {
+	camillaIP?: string;
+	camillaPORT?: string;
+	camSocketOpen?: boolean;
+	[key: string]: any; // Add this to allow for additional properties
 }
 
+interface VolumeResponse {
+	GetVolume?: {
+		value: number;
+	};
+	AdjustVolume?: {
+		value: number;
+	};
+}
+
+interface WebSocketResponse {
+	success: boolean;
+	data?: VolumeResponse;
+	error?: string;
+}
+
+
+async function handleGlobalSettings(settings: GlobalSettings) {
+    console.log('Received global settings:', JSON.stringify(settings, null, 2));
+    globSettings = settings;
+
+    const previousIp = camIp;
+    const previousPort = camPort;
+
+    if (settings.camillaIP) camIp = settings.camillaIP;
+    if (settings.camillaPORT) camPort = settings.camillaPORT;
+    
+    console.log(`IP: ${previousIp} -> ${camIp}`);
+    console.log(`Port: ${previousPort} -> ${camPort}`);
+
+    if (camIp && camPort) {
+        try {
+            console.log(`Attempting to connect to WebSocket at ws://${camIp}:${camPort}`);
+            const response = await sendWebSocketMessage(
+                camIp,
+                camPort,
+                '"GetVolume"'
+            );
+
+            if (response.success && response.data) {
+				camSocketOpen = true;
+				globSettings.camSocketOpen = camSocketOpen;
+				console.log('Successfully connected to WebSocket');
+				await streamDeck.settings.setGlobalSettings(globSettings);
+				console.log('Updated global settings with connection status');
+			
+				// Improved type checking and error handling
+				if ('GetVolume' in response.data && response.data.GetVolume?.value !== undefined) {
+					const previousVolume = volValue;
+					volValue = Math.round(response.data.GetVolume.value);
+					console.log(`Volume updated: ${previousVolume} -> ${volValue}`);
+				} else {
+					console.warn('Invalid GetVolume response structure:', JSON.stringify(response.data, null, 2));
+					throw new Error('Invalid response structure from CamillaDSP');
+				}
+			} else {
+				console.error(`Failed to get initial volume: ${response.error}`);
+				console.debug('Full response:', JSON.stringify(response, null, 2));
+			}
+        } catch (error) {
+            console.error('Failed to initialize connection:', error);
+            console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+        }
+    } else {
+        console.warn('Missing IP or Port configuration:', { camIp, camPort });
+    }
+}
+
+// Initial settings load
+console.log('Loading initial global settings...');
+streamDeck.settings.getGlobalSettings()
+    .then(handleGlobalSettings)
+    .catch((error) => {
+        console.error('Failed to get global settings:', error);
+        console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+    });
+
+// Settings change handler
+streamDeck.settings.onDidReceiveGlobalSettings((ev: DidReceiveGlobalSettingsEvent<GlobalSettings>) => {
+    console.log('Received settings update event');
+	handleGlobalSettings(ev.settings)
+        .catch((error) => {
+            console.error('Failed to handle global settings update:', error);
+            console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+        });
+});
+
+interface WebSocketResponse {
+	success: boolean;
+	data?: VolumeResponse;
+	error?: string;
+}
+
+async function sendWebSocketMessage(
+	ip: string,
+	port: number,
+	message: string | object
+): Promise<WebSocketResponse> {
+	return new Promise((resolve) => {
+		try {
+			const ws = new WebSocket(`ws://${ip}:${port}`);
+
+			const timeoutId = setTimeout(() => {
+				ws.close();
+				resolve({
+					success: false,
+					error: 'Connection timeout after 5 seconds'
+				});
+			}, 5000);
+
+			ws.onopen = () => {
+				const messageString = typeof message === 'string'
+					? message
+					: JSON.stringify(message);
+
+				ws.send(messageString);
+			};
+
+			ws.onmessage = (event) => {
+				clearTimeout(timeoutId);
+				try {
+					const data = JSON.parse(event.data.toString());
+					resolve({
+						success: true,
+						data: data
+					});
+				} catch (e) {
+					resolve({
+						success: false,
+						error: 'Failed to parse response data'
+					});
+				}
+				ws.close();
+			};
+
+			ws.onerror = (error) => {
+				clearTimeout(timeoutId);
+				resolve({
+					success: false,
+					error: `WebSocket error: ${error}`
+				});
+				ws.close();
+			};
+
+		} catch (error) {
+			resolve({
+				success: false,
+				error: `Failed to create WebSocket connection: ${error}`
+			});
+		}
+	});
+}
+
+
+
 @action({ UUID: "com.alexander-vyverman.camilladsp.volume" })
-export class volume extends SingletonAction {
+export class Volume extends SingletonAction {
+	constructor() {
+		super();
+	}
 
+	async onWillAppear(ev: WillAppearEvent<object>): Promise<void> {
 
-
-
+	}
 
 	async onDialRotate(ev: DialRotateEvent<object>) {
-		defVal += ev.payload.ticks;
-		if (ws && ws.readyState === WebSocket.OPEN) {
-			ws.send(JSON.stringify({ "AdjustVolume": ev.payload.ticks }));
-		} else {
-			console.error('WebSocket is not open. Cannot send message.');
+		if (!camIp || !camPort) return;
+
+		const dialVal = volValue + ev.payload.ticks;
+		if (dialVal <= 0 && dialVal >= -80) {
+			const response = await sendWebSocketMessage(
+				camIp,
+				camPort,
+				{ "AdjustVolume": ev.payload.ticks }
+			);
+
+			if (response.success) {
+				// Handle successful response
+				const data = response.data;
+				if (data && data.AdjustVolume) {
+					volValue = Math.round(data.AdjustVolume.value);
+					ev.action.setFeedback({
+						value: volValue,
+						indicator: {
+							value: ((volValue + 80) / 80) * 100,
+							enabled: true
+						}
+					});
+				}
+			} else {
+				console.error(response.error);
+			}
 		}
-		if (defVal > 100) defVal = 100;
-		if (defVal < 0) defVal = 0;
-		ev.action.setFeedback({ "value": volValue, "indicator": { "value": ((volValue + 80) / 80) * 100, "enabled": true } });
 	}
 
 	async onDialDown(ev: DialDownEvent<object>) {
-		dimOn = !dimOn
-		console.log("dial down pressed")
-		if (dimOn) {
-			let dimVol = volValue - 20
-			volValue = dimVol
-			if (ws && ws.readyState === WebSocket.OPEN) {
-				ws.send(JSON.stringify({ "SetVolume": dimVol }))
-			} else {
-				console.error('WebSocket is not open. Cannot send message.');
-			}
-			ev.action.setFeedback({ "title": "DIM ON" });
-		} else if (!dimOn) {
-			let dimVol = volValue + 20
-			volValue = dimVol
-			if (ws && ws.readyState === WebSocket.OPEN) {
-				ws.send(JSON.stringify({ "SetVolume": dimVol }))
-			} else {
-				console.error('WebSocket is not open. Cannot send message.');
-			}
-			ev.action.setFeedback({ "title": "Volume" });
-
+		if (!camIp || !camPort) return;
+		
+		dimOn = !dimOn;
+		console.log("dial down pressed");
+		
+		const dimVol = dimOn ? volValue - 20 : volValue + 20;
+		volValue = Math.min(Math.max(dimVol, -80), 100); // Clamp between -80 and 100
+		
+		const response = await sendWebSocketMessage(
+			camIp,
+			camPort,
+			{ "SetVolume": volValue }
+		);
+	
+		if (response.success) {
+			ev.action.setFeedback({ 
+				title: dimOn ? "DIM ON" : "Volume",
+				value: volValue,
+				indicator: {
+					value: ((volValue + 80) / 80) * 100,
+					enabled: true
+				}
+			});
+		} else {
+			console.error('Failed to set volume:', response.error);
 		}
-
-
-
-
 	}
 
-
-	async DidReceiveGlobalSettings(ev: DidReceiveGlobalSettingsEvent<object>): Promise<any> {
-		console.log("Received action global settings", ev.payload.settings);
-		camIp = ev.payload.settings.camillaIP;
-		camPort = ev.payload.settings.camillaPORT;
-		console.log("Camilla IP: " + camIp);
-		console.log("Cammila port: " + camPort)
-
-		ev.action.setFeedback({
-			"value": volValue,
-			"indicator": {
-				"value": ((volValue + 80) / 80) * 100,
-				"enabled": true
-			}
-		});
-
-
-
-	}
 
 
 }
