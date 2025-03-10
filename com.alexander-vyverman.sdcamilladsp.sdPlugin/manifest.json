@@ -22,9 +22,10 @@
 		{
 			"Name": "Main Volume Encoder",
 			"UUID": "com.alexander-vyverman.sdcamilladsp.volume",
-			"Icon": "imgs/actions/counter/icon",
 			"Tooltip": "control the main Volume using the StreamDeck rotary encoder",
 			"PropertyInspectorPath": "ui/increment-counter.html",
+			"Encoder": {
+				"layout": "$B1"},
 			"Controllers": [
 				"Encoder"
 			],

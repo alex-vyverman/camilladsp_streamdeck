@@ -10,6 +10,7 @@ streamDeck.logger.setLevel(LogLevel.TRACE);
 // Register the increment action.
 // streamDeck.actions.registerAction(new IncrementCounter());
 streamDeck.actions.registerAction(new ChangeConfig());
+streamDeck.actions.registerAction(new Volume());
 
 // Finally, connect to the Stream Deck.
 streamDeck.connect();

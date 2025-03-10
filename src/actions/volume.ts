@@ -2,6 +2,7 @@ import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSetti
 import streamDeck from '@elgato/streamdeck';
 import WebSocket from 'ws';
 
+
 // / <reference path="@elgato/streamdeck" />
 
 // let defVal = 50;
@@ -47,8 +48,19 @@ async function handleGlobalSettings(settings: GlobalSettings) {
     const previousIp = camIp;
     const previousPort = camPort;
 
-    if (settings.camillaIP) camIp = settings.camillaIP;
-    if (settings.camillaPORT) camPort = settings.camillaPORT;
+    if (settings.camillaIP) {
+		camIp = settings.camillaIP;
+		console.info(`Camilla IP: ${camIp}`);
+	} else {
+		console.warn('Missing Camilla IP configuration');
+
+	};
+    if (settings.camillaPort)  {
+		camPort = settings.camillaPort
+		console.info(`Camilla Port: ${camPort}`);
+	} else {
+		console.warn('Missing Camilla Port configuration');
+	};
     
     streamDeck.logger.info(`IP: ${previousIp} -> ${camIp}`);
     streamDeck.logger.info(`Port: ${previousPort} -> ${camPort}`);
@@ -189,7 +201,10 @@ export class Volume extends SingletonAction {
 	}
 
 	override async onDialRotate(ev: DialRotateEvent<Record<string, any>>) {
-		if (!camIp || !camPort) return;
+		if (!camIp || !camPort) {
+			console.error('Missing IP or Port configuration');
+			return;
+		}
 
 		const dialVal = volValue + ev.payload.ticks;
 		if (dialVal <= 0 && dialVal >= -80) {
