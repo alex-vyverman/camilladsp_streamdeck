@@ -178,7 +178,7 @@ async function sendWebSocketMessage(
 
 
 
-@action({ UUID: "com.alexander-vyverman.camilladsp.volume" })
+@action({ UUID: "com.alexander-vyverman.sdcamilladsp.volume" })
 export class Volume extends SingletonAction {
 	constructor() {
 		super();

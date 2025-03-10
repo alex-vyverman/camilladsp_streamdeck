@@ -1,6 +1,6 @@
 import { action, DidReceiveSettingsEvent, KeyDownEvent, SingletonAction, WillAppearEvent, SendToPluginEvent, Action} from "@elgato/streamdeck";
 import streamDeck, { LogLevel } from "@elgato/streamdeck";
-import { dialog } from 'electron';
+
 
 import path from 'path';
 
