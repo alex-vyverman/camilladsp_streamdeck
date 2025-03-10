@@ -1,0 +1,39 @@
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect x="0" y="0" width="300" height="200" fill="#222"/>
+
+    <!-- Semi-circle gauge -->
+    <path d="M50,150 A100,100 0 0,1 250,150" fill="none" stroke="white" stroke-width="4"/>
+
+    <!-- Tick marks -->
+    <line x1="50" y1="150" x2="50" y2="130" stroke="white" stroke-width="2"/>
+    <line x1="100" y1="150" x2="100" y2="130" stroke="white" stroke-width="2"/>
+    <line x1="150" y1="150" x2="150" y2="120" stroke="white" stroke-width="2"/>
+    <line x1="200" y1="150" x2="200" y2="130" stroke="white" stroke-width="2"/>
+    <line x1="250" y1="150" x2="250" y2="130" stroke="white" stroke-width="2"/>
+
+    <!-- Needle -->
+    <line id="needle" x1="150" y1="150" x2="150" y2="80" stroke="red" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Labels -->
+    <text x="45" y="165" fill="white" font-size="12">-100</text>
+    <text x="95" y="165" fill="white" font-size="12">-50</text>
+    <text x="145" y="165" fill="white" font-size="12">0</text>
+    <text x="195" y="165" fill="white" font-size="12">50</text>
+    <text x="245" y="165" fill="white" font-size="12">100</text>
+
+    <script><![CDATA[
+        function updateNeedle(value) {
+            let angle = (value + 100) * 90 / 200 - 45; // Scale from -100 to 100 mapped to -45° to 45°
+            let radian = angle * Math.PI / 180;
+            let x2 = 150 + 70 * Math.cos(radian);
+            let y2 = 150 - 70 * Math.sin(radian);
+            document.getElementById("needle").setAttribute("x2", x2);
+            document.getElementById("needle").setAttribute("y2", y2);
+        }
+        
+        // Example: Set the needle position dynamically
+        updateNeedle(0); // Default to center
+        // You can call updateNeedle(-100 to 100) dynamically in a real application
+    ]]></script>
+</svg>
