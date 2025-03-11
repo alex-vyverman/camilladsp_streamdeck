@@ -1,26 +1,21 @@
-import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent, DialDownEvent, DidReceiveGlobalSettingsEvent, WillAppearEvent } from "@elgato/streamdeck";
+import { action, SingletonAction, DialRotateEvent, DialDownEvent, DidReceiveGlobalSettingsEvent, WillAppearEvent } from "@elgato/streamdeck";
 import streamDeck from '@elgato/streamdeck';
-import WebSocket from 'ws';
+import { camillaWebSocket, WebSocketResponse } from '../services/camillaWebSocket';
 
 
-// / <reference path="@elgato/streamdeck" />
 
-// let defVal = 50;
-// let reconnectInterval = 5000;
+
+
 let camIp: any = null;
 let camPort: any = null;
 const incrdB = 1; // dB change per tick
-let ws: any = null; // Declare a variable to hold the WebSocket connection
-// let inContext: any = null;
 let volValue: any = null;
 let dimOn: boolean = false;
-let camSocketOpen: boolean = false;
-let globSettings: GlobalSettings = {};
-// let actionObj: object = {}
+
 
 interface GlobalSettings {
 	camillaIP?: string;
-	camillaPORT?: string;
+	camillaPort?: string;
 	camSocketOpen?: boolean;
 	[key: string]: any; // Add this to allow for additional properties
 }
@@ -34,16 +29,39 @@ interface VolumeResponse {
 	};
 }
 
-interface WebSocketResponse {
-	success: boolean;
-	data?: VolumeResponse;
-	error?: string;
+async function handleVolumeResponse(response: WebSocketResponse): Promise<number | null> {
+    if (!response.success || !response.data) {
+        return null;
+    }
+
+    const data = response.data as VolumeResponse;
+    if (data.GetVolume?.value !== undefined) {
+        return Math.round(data.GetVolume.value);
+    }
+    if (data.AdjustVolume?.value !== undefined) {
+        return Math.round(data.AdjustVolume.value);
+    }
+    return null;
 }
 
+async function getVolume(): Promise<number | null> {
+    const response = await camillaWebSocket.sendMessage('"GetVolume"');
+    return handleVolumeResponse(response);
+}
+
+async function adjustVolume(ticks: number): Promise<number | null> {
+    const response = await camillaWebSocket.sendMessage({ "AdjustVolume": ticks });
+    return handleVolumeResponse(response);
+}
+
+async function setVolume(value: number): Promise<number | null> {
+    const response = await camillaWebSocket.sendMessage({ "SetVolume": value });
+    return handleVolumeResponse(response);
+}
 
 async function handleGlobalSettings(settings: GlobalSettings) {
     streamDeck.logger.info('Received global settings:', JSON.stringify(settings, null, 2));
-    globSettings = settings;
+
 
     const previousIp = camIp;
     const previousPort = camPort;
@@ -66,37 +84,20 @@ async function handleGlobalSettings(settings: GlobalSettings) {
     streamDeck.logger.info(`Port: ${previousPort} -> ${camPort}`);
 
     if (camIp && camPort) {
+        camillaWebSocket.setConfig({ ip: camIp, port: camPort });
+
         try {
             streamDeck.logger.info(`Attempting to connect to WebSocket at ws://${camIp}:${camPort}`);
-            const response = await sendWebSocketMessage(
-                camIp,
-                camPort,
-                '"GetVolume"'
-            );
+            const newVolume = await getVolume();
 
-            if (response.success && response.data) {
-				// camSocketOpen = true;
-				// globSettings.camSocketOpen = camSocketOpen;
-				streamDeck.logger.info('Successfully connected to WebSocket');
-				// await streamDeck.settings.setGlobalSettings(globSettings);
-				// streamDeck.logger.info('Updated global settings with connection status');
-			
-				// Improved type checking and error handling
-				if ('GetVolume' in response.data && response.data.GetVolume?.value !== undefined) {
-					const previousVolume = volValue;
-					volValue = Math.round(response.data.GetVolume.value);
-					streamDeck.logger.info(`Volume updated: ${previousVolume} -> ${volValue}`);
-				} else {
-					console.warn('Invalid GetVolume response structure:', JSON.stringify(response.data, null, 2));
-					throw new Error('Invalid response structure from CamillaDSP');
-				}
-			} else {
-				console.error(`Failed to get initial volume: ${response.error}`);
-				console.debug('Full response:', JSON.stringify(response, null, 2));
-			}
+            if (newVolume !== null) {
+                volValue = newVolume;
+                streamDeck.logger.info(`Volume updated to ${volValue}`);
+            } else {
+                console.error('Failed to get initial volume');
+            }
         } catch (error) {
             console.error('Failed to initialize connection:', error);
-            console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
         }
     } else {
         console.warn('Missing IP or Port configuration:', { camIp, camPort });
@@ -122,74 +123,6 @@ streamDeck.settings.onDidReceiveGlobalSettings((ev: DidReceiveGlobalSettingsEven
         });
 });
 
-interface WebSocketResponse {
-	success: boolean;
-	data?: VolumeResponse;
-	error?: string;
-}
-
-async function sendWebSocketMessage(
-	ip: string,
-	port: number,
-	message: string | object
-): Promise<WebSocketResponse> {
-	return new Promise((resolve) => {
-		try {
-			const ws = new WebSocket(`ws://${ip}:${port}`);
-
-			const timeoutId = setTimeout(() => {
-				ws.close();
-				resolve({
-					success: false,
-					error: 'Connection timeout after 5 seconds'
-				});
-			}, 5000);
-
-			ws.onopen = () => {
-				const messageString = typeof message === 'string'
-					? message
-					: JSON.stringify(message);
-
-				ws.send(messageString);
-			};
-
-			ws.onmessage = (event) => {
-				clearTimeout(timeoutId);
-				try {
-					const data = JSON.parse(event.data.toString());
-					resolve({
-						success: true,
-						data: data
-					});
-				} catch (e) {
-					resolve({
-						success: false,
-						error: 'Failed to parse response data'
-					});
-				}
-				ws.close();
-			};
-
-			ws.onerror = (error) => {
-				clearTimeout(timeoutId);
-				resolve({
-					success: false,
-					error: `WebSocket error: ${error}`
-				});
-				ws.close();
-			};
-
-		} catch (error) {
-			resolve({
-				success: false,
-				error: `Failed to create WebSocket connection: ${error}`
-			});
-		}
-	});
-}
-
-
-
 @action({ UUID: "com.alexander-vyverman.sdcamilladsp.volume" })
 export class Volume extends SingletonAction {
 	constructor() {
@@ -208,28 +141,18 @@ export class Volume extends SingletonAction {
 
 		const dialVal = volValue + ev.payload.ticks;
 		if (dialVal <= 0 && dialVal >= -80) {
-			const response = await sendWebSocketMessage(
-				camIp,
-				camPort,
-				{ "AdjustVolume": ev.payload.ticks }
-			);
-
-			if (response.success) {
-				// Handle successful response
-				const data = response.data;
-				if (data && data.AdjustVolume) {
-					volValue = Math.round(data.AdjustVolume.value);
-					ev.action.setFeedback({
-						value: volValue,
-						indicator: {
-							value: ((volValue + 80) / 80) * 100,
-							enabled: true
-						}
-					});
-				}
-			} else {
-				console.error(response.error);
-			}
+			const newVolume = await adjustVolume(ev.payload.ticks);
+            
+            if (newVolume !== null) {
+                volValue = newVolume;
+                ev.action.setFeedback({
+                    value: volValue,
+                    indicator: {
+                        value: ((volValue + 80) / 80) * 100,
+                        enabled: true
+                    }
+                });
+            }
 		}
 	}
 
@@ -242,28 +165,19 @@ export class Volume extends SingletonAction {
 		const dimVol = dimOn ? volValue - 20 : volValue + 20;
 		volValue = Math.min(Math.max(dimVol, -80), 100); // Clamp between -80 and 100
 		
-		const response = await sendWebSocketMessage(
-			camIp,
-			camPort,
-			{ "SetVolume": volValue }
-		);
-	
-		if (response.success) {
-			ev.action.setFeedback({ 
-				title: dimOn ? "DIM ON" : "Volume",
-				value: volValue,
-				indicator: {
-					value: ((volValue + 80) / 80) * 100,
-					enabled: true
-				}
-			});
-		} else {
-			console.error('Failed to set volume:', response.error);
-		}
+		const newVolume = await setVolume(volValue);
+    
+        if (newVolume !== null) {
+            ev.action.setFeedback({ 
+                title: dimOn ? "DIM ON" : "Volume",
+                value: volValue,
+                indicator: {
+                    value: ((volValue + 80) / 80) * 100,
+                    enabled: true
+                }
+            });
+        }
 	}
-
-
-
 }
 
 

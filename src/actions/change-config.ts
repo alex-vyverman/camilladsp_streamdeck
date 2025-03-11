@@ -3,6 +3,8 @@ import streamDeck, { LogLevel } from "@elgato/streamdeck";
 
 
 import path from 'path';
+import fs from 'fs';
+import { camillaWebSocket } from '../services/camillaWebSocket';
 
 streamDeck.logger.setLevel(LogLevel.TRACE);
 
@@ -51,6 +53,14 @@ export class ChangeConfig extends SingletonAction<ChangeConfigSettings> {
         // Update the count from the settings.
         const { settings } = ev.payload;
         streamDeck.logger.info("settings: ", settings.yamlpath)
+        try {
+            const yamlContent = fs.readFileSync(settings.yamlpath, 'utf8');
+            const message = { SetConfig: yamlContent };
+            camillaWebSocket.sendMessage(JSON.stringify(message));
+            streamDeck.logger.info("YAML content sent over websocket");
+        } catch (error) {
+            streamDeck.logger.error("Failed to read YAML file or send data over websocket: ", error);
+        }
     }
 
     override async onDidReceiveSettings(ev: DidReceiveSettingsEvent<ChangeConfigSettings>): Promise<void> {
