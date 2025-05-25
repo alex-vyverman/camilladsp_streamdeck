@@ -172,6 +172,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [CamillaDSP](https://github.com/HEnquist/camilladsp) - The audio DSP engine this plugin controls
 - [Elgato Stream Deck SDK](https://docs.elgato.com/sdk/) - For the plugin development framework
 - Stream Deck community for inspiration and feedback
+- icons by https://icons8.com
 
 ## Support
 
