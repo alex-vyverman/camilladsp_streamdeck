@@ -20,7 +20,9 @@
     "dependencies": {
         "@elgato/streamdeck": "^1.0.0",
         "@types/electron": "^1.4.38",
+        "@types/js-yaml": "^4.0.9",
         "electron": "^35.0.0",
+        "js-yaml": "^4.1.0",
         "ws": "^8.18.1"
     }
 }
