@@ -1,16 +1,11397 @@
-import e from"events";import t from"https";import n from"http";import i from"net";import r from"tls";import o from"crypto";import s from"stream";import a from"url";import c from"zlib";import l from"buffer";import u,{join as h}from"node:path";import{cwd as d}from"node:process";import p,{existsSync as f,readFileSync as g}from"node:fs";import*as m from"fs";import y from"path";
-/**!
- * @author Elgato
- * @module elgato/streamdeck
- * @license MIT
- * @copyright Copyright (c) Corsair Memory Inc.
- */var _,v;function b(e){return e&&e.__esModule&&Object.prototype.hasOwnProperty.call(e,"default")?e.default:e}!function(e){e[e.StreamDeck=0]="StreamDeck",e[e.StreamDeckMini=1]="StreamDeckMini",e[e.StreamDeckXL=2]="StreamDeckXL",e[e.StreamDeckMobile=3]="StreamDeckMobile",e[e.CorsairGKeys=4]="CorsairGKeys",e[e.StreamDeckPedal=5]="StreamDeckPedal",e[e.CorsairVoyager=6]="CorsairVoyager",e[e.StreamDeckPlus=7]="StreamDeckPlus",e[e.SCUFController=8]="SCUFController",e[e.StreamDeckNeo=9]="StreamDeckNeo"}(_||(_={})),function(e){e[e.Rectangle=0]="Rectangle",e[e.DoubleRectangle=1]="DoubleRectangle",e[e.Trapezoid=2]="Trapezoid",e[e.DoubleTrapezoid=3]="DoubleTrapezoid",e[e.Groove=4]="Groove"}(v||(v={}));var w,S,k,x,E,C,O,A={exports:{}};function I(){if(S)return w;S=1;const e=["nodebuffer","arraybuffer","fragments"],t="undefined"!=typeof Blob;return t&&e.push("blob"),w={BINARY_TYPES:e,EMPTY_BUFFER:Buffer.alloc(0),GUID:"258EAFA5-E914-47DA-95CA-C5AB0DC85B11",hasBlob:t,kForOnEventAttribute:Symbol("kIsForOnEventAttribute"),kListener:Symbol("kListener"),kStatusCode:Symbol("status-code"),kWebSocket:Symbol("websocket"),NOOP:()=>{}}}function T(){if(k)return A.exports;k=1;const{EMPTY_BUFFER:e}=I(),t=Buffer[Symbol.species];function n(e,t,n,i,r){for(let o=0;o<r;o++)n[i+o]=e[o]^t[3&o]}function i(e,t){for(let n=0;n<e.length;n++)e[n]^=t[3&n]}if(A.exports={concat:function(n,i){if(0===n.length)return e;if(1===n.length)return n[0];const r=Buffer.allocUnsafe(i);let o=0;for(let e=0;e<n.length;e++){const t=n[e];r.set(t,o),o+=t.length}return o<i?new t(r.buffer,r.byteOffset,o):r},mask:n,toArrayBuffer:function(e){return e.length===e.buffer.byteLength?e.buffer:e.buffer.slice(e.byteOffset,e.byteOffset+e.length)},toBuffer:function e(n){if(e.readOnly=!0,Buffer.isBuffer(n))return n;let i;return n instanceof ArrayBuffer?i=new t(n):ArrayBuffer.isView(n)?i=new t(n.buffer,n.byteOffset,n.byteLength):(i=Buffer.from(n),e.readOnly=!1),i},unmask:i},!process.env.WS_NO_BUFFER_UTIL)try{const e=require("bufferutil");A.exports.mask=function(t,i,r,o,s){s<48?n(t,i,r,o,s):e.mask(t,i,r,o,s)},A.exports.unmask=function(t,n){t.length<32?i(t,n):e.unmask(t,n)}}catch(e){}return A.exports}function N(){if(O)return C;O=1;const e=c,t=T(),n=function(){if(E)return x;E=1;const e=Symbol("kDone"),t=Symbol("kRun");return x=class{constructor(n){this[e]=()=>{this.pending--,this[t]()},this.concurrency=n||1/0,this.jobs=[],this.pending=0}add(e){this.jobs.push(e),this[t]()}[t](){if(this.pending!==this.concurrency&&this.jobs.length){const t=this.jobs.shift();this.pending++,t(this[e])}}}}(),{kStatusCode:i}=I(),r=Buffer[Symbol.species],o=Buffer.from([0,0,255,255]),s=Symbol("permessage-deflate"),a=Symbol("total-length"),l=Symbol("callback"),u=Symbol("buffers"),h=Symbol("error");let d;function p(e){this[u].push(e),this[a]+=e.length}function f(e){this[a]+=e.length,this[s]._maxPayload<1||this[a]<=this[s]._maxPayload?this[u].push(e):(this[h]=new RangeError("Max payload size exceeded"),this[h].code="WS_ERR_UNSUPPORTED_MESSAGE_LENGTH",this[h][i]=1009,this.removeListener("data",f),this.reset())}function g(e){this[s]._inflate=null,e[i]=1007,this[l](e)}return C=class{constructor(e,t,i){if(this._maxPayload=0|i,this._options=e||{},this._threshold=void 0!==this._options.threshold?this._options.threshold:1024,this._isServer=!!t,this._deflate=null,this._inflate=null,this.params=null,!d){const e=void 0!==this._options.concurrencyLimit?this._options.concurrencyLimit:10;d=new n(e)}}static get extensionName(){return"permessage-deflate"}offer(){const e={};return this._options.serverNoContextTakeover&&(e.server_no_context_takeover=!0),this._options.clientNoContextTakeover&&(e.client_no_context_takeover=!0),this._options.serverMaxWindowBits&&(e.server_max_window_bits=this._options.serverMaxWindowBits),this._options.clientMaxWindowBits?e.client_max_window_bits=this._options.clientMaxWindowBits:null==this._options.clientMaxWindowBits&&(e.client_max_window_bits=!0),e}accept(e){return e=this.normalizeParams(e),this.params=this._isServer?this.acceptAsServer(e):this.acceptAsClient(e),this.params}cleanup(){if(this._inflate&&(this._inflate.close(),this._inflate=null),this._deflate){const e=this._deflate[l];this._deflate.close(),this._deflate=null,e&&e(new Error("The deflate stream was closed while data was being processed"))}}acceptAsServer(e){const t=this._options,n=e.find((e=>!(!1===t.serverNoContextTakeover&&e.server_no_context_takeover||e.server_max_window_bits&&(!1===t.serverMaxWindowBits||"number"==typeof t.serverMaxWindowBits&&t.serverMaxWindowBits>e.server_max_window_bits)||"number"==typeof t.clientMaxWindowBits&&!e.client_max_window_bits)));if(!n)throw new Error("None of the extension offers can be accepted");return t.serverNoContextTakeover&&(n.server_no_context_takeover=!0),t.clientNoContextTakeover&&(n.client_no_context_takeover=!0),"number"==typeof t.serverMaxWindowBits&&(n.server_max_window_bits=t.serverMaxWindowBits),"number"==typeof t.clientMaxWindowBits?n.client_max_window_bits=t.clientMaxWindowBits:!0!==n.client_max_window_bits&&!1!==t.clientMaxWindowBits||delete n.client_max_window_bits,n}acceptAsClient(e){const t=e[0];if(!1===this._options.clientNoContextTakeover&&t.client_no_context_takeover)throw new Error('Unexpected parameter "client_no_context_takeover"');if(t.client_max_window_bits){if(!1===this._options.clientMaxWindowBits||"number"==typeof this._options.clientMaxWindowBits&&t.client_max_window_bits>this._options.clientMaxWindowBits)throw new Error('Unexpected or invalid parameter "client_max_window_bits"')}else"number"==typeof this._options.clientMaxWindowBits&&(t.client_max_window_bits=this._options.clientMaxWindowBits);return t}normalizeParams(e){return e.forEach((e=>{Object.keys(e).forEach((t=>{let n=e[t];if(n.length>1)throw new Error(`Parameter "${t}" must have only a single value`);if(n=n[0],"client_max_window_bits"===t){if(!0!==n){const e=+n;if(!Number.isInteger(e)||e<8||e>15)throw new TypeError(`Invalid value for parameter "${t}": ${n}`);n=e}else if(!this._isServer)throw new TypeError(`Invalid value for parameter "${t}": ${n}`)}else if("server_max_window_bits"===t){const e=+n;if(!Number.isInteger(e)||e<8||e>15)throw new TypeError(`Invalid value for parameter "${t}": ${n}`);n=e}else{if("client_no_context_takeover"!==t&&"server_no_context_takeover"!==t)throw new Error(`Unknown parameter "${t}"`);if(!0!==n)throw new TypeError(`Invalid value for parameter "${t}": ${n}`)}e[t]=n}))})),e}decompress(e,t,n){d.add((i=>{this._decompress(e,t,((e,t)=>{i(),n(e,t)}))}))}compress(e,t,n){d.add((i=>{this._compress(e,t,((e,t)=>{i(),n(e,t)}))}))}_decompress(n,i,r){const c=this._isServer?"client":"server";if(!this._inflate){const t=`${c}_max_window_bits`,n="number"!=typeof this.params[t]?e.Z_DEFAULT_WINDOWBITS:this.params[t];this._inflate=e.createInflateRaw({...this._options.zlibInflateOptions,windowBits:n}),this._inflate[s]=this,this._inflate[a]=0,this._inflate[u]=[],this._inflate.on("error",g),this._inflate.on("data",f)}this._inflate[l]=r,this._inflate.write(n),i&&this._inflate.write(o),this._inflate.flush((()=>{const e=this._inflate[h];if(e)return this._inflate.close(),this._inflate=null,void r(e);const n=t.concat(this._inflate[u],this._inflate[a]);this._inflate._readableState.endEmitted?(this._inflate.close(),this._inflate=null):(this._inflate[a]=0,this._inflate[u]=[],i&&this.params[`${c}_no_context_takeover`]&&this._inflate.reset()),r(null,n)}))}_compress(n,i,o){const s=this._isServer?"server":"client";if(!this._deflate){const t=`${s}_max_window_bits`,n="number"!=typeof this.params[t]?e.Z_DEFAULT_WINDOWBITS:this.params[t];this._deflate=e.createDeflateRaw({...this._options.zlibDeflateOptions,windowBits:n}),this._deflate[a]=0,this._deflate[u]=[],this._deflate.on("data",p)}this._deflate[l]=o,this._deflate.write(n),this._deflate.flush(e.Z_SYNC_FLUSH,(()=>{if(!this._deflate)return;let e=t.concat(this._deflate[u],this._deflate[a]);i&&(e=new r(e.buffer,e.byteOffset,e.length-4)),this._deflate[l]=null,this._deflate[a]=0,this._deflate[u]=[],i&&this.params[`${s}_no_context_takeover`]&&this._deflate.reset(),o(null,e)}))}}}var D,P,L,R,U,M,j,B,F,$,W,G,q,V={exports:{}};function z(){if(D)return V.exports;D=1;const{isUtf8:e}=l,{hasBlob:t}=I();function n(e){const t=e.length;let n=0;for(;n<t;)if(128&e[n])if(192==(224&e[n])){if(n+1===t||128!=(192&e[n+1])||192==(254&e[n]))return!1;n+=2}else if(224==(240&e[n])){if(n+2>=t||128!=(192&e[n+1])||128!=(192&e[n+2])||224===e[n]&&128==(224&e[n+1])||237===e[n]&&160==(224&e[n+1]))return!1;n+=3}else{if(240!=(248&e[n]))return!1;if(n+3>=t||128!=(192&e[n+1])||128!=(192&e[n+2])||128!=(192&e[n+3])||240===e[n]&&128==(240&e[n+1])||244===e[n]&&e[n+1]>143||e[n]>244)return!1;n+=4}else n++;return!0}if(V.exports={isBlob:function(e){return t&&"object"==typeof e&&"function"==typeof e.arrayBuffer&&"string"==typeof e.type&&"function"==typeof e.stream&&("Blob"===e[Symbol.toStringTag]||"File"===e[Symbol.toStringTag])},isValidStatusCode:function(e){return e>=1e3&&e<=1014&&1004!==e&&1005!==e&&1006!==e||e>=3e3&&e<=4999},isValidUTF8:n,tokenChars:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,1,1,1,0,0,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,0]},e)V.exports.isValidUTF8=function(t){return t.length<24?n(t):e(t)};else if(!process.env.WS_NO_UTF_8_VALIDATE)try{const e=require("utf-8-validate");V.exports.isValidUTF8=function(t){return t.length<32?n(t):e(t)}}catch(e){}return V.exports}function J(){if(L)return P;L=1;const{Writable:e}=s,t=N(),{BINARY_TYPES:n,EMPTY_BUFFER:i,kStatusCode:r,kWebSocket:o}=I(),{concat:a,toArrayBuffer:c,unmask:l}=T(),{isValidStatusCode:u,isValidUTF8:h}=z(),d=Buffer[Symbol.species];return P=class extends e{constructor(e={}){super(),this._allowSynchronousEvents=void 0===e.allowSynchronousEvents||e.allowSynchronousEvents,this._binaryType=e.binaryType||n[0],this._extensions=e.extensions||{},this._isServer=!!e.isServer,this._maxPayload=0|e.maxPayload,this._skipUTF8Validation=!!e.skipUTF8Validation,this[o]=void 0,this._bufferedBytes=0,this._buffers=[],this._compressed=!1,this._payloadLength=0,this._mask=void 0,this._fragmented=0,this._masked=!1,this._fin=!1,this._opcode=0,this._totalPayloadLength=0,this._messageLength=0,this._fragments=[],this._errored=!1,this._loop=!1,this._state=0}_write(e,t,n){if(8===this._opcode&&0==this._state)return n();this._bufferedBytes+=e.length,this._buffers.push(e),this.startLoop(n)}consume(e){if(this._bufferedBytes-=e,e===this._buffers[0].length)return this._buffers.shift();if(e<this._buffers[0].length){const t=this._buffers[0];return this._buffers[0]=new d(t.buffer,t.byteOffset+e,t.length-e),new d(t.buffer,t.byteOffset,e)}const t=Buffer.allocUnsafe(e);do{const n=this._buffers[0],i=t.length-e;e>=n.length?t.set(this._buffers.shift(),i):(t.set(new Uint8Array(n.buffer,n.byteOffset,e),i),this._buffers[0]=new d(n.buffer,n.byteOffset+e,n.length-e)),e-=n.length}while(e>0);return t}startLoop(e){this._loop=!0;do{switch(this._state){case 0:this.getInfo(e);break;case 1:this.getPayloadLength16(e);break;case 2:this.getPayloadLength64(e);break;case 3:this.getMask();break;case 4:this.getData(e);break;case 5:case 6:return void(this._loop=!1)}}while(this._loop);this._errored||e()}getInfo(e){if(this._bufferedBytes<2)return void(this._loop=!1);const n=this.consume(2);if(48&n[0]){return void e(this.createError(RangeError,"RSV2 and RSV3 must be clear",!0,1002,"WS_ERR_UNEXPECTED_RSV_2_3"))}const i=!(64&~n[0]);if(!i||this._extensions[t.extensionName]){if(this._fin=!(128&~n[0]),this._opcode=15&n[0],this._payloadLength=127&n[1],0===this._opcode){if(i){return void e(this.createError(RangeError,"RSV1 must be clear",!0,1002,"WS_ERR_UNEXPECTED_RSV_1"))}if(!this._fragmented){return void e(this.createError(RangeError,"invalid opcode 0",!0,1002,"WS_ERR_INVALID_OPCODE"))}this._opcode=this._fragmented}else if(1===this._opcode||2===this._opcode){if(this._fragmented){return void e(this.createError(RangeError,`invalid opcode ${this._opcode}`,!0,1002,"WS_ERR_INVALID_OPCODE"))}this._compressed=i}else{if(!(this._opcode>7&&this._opcode<11)){return void e(this.createError(RangeError,`invalid opcode ${this._opcode}`,!0,1002,"WS_ERR_INVALID_OPCODE"))}if(!this._fin){return void e(this.createError(RangeError,"FIN must be set",!0,1002,"WS_ERR_EXPECTED_FIN"))}if(i){return void e(this.createError(RangeError,"RSV1 must be clear",!0,1002,"WS_ERR_UNEXPECTED_RSV_1"))}if(this._payloadLength>125||8===this._opcode&&1===this._payloadLength){return void e(this.createError(RangeError,`invalid payload length ${this._payloadLength}`,!0,1002,"WS_ERR_INVALID_CONTROL_PAYLOAD_LENGTH"))}}if(this._fin||this._fragmented||(this._fragmented=this._opcode),this._masked=!(128&~n[1]),this._isServer){if(!this._masked){return void e(this.createError(RangeError,"MASK must be set",!0,1002,"WS_ERR_EXPECTED_MASK"))}}else if(this._masked){return void e(this.createError(RangeError,"MASK must be clear",!0,1002,"WS_ERR_UNEXPECTED_MASK"))}126===this._payloadLength?this._state=1:127===this._payloadLength?this._state=2:this.haveLength(e)}else{e(this.createError(RangeError,"RSV1 must be clear",!0,1002,"WS_ERR_UNEXPECTED_RSV_1"))}}getPayloadLength16(e){this._bufferedBytes<2?this._loop=!1:(this._payloadLength=this.consume(2).readUInt16BE(0),this.haveLength(e))}getPayloadLength64(e){if(this._bufferedBytes<8)return void(this._loop=!1);const t=this.consume(8),n=t.readUInt32BE(0);if(n>Math.pow(2,21)-1){e(this.createError(RangeError,"Unsupported WebSocket frame: payload length > 2^53 - 1",!1,1009,"WS_ERR_UNSUPPORTED_DATA_PAYLOAD_LENGTH"))}else this._payloadLength=n*Math.pow(2,32)+t.readUInt32BE(4),this.haveLength(e)}haveLength(e){if(this._payloadLength&&this._opcode<8&&(this._totalPayloadLength+=this._payloadLength,this._totalPayloadLength>this._maxPayload&&this._maxPayload>0)){e(this.createError(RangeError,"Max payload size exceeded",!1,1009,"WS_ERR_UNSUPPORTED_MESSAGE_LENGTH"))}else this._masked?this._state=3:this._state=4}getMask(){this._bufferedBytes<4?this._loop=!1:(this._mask=this.consume(4),this._state=4)}getData(e){let t=i;if(this._payloadLength){if(this._bufferedBytes<this._payloadLength)return void(this._loop=!1);t=this.consume(this._payloadLength),this._masked&&this._mask[0]|this._mask[1]|this._mask[2]|this._mask[3]&&l(t,this._mask)}if(this._opcode>7)this.controlMessage(t,e);else{if(this._compressed)return this._state=5,void this.decompress(t,e);t.length&&(this._messageLength=this._totalPayloadLength,this._fragments.push(t)),this.dataMessage(e)}}decompress(e,n){this._extensions[t.extensionName].decompress(e,this._fin,((e,t)=>{if(e)return n(e);if(t.length){if(this._messageLength+=t.length,this._messageLength>this._maxPayload&&this._maxPayload>0){const e=this.createError(RangeError,"Max payload size exceeded",!1,1009,"WS_ERR_UNSUPPORTED_MESSAGE_LENGTH");return void n(e)}this._fragments.push(t)}this.dataMessage(n),0===this._state&&this.startLoop(n)}))}dataMessage(e){if(!this._fin)return void(this._state=0);const t=this._messageLength,n=this._fragments;if(this._totalPayloadLength=0,this._messageLength=0,this._fragmented=0,this._fragments=[],2===this._opcode){let i;i="nodebuffer"===this._binaryType?a(n,t):"arraybuffer"===this._binaryType?c(a(n,t)):"blob"===this._binaryType?new Blob(n):n,this._allowSynchronousEvents?(this.emit("message",i,!0),this._state=0):(this._state=6,setImmediate((()=>{this.emit("message",i,!0),this._state=0,this.startLoop(e)})))}else{const i=a(n,t);if(!this._skipUTF8Validation&&!h(i)){const t=this.createError(Error,"invalid UTF-8 sequence",!0,1007,"WS_ERR_INVALID_UTF8");return void e(t)}5===this._state||this._allowSynchronousEvents?(this.emit("message",i,!1),this._state=0):(this._state=6,setImmediate((()=>{this.emit("message",i,!1),this._state=0,this.startLoop(e)})))}}controlMessage(e,t){if(8!==this._opcode)this._allowSynchronousEvents?(this.emit(9===this._opcode?"ping":"pong",e),this._state=0):(this._state=6,setImmediate((()=>{this.emit(9===this._opcode?"ping":"pong",e),this._state=0,this.startLoop(t)})));else{if(0===e.length)this._loop=!1,this.emit("conclude",1005,i),this.end();else{const n=e.readUInt16BE(0);if(!u(n)){const e=this.createError(RangeError,`invalid status code ${n}`,!0,1002,"WS_ERR_INVALID_CLOSE_CODE");return void t(e)}const i=new d(e.buffer,e.byteOffset+2,e.length-2);if(!this._skipUTF8Validation&&!h(i)){const e=this.createError(Error,"invalid UTF-8 sequence",!0,1007,"WS_ERR_INVALID_UTF8");return void t(e)}this._loop=!1,this.emit("conclude",n,i),this.end()}this._state=0}}createError(e,t,n,i,o){this._loop=!1,this._errored=!0;const s=new e(n?`Invalid WebSocket frame: ${t}`:t);return Error.captureStackTrace(s,this.createError),s.code=o,s[r]=i,s}}}function Y(){if(U)return R;U=1;const{Duplex:e}=s,{randomFillSync:t}=o,n=N(),{EMPTY_BUFFER:i,kWebSocket:r,NOOP:a}=I(),{isBlob:c,isValidStatusCode:l}=z(),{mask:u,toBuffer:h}=T(),d=Symbol("kByteLength"),p=Buffer.alloc(4),f=8192;let g,m=f;class y{constructor(e,t,n){this._extensions=t||{},n&&(this._generateMask=n,this._maskBuffer=Buffer.alloc(4)),this._socket=e,this._firstFragment=!0,this._compress=!1,this._bufferedBytes=0,this._queue=[],this._state=0,this.onerror=a,this[r]=void 0}static frame(e,n){let i,r,o=!1,s=2,a=!1;n.mask&&(i=n.maskBuffer||p,n.generateMask?n.generateMask(i):(m===f&&(void 0===g&&(g=Buffer.alloc(f)),t(g,0,f),m=0),i[0]=g[m++],i[1]=g[m++],i[2]=g[m++],i[3]=g[m++]),a=!(i[0]|i[1]|i[2]|i[3]),s=6),"string"==typeof e?r=n.mask&&!a||void 0===n[d]?(e=Buffer.from(e)).length:n[d]:(r=e.length,o=n.mask&&n.readOnly&&!a);let c=r;r>=65536?(s+=8,c=127):r>125&&(s+=2,c=126);const l=Buffer.allocUnsafe(o?r+s:s);return l[0]=n.fin?128|n.opcode:n.opcode,n.rsv1&&(l[0]|=64),l[1]=c,126===c?l.writeUInt16BE(r,2):127===c&&(l[2]=l[3]=0,l.writeUIntBE(r,4,6)),n.mask?(l[1]|=128,l[s-4]=i[0],l[s-3]=i[1],l[s-2]=i[2],l[s-1]=i[3],a?[l,e]:o?(u(e,i,l,s,r),[l]):(u(e,i,e,0,r),[l,e])):[l,e]}close(e,t,n,r){let o;if(void 0===e)o=i;else{if("number"!=typeof e||!l(e))throw new TypeError("First argument must be a valid error code number");if(void 0!==t&&t.length){const n=Buffer.byteLength(t);if(n>123)throw new RangeError("The message must not be greater than 123 bytes");o=Buffer.allocUnsafe(2+n),o.writeUInt16BE(e,0),"string"==typeof t?o.write(t,2):o.set(t,2)}else o=Buffer.allocUnsafe(2),o.writeUInt16BE(e,0)}const s={[d]:o.length,fin:!0,generateMask:this._generateMask,mask:n,maskBuffer:this._maskBuffer,opcode:8,readOnly:!1,rsv1:!1};0!==this._state?this.enqueue([this.dispatch,o,!1,s,r]):this.sendFrame(y.frame(o,s),r)}ping(e,t,n){let i,r;if("string"==typeof e?(i=Buffer.byteLength(e),r=!1):c(e)?(i=e.size,r=!1):(i=(e=h(e)).length,r=h.readOnly),i>125)throw new RangeError("The data size must not be greater than 125 bytes");const o={[d]:i,fin:!0,generateMask:this._generateMask,mask:t,maskBuffer:this._maskBuffer,opcode:9,readOnly:r,rsv1:!1};c(e)?0!==this._state?this.enqueue([this.getBlobData,e,!1,o,n]):this.getBlobData(e,!1,o,n):0!==this._state?this.enqueue([this.dispatch,e,!1,o,n]):this.sendFrame(y.frame(e,o),n)}pong(e,t,n){let i,r;if("string"==typeof e?(i=Buffer.byteLength(e),r=!1):c(e)?(i=e.size,r=!1):(i=(e=h(e)).length,r=h.readOnly),i>125)throw new RangeError("The data size must not be greater than 125 bytes");const o={[d]:i,fin:!0,generateMask:this._generateMask,mask:t,maskBuffer:this._maskBuffer,opcode:10,readOnly:r,rsv1:!1};c(e)?0!==this._state?this.enqueue([this.getBlobData,e,!1,o,n]):this.getBlobData(e,!1,o,n):0!==this._state?this.enqueue([this.dispatch,e,!1,o,n]):this.sendFrame(y.frame(e,o),n)}send(e,t,i){const r=this._extensions[n.extensionName];let o,s,a=t.binary?2:1,l=t.compress;"string"==typeof e?(o=Buffer.byteLength(e),s=!1):c(e)?(o=e.size,s=!1):(o=(e=h(e)).length,s=h.readOnly),this._firstFragment?(this._firstFragment=!1,l&&r&&r.params[r._isServer?"server_no_context_takeover":"client_no_context_takeover"]&&(l=o>=r._threshold),this._compress=l):(l=!1,a=0),t.fin&&(this._firstFragment=!0);const u={[d]:o,fin:t.fin,generateMask:this._generateMask,mask:t.mask,maskBuffer:this._maskBuffer,opcode:a,readOnly:s,rsv1:l};c(e)?0!==this._state?this.enqueue([this.getBlobData,e,this._compress,u,i]):this.getBlobData(e,this._compress,u,i):0!==this._state?this.enqueue([this.dispatch,e,this._compress,u,i]):this.dispatch(e,this._compress,u,i)}getBlobData(e,t,n,i){this._bufferedBytes+=n[d],this._state=2,e.arrayBuffer().then((e=>{if(this._socket.destroyed){const e=new Error("The socket was closed while the blob was being read");return void process.nextTick(_,this,e,i)}this._bufferedBytes-=n[d];const r=h(e);t?this.dispatch(r,t,n,i):(this._state=0,this.sendFrame(y.frame(r,n),i),this.dequeue())})).catch((e=>{process.nextTick(v,this,e,i)}))}dispatch(e,t,i,r){if(!t)return void this.sendFrame(y.frame(e,i),r);const o=this._extensions[n.extensionName];this._bufferedBytes+=i[d],this._state=1,o.compress(e,i.fin,((e,t)=>{if(this._socket.destroyed){_(this,new Error("The socket was closed while data was being compressed"),r)}else this._bufferedBytes-=i[d],this._state=0,i.readOnly=!1,this.sendFrame(y.frame(t,i),r),this.dequeue()}))}dequeue(){for(;0===this._state&&this._queue.length;){const e=this._queue.shift();this._bufferedBytes-=e[3][d],Reflect.apply(e[0],this,e.slice(1))}}enqueue(e){this._bufferedBytes+=e[3][d],this._queue.push(e)}sendFrame(e,t){2===e.length?(this._socket.cork(),this._socket.write(e[0]),this._socket.write(e[1],t),this._socket.uncork()):this._socket.write(e[0],t)}}function _(e,t,n){"function"==typeof n&&n(t);for(let n=0;n<e._queue.length;n++){const i=e._queue[n],r=i[i.length-1];"function"==typeof r&&r(t)}}function v(e,t,n){_(e,t,n),e.onerror(t)}return R=y}function K(){if(F)return B;F=1;const{tokenChars:e}=z();function t(e,t,n){void 0===e[t]?e[t]=[n]:e[t].push(n)}return B={format:function(e){return Object.keys(e).map((t=>{let n=e[t];return Array.isArray(n)||(n=[n]),n.map((e=>[t].concat(Object.keys(e).map((t=>{let n=e[t];return Array.isArray(n)||(n=[n]),n.map((e=>!0===e?t:`${t}=${e}`)).join("; ")}))).join("; "))).join(", ")})).join(", ")},parse:function(n){const i=Object.create(null);let r,o,s=Object.create(null),a=!1,c=!1,l=!1,u=-1,h=-1,d=-1,p=0;for(;p<n.length;p++)if(h=n.charCodeAt(p),void 0===r)if(-1===d&&1===e[h])-1===u&&(u=p);else if(0===p||32!==h&&9!==h){if(59!==h&&44!==h)throw new SyntaxError(`Unexpected character at index ${p}`);{if(-1===u)throw new SyntaxError(`Unexpected character at index ${p}`);-1===d&&(d=p);const e=n.slice(u,d);44===h?(t(i,e,s),s=Object.create(null)):r=e,u=d=-1}}else-1===d&&-1!==u&&(d=p);else if(void 0===o)if(-1===d&&1===e[h])-1===u&&(u=p);else if(32===h||9===h)-1===d&&-1!==u&&(d=p);else if(59===h||44===h){if(-1===u)throw new SyntaxError(`Unexpected character at index ${p}`);-1===d&&(d=p),t(s,n.slice(u,d),!0),44===h&&(t(i,r,s),s=Object.create(null),r=void 0),u=d=-1}else{if(61!==h||-1===u||-1!==d)throw new SyntaxError(`Unexpected character at index ${p}`);o=n.slice(u,p),u=d=-1}else if(c){if(1!==e[h])throw new SyntaxError(`Unexpected character at index ${p}`);-1===u?u=p:a||(a=!0),c=!1}else if(l)if(1===e[h])-1===u&&(u=p);else if(34===h&&-1!==u)l=!1,d=p;else{if(92!==h)throw new SyntaxError(`Unexpected character at index ${p}`);c=!0}else if(34===h&&61===n.charCodeAt(p-1))l=!0;else if(-1===d&&1===e[h])-1===u&&(u=p);else if(-1===u||32!==h&&9!==h){if(59!==h&&44!==h)throw new SyntaxError(`Unexpected character at index ${p}`);{if(-1===u)throw new SyntaxError(`Unexpected character at index ${p}`);-1===d&&(d=p);let e=n.slice(u,d);a&&(e=e.replace(/\\/g,""),a=!1),t(s,o,e),44===h&&(t(i,r,s),s=Object.create(null),r=void 0),o=void 0,u=d=-1}}else-1===d&&(d=p);if(-1===u||l||32===h||9===h)throw new SyntaxError("Unexpected end of input");-1===d&&(d=p);const f=n.slice(u,d);return void 0===r?t(i,f,s):(void 0===o?t(s,f,!0):t(s,o,a?f.replace(/\\/g,""):f),t(i,r,s)),i}},B}function H(){if(W)return $;W=1;const c=e,l=t,u=n,h=i,d=r,{randomBytes:p,createHash:f}=o,{Duplex:g,Readable:m}=s,{URL:y}=a,_=N(),v=J(),b=Y(),{isBlob:w}=z(),{BINARY_TYPES:S,EMPTY_BUFFER:k,GUID:x,kForOnEventAttribute:E,kListener:C,kStatusCode:O,kWebSocket:A,NOOP:D}=I(),{EventTarget:{addEventListener:P,removeEventListener:L}}=function(){if(j)return M;j=1;const{kForOnEventAttribute:e,kListener:t}=I(),n=Symbol("kCode"),i=Symbol("kData"),r=Symbol("kError"),o=Symbol("kMessage"),s=Symbol("kReason"),a=Symbol("kTarget"),c=Symbol("kType"),l=Symbol("kWasClean");class u{constructor(e){this[a]=null,this[c]=e}get target(){return this[a]}get type(){return this[c]}}Object.defineProperty(u.prototype,"target",{enumerable:!0}),Object.defineProperty(u.prototype,"type",{enumerable:!0});class h extends u{constructor(e,t={}){super(e),this[n]=void 0===t.code?0:t.code,this[s]=void 0===t.reason?"":t.reason,this[l]=void 0!==t.wasClean&&t.wasClean}get code(){return this[n]}get reason(){return this[s]}get wasClean(){return this[l]}}Object.defineProperty(h.prototype,"code",{enumerable:!0}),Object.defineProperty(h.prototype,"reason",{enumerable:!0}),Object.defineProperty(h.prototype,"wasClean",{enumerable:!0});class d extends u{constructor(e,t={}){super(e),this[r]=void 0===t.error?null:t.error,this[o]=void 0===t.message?"":t.message}get error(){return this[r]}get message(){return this[o]}}Object.defineProperty(d.prototype,"error",{enumerable:!0}),Object.defineProperty(d.prototype,"message",{enumerable:!0});class p extends u{constructor(e,t={}){super(e),this[i]=void 0===t.data?null:t.data}get data(){return this[i]}}Object.defineProperty(p.prototype,"data",{enumerable:!0});const f={addEventListener(n,i,r={}){for(const o of this.listeners(n))if(!r[e]&&o[t]===i&&!o[e])return;let o;if("message"===n)o=function(e,t){const n=new p("message",{data:t?e:e.toString()});n[a]=this,g(i,this,n)};else if("close"===n)o=function(e,t){const n=new h("close",{code:e,reason:t.toString(),wasClean:this._closeFrameReceived&&this._closeFrameSent});n[a]=this,g(i,this,n)};else if("error"===n)o=function(e){const t=new d("error",{error:e,message:e.message});t[a]=this,g(i,this,t)};else{if("open"!==n)return;o=function(){const e=new u("open");e[a]=this,g(i,this,e)}}o[e]=!!r[e],o[t]=i,r.once?this.once(n,o):this.on(n,o)},removeEventListener(n,i){for(const r of this.listeners(n))if(r[t]===i&&!r[e]){this.removeListener(n,r);break}}};function g(e,t,n){"object"==typeof e&&e.handleEvent?e.handleEvent.call(e,n):e.call(t,n)}return M={CloseEvent:h,ErrorEvent:d,Event:u,EventTarget:f,MessageEvent:p}}(),{format:R,parse:U}=K(),{toBuffer:B}=T(),F=Symbol("kAborted"),G=[8,13],q=["CONNECTING","OPEN","CLOSING","CLOSED"],V=/^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;class H extends c{constructor(e,t,n){super(),this._binaryType=S[0],this._closeCode=1006,this._closeFrameReceived=!1,this._closeFrameSent=!1,this._closeMessage=k,this._closeTimer=null,this._errorEmitted=!1,this._extensions={},this._paused=!1,this._protocol="",this._readyState=H.CONNECTING,this._receiver=null,this._sender=null,this._socket=null,null!==e?(this._bufferedAmount=0,this._isServer=!1,this._redirects=0,void 0===t?t=[]:Array.isArray(t)||("object"==typeof t&&null!==t?(n=t,t=[]):t=[t]),Z(this,e,t,n)):(this._autoPong=n.autoPong,this._isServer=!0)}get binaryType(){return this._binaryType}set binaryType(e){S.includes(e)&&(this._binaryType=e,this._receiver&&(this._receiver._binaryType=e))}get bufferedAmount(){return this._socket?this._socket._writableState.length+this._sender._bufferedBytes:this._bufferedAmount}get extensions(){return Object.keys(this._extensions).join()}get isPaused(){return this._paused}get onclose(){return null}get onerror(){return null}get onopen(){return null}get onmessage(){return null}get protocol(){return this._protocol}get readyState(){return this._readyState}get url(){return this._url}setSocket(e,t,n){const i=new v({allowSynchronousEvents:n.allowSynchronousEvents,binaryType:this.binaryType,extensions:this._extensions,isServer:this._isServer,maxPayload:n.maxPayload,skipUTF8Validation:n.skipUTF8Validation}),r=new b(e,this._extensions,n.generateMask);this._receiver=i,this._sender=r,this._socket=e,i[A]=this,r[A]=this,e[A]=this,i.on("conclude",ie),i.on("drain",re),i.on("error",oe),i.on("message",ae),i.on("ping",ce),i.on("pong",le),r.onerror=he,e.setTimeout&&e.setTimeout(0),e.setNoDelay&&e.setNoDelay(),t.length>0&&e.unshift(t),e.on("close",pe),e.on("data",fe),e.on("end",ge),e.on("error",me),this._readyState=H.OPEN,this.emit("open")}emitClose(){if(!this._socket)return this._readyState=H.CLOSED,void this.emit("close",this._closeCode,this._closeMessage);this._extensions[_.extensionName]&&this._extensions[_.extensionName].cleanup(),this._receiver.removeAllListeners(),this._readyState=H.CLOSED,this.emit("close",this._closeCode,this._closeMessage)}close(e,t){if(this.readyState!==H.CLOSED)if(this.readyState!==H.CONNECTING)this.readyState!==H.CLOSING?(this._readyState=H.CLOSING,this._sender.close(e,t,!this._isServer,(e=>{e||(this._closeFrameSent=!0,(this._closeFrameReceived||this._receiver._writableState.errorEmitted)&&this._socket.end())})),de(this)):this._closeFrameSent&&(this._closeFrameReceived||this._receiver._writableState.errorEmitted)&&this._socket.end();else{const e="WebSocket was closed before the connection was established";te(this,this._req,e)}}pause(){this.readyState!==H.CONNECTING&&this.readyState!==H.CLOSED&&(this._paused=!0,this._socket.pause())}ping(e,t,n){if(this.readyState===H.CONNECTING)throw new Error("WebSocket is not open: readyState 0 (CONNECTING)");"function"==typeof e?(n=e,e=t=void 0):"function"==typeof t&&(n=t,t=void 0),"number"==typeof e&&(e=e.toString()),this.readyState===H.OPEN?(void 0===t&&(t=!this._isServer),this._sender.ping(e||k,t,n)):ne(this,e,n)}pong(e,t,n){if(this.readyState===H.CONNECTING)throw new Error("WebSocket is not open: readyState 0 (CONNECTING)");"function"==typeof e?(n=e,e=t=void 0):"function"==typeof t&&(n=t,t=void 0),"number"==typeof e&&(e=e.toString()),this.readyState===H.OPEN?(void 0===t&&(t=!this._isServer),this._sender.pong(e||k,t,n)):ne(this,e,n)}resume(){this.readyState!==H.CONNECTING&&this.readyState!==H.CLOSED&&(this._paused=!1,this._receiver._writableState.needDrain||this._socket.resume())}send(e,t,n){if(this.readyState===H.CONNECTING)throw new Error("WebSocket is not open: readyState 0 (CONNECTING)");if("function"==typeof t&&(n=t,t={}),"number"==typeof e&&(e=e.toString()),this.readyState!==H.OPEN)return void ne(this,e,n);const i={binary:"string"!=typeof e,mask:!this._isServer,compress:!0,fin:!0,...t};this._extensions[_.extensionName]||(i.compress=!1),this._sender.send(e||k,i,n)}terminate(){if(this.readyState!==H.CLOSED)if(this.readyState!==H.CONNECTING)this._socket&&(this._readyState=H.CLOSING,this._socket.destroy());else{const e="WebSocket was closed before the connection was established";te(this,this._req,e)}}}function Z(e,t,n,i){const r={allowSynchronousEvents:!0,autoPong:!0,protocolVersion:G[1],maxPayload:104857600,skipUTF8Validation:!1,perMessageDeflate:!0,followRedirects:!1,maxRedirects:10,...i,socketPath:void 0,hostname:void 0,protocol:void 0,timeout:void 0,method:"GET",host:void 0,path:void 0,port:void 0};if(e._autoPong=r.autoPong,!G.includes(r.protocolVersion))throw new RangeError(`Unsupported protocol version: ${r.protocolVersion} (supported versions: ${G.join(", ")})`);let o;if(t instanceof y)o=t;else try{o=new y(t)}catch(e){throw new SyntaxError(`Invalid URL: ${t}`)}"http:"===o.protocol?o.protocol="ws:":"https:"===o.protocol&&(o.protocol="wss:"),e._url=o.href;const s="wss:"===o.protocol,a="ws+unix:"===o.protocol;let c;if("ws:"===o.protocol||s||a?a&&!o.pathname?c="The URL's pathname is empty":o.hash&&(c="The URL contains a fragment identifier"):c='The URL\'s protocol must be one of "ws:", "wss:", "http:", "https", or "ws+unix:"',c){const t=new SyntaxError(c);if(0===e._redirects)throw t;return void X(e,t)}const h=s?443:80,d=p(16).toString("base64"),g=s?l.request:u.request,m=new Set;let v,b;if(r.createConnection=r.createConnection||(s?ee:Q),r.defaultPort=r.defaultPort||h,r.port=o.port||h,r.host=o.hostname.startsWith("[")?o.hostname.slice(1,-1):o.hostname,r.headers={...r.headers,"Sec-WebSocket-Version":r.protocolVersion,"Sec-WebSocket-Key":d,Connection:"Upgrade",Upgrade:"websocket"},r.path=o.pathname+o.search,r.timeout=r.handshakeTimeout,r.perMessageDeflate&&(v=new _(!0!==r.perMessageDeflate?r.perMessageDeflate:{},!1,r.maxPayload),r.headers["Sec-WebSocket-Extensions"]=R({[_.extensionName]:v.offer()})),n.length){for(const e of n){if("string"!=typeof e||!V.test(e)||m.has(e))throw new SyntaxError("An invalid or duplicated subprotocol was specified");m.add(e)}r.headers["Sec-WebSocket-Protocol"]=n.join(",")}if(r.origin&&(r.protocolVersion<13?r.headers["Sec-WebSocket-Origin"]=r.origin:r.headers.Origin=r.origin),(o.username||o.password)&&(r.auth=`${o.username}:${o.password}`),a){const e=r.path.split(":");r.socketPath=e[0],r.path=e[1]}if(r.followRedirects){if(0===e._redirects){e._originalIpc=a,e._originalSecure=s,e._originalHostOrSocketPath=a?r.socketPath:o.host;const t=i&&i.headers;if(i={...i,headers:{}},t)for(const[e,n]of Object.entries(t))i.headers[e.toLowerCase()]=n}else if(0===e.listenerCount("redirect")){const t=a?!!e._originalIpc&&r.socketPath===e._originalHostOrSocketPath:!e._originalIpc&&o.host===e._originalHostOrSocketPath;(!t||e._originalSecure&&!s)&&(delete r.headers.authorization,delete r.headers.cookie,t||delete r.headers.host,r.auth=void 0)}r.auth&&!i.headers.authorization&&(i.headers.authorization="Basic "+Buffer.from(r.auth).toString("base64")),b=e._req=g(r),e._redirects&&e.emit("redirect",e.url,b)}else b=e._req=g(r);r.timeout&&b.on("timeout",(()=>{te(e,b,"Opening handshake has timed out")})),b.on("error",(t=>{null===b||b[F]||(b=e._req=null,X(e,t))})),b.on("response",(o=>{const s=o.headers.location,a=o.statusCode;if(s&&r.followRedirects&&a>=300&&a<400){if(++e._redirects>r.maxRedirects)return void te(e,b,"Maximum redirects exceeded");let o;b.abort();try{o=new y(s,t)}catch(t){const n=new SyntaxError(`Invalid URL: ${s}`);return void X(e,n)}Z(e,o,n,i)}else e.emit("unexpected-response",b,o)||te(e,b,`Unexpected server response: ${o.statusCode}`)})),b.on("upgrade",((t,n,i)=>{if(e.emit("upgrade",t),e.readyState!==H.CONNECTING)return;b=e._req=null;const o=t.headers.upgrade;if(void 0===o||"websocket"!==o.toLowerCase())return void te(e,n,"Invalid Upgrade header");const s=f("sha1").update(d+x).digest("base64");if(t.headers["sec-websocket-accept"]!==s)return void te(e,n,"Invalid Sec-WebSocket-Accept header");const a=t.headers["sec-websocket-protocol"];let c;if(void 0!==a?m.size?m.has(a)||(c="Server sent an invalid subprotocol"):c="Server sent a subprotocol but none was requested":m.size&&(c="Server sent no subprotocol"),c)return void te(e,n,c);a&&(e._protocol=a);const l=t.headers["sec-websocket-extensions"];if(void 0!==l){if(!v){return void te(e,n,"Server sent a Sec-WebSocket-Extensions header but no extension was requested")}let t;try{t=U(l)}catch(t){return void te(e,n,"Invalid Sec-WebSocket-Extensions header")}const i=Object.keys(t);if(1!==i.length||i[0]!==_.extensionName){return void te(e,n,"Server indicated an extension that was not requested")}try{v.accept(t[_.extensionName])}catch(t){return void te(e,n,"Invalid Sec-WebSocket-Extensions header")}e._extensions[_.extensionName]=v}e.setSocket(n,i,{allowSynchronousEvents:r.allowSynchronousEvents,generateMask:r.generateMask,maxPayload:r.maxPayload,skipUTF8Validation:r.skipUTF8Validation})})),r.finishRequest?r.finishRequest(b,e):b.end()}function X(e,t){e._readyState=H.CLOSING,e._errorEmitted=!0,e.emit("error",t),e.emitClose()}function Q(e){return e.path=e.socketPath,h.connect(e)}function ee(e){return e.path=void 0,e.servername||""===e.servername||(e.servername=h.isIP(e.host)?"":e.host),d.connect(e)}function te(e,t,n){e._readyState=H.CLOSING;const i=new Error(n);Error.captureStackTrace(i,te),t.setHeader?(t[F]=!0,t.abort(),t.socket&&!t.socket.destroyed&&t.socket.destroy(),process.nextTick(X,e,i)):(t.destroy(i),t.once("error",e.emit.bind(e,"error")),t.once("close",e.emitClose.bind(e)))}function ne(e,t,n){if(t){const n=w(t)?t.size:B(t).length;e._socket?e._sender._bufferedBytes+=n:e._bufferedAmount+=n}if(n){const t=new Error(`WebSocket is not open: readyState ${e.readyState} (${q[e.readyState]})`);process.nextTick(n,t)}}function ie(e,t){const n=this[A];n._closeFrameReceived=!0,n._closeMessage=t,n._closeCode=e,void 0!==n._socket[A]&&(n._socket.removeListener("data",fe),process.nextTick(ue,n._socket),1005===e?n.close():n.close(e,t))}function re(){const e=this[A];e.isPaused||e._socket.resume()}function oe(e){const t=this[A];void 0!==t._socket[A]&&(t._socket.removeListener("data",fe),process.nextTick(ue,t._socket),t.close(e[O])),t._errorEmitted||(t._errorEmitted=!0,t.emit("error",e))}function se(){this[A].emitClose()}function ae(e,t){this[A].emit("message",e,t)}function ce(e){const t=this[A];t._autoPong&&t.pong(e,!this._isServer,D),t.emit("ping",e)}function le(e){this[A].emit("pong",e)}function ue(e){e.resume()}function he(e){const t=this[A];t.readyState!==H.CLOSED&&(t.readyState===H.OPEN&&(t._readyState=H.CLOSING,de(t)),this._socket.end(),t._errorEmitted||(t._errorEmitted=!0,t.emit("error",e)))}function de(e){e._closeTimer=setTimeout(e._socket.destroy.bind(e._socket),3e4)}function pe(){const e=this[A];let t;this.removeListener("close",pe),this.removeListener("data",fe),this.removeListener("end",ge),e._readyState=H.CLOSING,this._readableState.endEmitted||e._closeFrameReceived||e._receiver._writableState.errorEmitted||null===(t=e._socket.read())||e._receiver.write(t),e._receiver.end(),this[A]=void 0,clearTimeout(e._closeTimer),e._receiver._writableState.finished||e._receiver._writableState.errorEmitted?e.emitClose():(e._receiver.on("error",se),e._receiver.on("finish",se))}function fe(e){this[A]._receiver.write(e)||this.pause()}function ge(){const e=this[A];e._readyState=H.CLOSING,e._receiver.end(),this.end()}function me(){const e=this[A];this.removeListener("error",me),this.on("error",D),e&&(e._readyState=H.CLOSING,this.destroy())}return Object.defineProperty(H,"CONNECTING",{enumerable:!0,value:q.indexOf("CONNECTING")}),Object.defineProperty(H.prototype,"CONNECTING",{enumerable:!0,value:q.indexOf("CONNECTING")}),Object.defineProperty(H,"OPEN",{enumerable:!0,value:q.indexOf("OPEN")}),Object.defineProperty(H.prototype,"OPEN",{enumerable:!0,value:q.indexOf("OPEN")}),Object.defineProperty(H,"CLOSING",{enumerable:!0,value:q.indexOf("CLOSING")}),Object.defineProperty(H.prototype,"CLOSING",{enumerable:!0,value:q.indexOf("CLOSING")}),Object.defineProperty(H,"CLOSED",{enumerable:!0,value:q.indexOf("CLOSED")}),Object.defineProperty(H.prototype,"CLOSED",{enumerable:!0,value:q.indexOf("CLOSED")}),["binaryType","bufferedAmount","extensions","isPaused","protocol","readyState","url"].forEach((e=>{Object.defineProperty(H.prototype,e,{enumerable:!0})})),["open","error","close","message"].forEach((e=>{Object.defineProperty(H.prototype,`on${e}`,{enumerable:!0,get(){for(const t of this.listeners(e))if(t[E])return t[C];return null},set(t){for(const t of this.listeners(e))if(t[E]){this.removeListener(e,t);break}"function"==typeof t&&this.addEventListener(e,t,{[E]:!0})}})})),H.prototype.addEventListener=P,H.prototype.removeEventListener=L,$=H}!function(){if(q)return G;q=1,H();const{Duplex:e}=s;function t(e){e.emit("close")}function n(){!this.destroyed&&this._writableState.finished&&this.destroy()}function i(e){this.removeListener("error",i),this.destroy(),0===this.listenerCount("error")&&this.emit("error",e)}G=function(r,o){let s=!0;const a=new e({...o,autoDestroy:!1,emitClose:!1,objectMode:!1,writableObjectMode:!1});return r.on("message",(function(e,t){const n=!t&&a._readableState.objectMode?e.toString():e;a.push(n)||r.pause()})),r.once("error",(function(e){a.destroyed||(s=!1,a.destroy(e))})),r.once("close",(function(){a.destroyed||a.push(null)})),a._destroy=function(e,n){if(r.readyState===r.CLOSED)return n(e),void process.nextTick(t,a);let i=!1;r.once("error",(function(e){i=!0,n(e)})),r.once("close",(function(){i||n(e),process.nextTick(t,a)})),s&&r.terminate()},a._final=function(e){r.readyState!==r.CONNECTING?null!==r._socket&&(r._socket._writableState.finished?(e(),a._readableState.endEmitted&&a.destroy()):(r._socket.once("finish",(function(){e()})),r.close())):r.once("open",(function(){a._final(e)}))},a._read=function(){r.isPaused&&r.resume()},a._write=function(e,t,n){r.readyState!==r.CONNECTING?r.send(e,n):r.once("open",(function(){a._write(e,t,n)}))},a.on("end",n),a.on("error",i),a}}(),J(),Y();var Z,X,Q,ee,te=b(H());function ne(){if(X)return Z;X=1;const{tokenChars:e}=z();return Z={parse:function(t){const n=new Set;let i=-1,r=-1,o=0;for(;o<t.length;o++){const s=t.charCodeAt(o);if(-1===r&&1===e[s])-1===i&&(i=o);else if(0===o||32!==s&&9!==s){if(44!==s)throw new SyntaxError(`Unexpected character at index ${o}`);{if(-1===i)throw new SyntaxError(`Unexpected character at index ${o}`);-1===r&&(r=o);const e=t.slice(i,r);if(n.has(e))throw new SyntaxError(`The "${e}" subprotocol is duplicated`);n.add(e),i=r=-1}}else-1===r&&-1!==i&&(r=o)}if(-1===i||-1!==r)throw new SyntaxError("Unexpected end of input");const s=t.slice(i,o);if(n.has(s))throw new SyntaxError(`The "${s}" subprotocol is duplicated`);return n.add(s),n}},Z}!function(){if(ee)return Q;ee=1;const t=e,i=n,{Duplex:r}=s,{createHash:a}=o,c=K(),l=N(),u=ne(),h=H(),{GUID:d,kWebSocket:p}=I(),f=/^[+/0-9A-Za-z]{22}==$/;function g(e){e._state=2,e.emit("close")}function m(){this.destroy()}function y(e,t,n,r){n=n||i.STATUS_CODES[t],r={Connection:"close","Content-Type":"text/html","Content-Length":Buffer.byteLength(n),...r},e.once("finish",e.destroy),e.end(`HTTP/1.1 ${t} ${i.STATUS_CODES[t]}\r\n`+Object.keys(r).map((e=>`${e}: ${r[e]}`)).join("\r\n")+"\r\n\r\n"+n)}function _(e,t,n,i,r){if(e.listenerCount("wsClientError")){const i=new Error(r);Error.captureStackTrace(i,_),e.emit("wsClientError",i,n,t)}else y(n,i,r)}Q=class extends t{constructor(e,t){if(super(),null==(e={allowSynchronousEvents:!0,autoPong:!0,maxPayload:104857600,skipUTF8Validation:!1,perMessageDeflate:!1,handleProtocols:null,clientTracking:!0,verifyClient:null,noServer:!1,backlog:null,server:null,host:null,path:null,port:null,WebSocket:h,...e}).port&&!e.server&&!e.noServer||null!=e.port&&(e.server||e.noServer)||e.server&&e.noServer)throw new TypeError('One and only one of the "port", "server", or "noServer" options must be specified');if(null!=e.port?(this._server=i.createServer(((e,t)=>{const n=i.STATUS_CODES[426];t.writeHead(426,{"Content-Length":n.length,"Content-Type":"text/plain"}),t.end(n)})),this._server.listen(e.port,e.host,e.backlog,t)):e.server&&(this._server=e.server),this._server){const e=this.emit.bind(this,"connection");this._removeListeners=function(e,t){for(const n of Object.keys(t))e.on(n,t[n]);return function(){for(const n of Object.keys(t))e.removeListener(n,t[n])}}(this._server,{listening:this.emit.bind(this,"listening"),error:this.emit.bind(this,"error"),upgrade:(t,n,i)=>{this.handleUpgrade(t,n,i,e)}})}!0===e.perMessageDeflate&&(e.perMessageDeflate={}),e.clientTracking&&(this.clients=new Set,this._shouldEmitClose=!1),this.options=e,this._state=0}address(){if(this.options.noServer)throw new Error('The server is operating in "noServer" mode');return this._server?this._server.address():null}close(e){if(2===this._state)return e&&this.once("close",(()=>{e(new Error("The server is not running"))})),void process.nextTick(g,this);if(e&&this.once("close",e),1!==this._state)if(this._state=1,this.options.noServer||this.options.server)this._server&&(this._removeListeners(),this._removeListeners=this._server=null),this.clients&&this.clients.size?this._shouldEmitClose=!0:process.nextTick(g,this);else{const e=this._server;this._removeListeners(),this._removeListeners=this._server=null,e.close((()=>{g(this)}))}}shouldHandle(e){if(this.options.path){const t=e.url.indexOf("?");if((-1!==t?e.url.slice(0,t):e.url)!==this.options.path)return!1}return!0}handleUpgrade(e,t,n,i){t.on("error",m);const r=e.headers["sec-websocket-key"],o=e.headers.upgrade,s=+e.headers["sec-websocket-version"];if("GET"!==e.method){return void _(this,e,t,405,"Invalid HTTP method")}if(void 0===o||"websocket"!==o.toLowerCase()){return void _(this,e,t,400,"Invalid Upgrade header")}if(void 0===r||!f.test(r)){return void _(this,e,t,400,"Missing or invalid Sec-WebSocket-Key header")}if(8!==s&&13!==s){return void _(this,e,t,400,"Missing or invalid Sec-WebSocket-Version header")}if(!this.shouldHandle(e))return void y(t,400);const a=e.headers["sec-websocket-protocol"];let h=new Set;if(void 0!==a)try{h=u.parse(a)}catch(n){return void _(this,e,t,400,"Invalid Sec-WebSocket-Protocol header")}const d=e.headers["sec-websocket-extensions"],p={};if(this.options.perMessageDeflate&&void 0!==d){const n=new l(this.options.perMessageDeflate,!0,this.options.maxPayload);try{const e=c.parse(d);e[l.extensionName]&&(n.accept(e[l.extensionName]),p[l.extensionName]=n)}catch(n){return void _(this,e,t,400,"Invalid or unacceptable Sec-WebSocket-Extensions header")}}if(this.options.verifyClient){const o={origin:e.headers[""+(8===s?"sec-websocket-origin":"origin")],secure:!(!e.socket.authorized&&!e.socket.encrypted),req:e};if(2===this.options.verifyClient.length)return void this.options.verifyClient(o,((o,s,a,c)=>{if(!o)return y(t,s||401,a,c);this.completeUpgrade(p,r,h,e,t,n,i)}));if(!this.options.verifyClient(o))return y(t,401)}this.completeUpgrade(p,r,h,e,t,n,i)}completeUpgrade(e,t,n,i,r,o,s){if(!r.readable||!r.writable)return r.destroy();if(r[p])throw new Error("server.handleUpgrade() was called more than once with the same socket, possibly due to a misconfiguration");if(this._state>0)return y(r,503);const u=["HTTP/1.1 101 Switching Protocols","Upgrade: websocket","Connection: Upgrade",`Sec-WebSocket-Accept: ${a("sha1").update(t+d).digest("base64")}`],h=new this.options.WebSocket(null,void 0,this.options);if(n.size){const e=this.options.handleProtocols?this.options.handleProtocols(n,i):n.values().next().value;e&&(u.push(`Sec-WebSocket-Protocol: ${e}`),h._protocol=e)}if(e[l.extensionName]){const t=e[l.extensionName].params,n=c.format({[l.extensionName]:[t]});u.push(`Sec-WebSocket-Extensions: ${n}`),h._extensions=e}this.emit("headers",u,i),r.write(u.concat("\r\n").join("\r\n")),r.removeListener("error",m),h.setSocket(r,o,{allowSynchronousEvents:this.options.allowSynchronousEvents,maxPayload:this.options.maxPayload,skipUTF8Validation:this.options.skipUTF8Validation}),this.clients&&(this.clients.add(h),h.on("close",(()=>{this.clients.delete(h),this._shouldEmitClose&&!this.clients.size&&process.nextTick(g,this)}))),s(h,i)}}}();
+import require$$0$3 from 'events';
+import require$$1$1 from 'https';
+import require$$2 from 'http';
+import require$$3 from 'net';
+import require$$4 from 'tls';
+import require$$1 from 'crypto';
+import require$$0$2 from 'stream';
+import require$$7 from 'url';
+import require$$0 from 'zlib';
+import require$$0$1 from 'buffer';
+import path, { join } from 'node:path';
+import { cwd } from 'node:process';
+import fs$1, { existsSync, readFileSync } from 'node:fs';
+import * as fs from 'fs';
+import path$1 from 'path';
+
 /**!
  * @author Elgato
  * @module elgato/streamdeck
  * @license MIT
  * @copyright Copyright (c) Corsair Memory Inc.
  */
-const ie=["de","en","es","fr","ja","ko","zh_CN","zh_TW"];var re,oe,se;function ae(e){null==e||"object"!=typeof e||Object.isFrozen(e)||(Object.freeze(e),Object.values(e).forEach(ae))}function ce(e,t){return e.split(".").reduce(((e,t)=>e&&e[t]),t)}!function(e){e.Port="-port",e.Info="-info",e.PluginUUID="-pluginUUID",e.RegisterEvent="-registerEvent"}(re||(re={})),function(e){e[e.HardwareAndSoftware=0]="HardwareAndSoftware",e[e.Hardware=1]="Hardware",e[e.Software=2]="Software"}(oe||(oe={}));class le{language;readTranslations;static DEFAULT_LANGUAGE="en";_translations=new Map;constructor(e,t){this.language=e,this.readTranslations=t}t(e,t=this.language){return this.translate(e,t)}translate(e,t=this.language){return t===le.DEFAULT_LANGUAGE?ce(e,this.getTranslations(t))?.toString()||e:ce(e,this.getTranslations(t))?.toString()||ce(e,this.getTranslations(le.DEFAULT_LANGUAGE))?.toString()||e}getTranslations(e){let t=this._translations.get(e);return void 0===t&&(t=ie.includes(e)?this.readTranslations(e):null,ae(t),this._translations.set(e,t)),t}}!function(e){e[e.ERROR=0]="ERROR",e[e.WARN=1]="WARN",e[e.INFO=2]="INFO",e[e.DEBUG=3]="DEBUG",e[e.TRACE=4]="TRACE"}(se||(se={}));class ue{write(e){switch(e.level){case se.ERROR:console.error(...e.data);break;case se.WARN:console.warn(...e.data);break;default:console.log(...e.data)}}}const he="\n";class de{_level;options;scope;constructor(e){this.options={minimumLevel:se.TRACE,...e},this.scope=void 0===this.options.scope||""===this.options.scope.trim()?"":this.options.scope,"function"!=typeof this.options.level&&this.setLevel(this.options.level)}get level(){return void 0!==this._level?this._level:"function"==typeof this.options.level?this.options.level():this.options.level}createScope(e){return""===(e=e.trim())?this:new de({...this.options,level:()=>this.level,scope:this.options.scope?`${this.options.scope}->${e}`:e})}debug(...e){return this.write({level:se.DEBUG,data:e,scope:this.scope})}error(...e){return this.write({level:se.ERROR,data:e,scope:this.scope})}info(...e){return this.write({level:se.INFO,data:e,scope:this.scope})}setLevel(e){return void 0!==e&&e>this.options.minimumLevel?(this._level=se.INFO,this.warn(`Log level cannot be set to ${se[e]} whilst not in debug mode.`)):this._level=e,this}trace(...e){return this.write({level:se.TRACE,data:e,scope:this.scope})}warn(...e){return this.write({level:se.WARN,data:e,scope:this.scope})}write(e){return e.level<=this.level&&this.options.targets.forEach((t=>t.write(e))),this}}Symbol.dispose??=Symbol("Symbol.dispose");class pe{events=new Map;addListener(e,t){return this.on(e,t)}disposableOn(e,t){return this.addListener(e,t),function(e){let t=!1;const n=()=>{t||(e(),t=!0)};return{[Symbol.dispose]:n,dispose:n}}((()=>this.removeListener(e,t)))}emit(e,...t){const n=this.events.get(e);if(void 0===n)return!1;for(let e=0;e<n.length;){const{listener:i,once:r}=n[e];r?n.splice(e,1):e++,i(...t)}return!0}eventNames(){return Array.from(this.events.keys())}listenerCount(e,t){const n=this.events.get(e);if(void 0===n||null==t)return n?.length||0;let i=0;return n.forEach((e=>{e.listener===t&&i++})),i}listeners(e){return Array.from(this.events.get(e)||[]).map((({listener:e})=>e))}off(e,t){const n=this.events.get(e)||[];for(let e=n.length-1;e>=0;e--)n[e].listener===t&&n.splice(e,1);return this}on(e,t){return this.add(e,(e=>e.push({listener:t})))}once(e,t){return this.add(e,(e=>e.push({listener:t,once:!0})))}prependListener(e,t){return this.add(e,(e=>e.splice(0,0,{listener:t})))}prependOnceListener(e,t){return this.add(e,(e=>e.splice(0,0,{listener:t,once:!0})))}removeAllListeners(e){return this.events.delete(e),this}removeListener(e,t){return this.off(e,t)}add(e,t){let n=this.events.get(e);return void 0===n&&(n=[],this.events.set(e,n)),t(n),this}}function fe(e,t){return null!=e&&"object"==typeof e&&("__type"in e&&e.__type===t&&(ge(e,"id","string")&&ge(e,"path","string")))}function ge(e,t,n){return t in e&&typeof e[t]===n}class me{request;proxy;_responded=!1;constructor(e,t){this.request=e,this.proxy=t}get canRespond(){return!this._responded}fail(e){return this.send(500,e)}async send(e,t){this.canRespond&&(await this.proxy({__type:"response",id:this.request.id,path:this.request.path,body:t,status:e}),this._responded=!0)}success(e){return this.send(200,e)}}const ye=5e3,_e="public:";class ve{body;status;constructor(e){this.body=e.body,this.status=e.status}get ok(){return this.status>=200&&this.status<300}}class be{type;constructor(e){this.type=e.event}}class we extends be{action;constructor(e,t){super(t),this.action=e}}class Se extends we{payload;constructor(e,t){super(e,t),this.payload=t.payload}}class ke extends be{settings;constructor(e){super(e),this.settings=e.payload.settings}}class xe{_promise;_reject;_resolve;constructor(){this._promise=new Promise(((e,t)=>{this._resolve=e,this._reject=t}))}get promise(){return this._promise}setException(e){this._reject&&this._reject(e)}setResult(e){this._resolve&&this._resolve(e)}}class Ee{build;major;minor;patch;constructor(e){const t=e.match(/^(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?(?:\.(0|[1-9]\d*))?(?:\.(0|[1-9]\d*))?$/);if(null===t)throw new Error(`Invalid format; expected "{major}[.{minor}[.{patch}[.{build}]]]" but was "${e}"`);[,this.major,this.minor,this.patch,this.build]=[...t.map((e=>parseInt(e)||0))]}compareTo(e){const t=({major:e,minor:t,build:n,patch:i})=>[e,t,n,i],n=t(this),i=t(e);for(let e=0;e<4;e++){if(n[e]<i[e])return-1;if(n[e]>i[e])return 1}return 0}toString(){return`${this.major}.${this.minor}`}}let Ce;function Oe(){return void 0===Ce&&(Ce=process.execArgv.some((e=>{const t=e.split("=")[0];return"--inspect"===t||"--inspect-brk"===t||"--inspect-port"===t}))),Ce}const Ae=new class{options;filePath;size=0;constructor(e){this.options=e,this.filePath=this.getLogFilePath(),this.reIndex()}write(e){const t=p.openSync(this.filePath,"a");try{const n=this.options.format(e);p.writeSync(t,n+"\n"),this.size+=n.length}finally{p.closeSync(t)}this.size>=this.options.maxSize&&(this.reIndex(),this.size=0)}getLogFilePath(e=0){return u.join(this.options.dest,`${this.options.fileName}.${e}.log`)}getLogFiles(){const e=/^\.(\d+)\.log$/;return p.readdirSync(this.options.dest,{withFileTypes:!0}).reduce(((t,n)=>{if(n.isDirectory()||n.name.indexOf(this.options.fileName)<0)return t;const i=n.name.substring(this.options.fileName.length).match(e);return 2!==i?.length||t.push({path:u.join(this.options.dest,n.name),index:parseInt(i[1])}),t}),[]).sort((({index:e},{index:t})=>e<t?-1:e>t?1:0))}reIndex(){if(!p.existsSync(this.options.dest))return void p.mkdirSync(this.options.dest);const e=this.getLogFiles();for(let t=e.length-1;t>=0;t--){const n=e[t];t>=this.options.maxFileCount-1?p.rmSync(n.path):p.renameSync(n.path,this.getLogFilePath(t+1))}}}({dest:u.join(d(),"logs"),fileName:function(){const e=u.basename(process.cwd()),t=e.lastIndexOf(".sdPlugin");return t<0?e:e.substring(0,t)}(),format:e=>{const{data:t,level:n,scope:i}=e;let r=`${(new Date).toISOString()} ${se[n].padEnd(5)} `;return i&&(r+=`${i}: `),`${r}${function(e){let t="",n=!1;for(const i of e)"object"==typeof i&&i instanceof Error?(t+=`${he}${i.stack}`,n=!0):(n&&(t+=he,n=!1),t+="object"==typeof i?JSON.stringify(i):i,t+=" ");return t.trimEnd()}(t)}`},maxFileCount:10,maxSize:52428800}),Ie=[Ae];Oe()&&Ie.splice(0,0,new ue);const Te=new de({level:Oe()?se.DEBUG:se.INFO,minimumLevel:Oe()?se.TRACE:se.DEBUG,targets:Ie});process.once("uncaughtException",(e=>Te.error("Process encountered uncaught exception",e)));const Ne=new class extends pe{_registrationParameters;_version;canConnect=!0;connection=new xe;logger=Te.createScope("Connection");get registrationParameters(){return this._registrationParameters??=this.getRegistrationParameters()}get version(){return this._version??=new Ee(this.registrationParameters.info.application.version)}async connect(){if(this.canConnect){this.canConnect=!1;const e=new te(`ws://127.0.0.1:${this.registrationParameters.port}`);e.onmessage=e=>this.tryEmit(e),e.onopen=()=>{e.send(JSON.stringify({event:this.registrationParameters.registerEvent,uuid:this.registrationParameters.pluginUUID})),this.connection.setResult(e),this.emit("connected",this.registrationParameters.info)}}await this.connection.promise}async send(e){const t=await this.connection.promise,n=JSON.stringify(e);this.logger.trace(n),t.send(n)}getRegistrationParameters(){const e={port:void 0,info:void 0,pluginUUID:void 0,registerEvent:void 0},t=Te.createScope("RegistrationParameters");for(let n=0;n<process.argv.length-1;n++){const i=process.argv[n],r=process.argv[++n];switch(i){case re.Port:t.debug(`port=${r}`),e.port=r;break;case re.PluginUUID:t.debug(`pluginUUID=${r}`),e.pluginUUID=r;break;case re.RegisterEvent:t.debug(`registerEvent=${r}`),e.registerEvent=r;break;case re.Info:t.debug(`info=${r}`),e.info=JSON.parse(r);break;default:n--}}const n=[],i=(e,t)=>{void 0===t&&n.push(e)};if(i(re.Port,e.port),i(re.PluginUUID,e.pluginUUID),i(re.RegisterEvent,e.registerEvent),i(re.Info,e.info),n.length>0)throw new Error(`Unable to establish a connection with Stream Deck, missing command line arguments: ${n.join(", ")}`);return e}tryEmit(e){try{const t=JSON.parse(e.data.toString());t.event?(this.logger.trace(e.data.toString()),this.emit(t.event,t)):this.logger.warn(`Received unknown message: ${e.data}`)}catch(t){this.logger.error(`Failed to parse message: ${e.data}`,t)}}};let De,Pe;function Le(){return De??=function(){const e=h(process.cwd(),"manifest.json");if(!f(e))throw new Error("Failed to read manifest.json as the file does not exist.");return JSON.parse(g(e,{encoding:"utf-8",flag:"r"}).toString())}()}class Re{#e;#t;#n;constructor(e){e instanceof Re?(this.#e=e.#e,this.#t=e.#t):Array.isArray(e)?(this.#e=()=>e.values(),this.#t=()=>e.length):e instanceof Map||e instanceof Set?(this.#e=()=>e.values(),this.#t=()=>e.size):(this.#e=e,this.#t=()=>{let e=0;for(const t of this)e++;return e})}get length(){return this.#t()}*[Symbol.iterator](){for(const e of this.#e())yield e}asIndexedPairs(){return new Re(function*(){let e=0;for(const t of this)yield[e++,t]}.bind(this))}drop(e){if(isNaN(e)||e<0)throw new RangeError("limit must be 0, or a positive number");return new Re(function*(){let t=0;for(const n of this)t++>=e&&(yield n)}.bind(this))}every(e){for(const t of this)if(!e(t))return!1;return!0}filter(e){return new Re(function*(){for(const t of this)e(t)&&(yield t)}.bind(this))}find(e){for(const t of this)if(e(t))return t}findLast(e){let t;for(const n of this)e(n)&&(t=n);return t}flatMap(e){return new Re(function*(){for(const t of this)for(const n of e(t))yield n}.bind(this))}forEach(e){for(const t of this)e(t)}includes(e){return this.some((t=>t===e))}map(e){return new Re(function*(){for(const t of this)yield e(t)}.bind(this))}next(...e){this.#n??=this.#e();const t=this.#n.next(...e);return t.done&&(this.#n=void 0),t}reduce(e,t){if(0===this.length){if(void 0===t)throw new TypeError("Reduce of empty enumerable with no initial value.");return t}let n=t;for(const t of this)n=void 0===n?t:e(n,t);return n}return(e){return this.#n=void 0,{done:!0,value:e}}some(e){for(const t of this)if(e(t))return!0;return!1}take(e){if(isNaN(e)||e<0)throw new RangeError("limit must be 0, or a positive number");return new Re(function*(){let t=0;for(const n of this)t++<e&&(yield n)}.bind(this))}throw(e){throw e}toArray(){return Array.from(this)}toJSON(){return this.toArray()}toString(){return`${this.toArray()}`}}const Ue=new Map;class Me extends Re{constructor(){super(Ue)}getActionById(e){return Ue.get(e)}}const je=new class extends Me{delete(e){Ue.delete(e)}set(e){Ue.set(e.id,e)}};class Be extends be{application;constructor(e){super(e),this.application=e.payload.application}}class Fe extends be{device;constructor(e,t){super(e),this.device=t}}class $e extends be{url;constructor(e){super(e),this.url=new Ge(e.payload.url)}}const We="streamdeck://";class Ge{fragment;href;path;query;queryParameters;constructor(e){const t=new URL(`${We}${e}`);this.fragment=t.hash.substring(1),this.href=t.href.substring(13),this.path=Ge.parsePath(this.href),this.query=t.search.substring(1),this.queryParameters=t.searchParams}static parsePath(e){const t=t=>{const n=e.indexOf(t);return n>=0?n:e.length};return e.substring(0,Math.min(t("?"),t("#")))}}class qe extends be{action;payload;constructor(e,t){super(t),this.action=e,this.payload=t.payload}}function Ve(e){return Ne.disposableOn("didReceiveSettings",(t=>{const n=je.getActionById(t.context);n&&e(new Se(n,t))}))}var ze=Object.freeze({__proto__:null,getGlobalSettings:function(){return new Promise((e=>{Ne.once("didReceiveGlobalSettings",(t=>e(t.payload.settings))),Ne.send({event:"getGlobalSettings",context:Ne.registrationParameters.pluginUUID})}))},onDidReceiveGlobalSettings:function(e){return Ne.disposableOn("didReceiveGlobalSettings",(t=>e(new ke(t))))},onDidReceiveSettings:Ve,setGlobalSettings:function(e){return Ne.send({event:"setGlobalSettings",context:Ne.registrationParameters.pluginUUID,payload:e})}});class Je{router;action;constructor(e,t){this.router=e,this.action=je.getActionById(t.context)}async fetch(e,t){return"string"==typeof e?this.router.fetch(`${_e}${e}`,t):this.router.fetch({...e,path:`${_e}${e.path}`})}sendToPropertyInspector(e){return Ne.send({event:"sendToPropertyInspector",context:this.action.id,payload:e})}}let Ye,Ke=0;function He(){return Ye}const Ze=new class extends pe{proxy;actionProvider;requests=new Map;routes=new pe;constructor(e,t){super(),this.proxy=e,this.actionProvider=t}async fetch(e,t){const n=crypto.randomUUID(),{body:i,path:r,timeout:o=ye,unidirectional:s=!1}="string"==typeof e?{body:t,path:e}:e,a=new Promise((e=>{this.requests.set(n,(t=>{408!==t.status&&clearTimeout(c),e(t)}))})),c=setTimeout((()=>this.handleResponse({__type:"response",id:n,path:r,status:408})),o);return await this.proxy({__type:"request",body:i,id:n,path:r,unidirectional:s})||this.handleResponse({__type:"response",id:n,path:r,status:406}),a}async process(e){if(fe(t=e.payload,"request")&&ge(t,"unidirectional","boolean")){const t=this.actionProvider(e);if(await this.handleRequest(t,e.payload))return;this.emit("unhandledRequest",e)}else if(function(e){return fe(e,"response")&&ge(e,"status","number")}(e.payload)&&this.handleResponse(e.payload))return;var t;this.emit("unhandledMessage",e)}route(e,t,n){return n={filter:()=>!0,...n},this.routes.disposableOn(e,(async e=>{if(n?.filter&&n.filter(e.request.action)){await e.routed();try{const n=await t(e.request,e.responder);void 0!==n&&await e.responder.send(200,n)}catch(t){throw await e.responder.send(500),t}}}))}async handleRequest(e,t){const n=new me(t,this.proxy),i={action:e,path:t.path,unidirectional:t.unidirectional,body:t.body};let r=!1;const o=this.routes.listeners(t.path);for(const e of o)await e({request:i,responder:n,routed:async()=>{i.unidirectional&&await n.send(202),r=!0}});return r?(await n.send(200),!0):(await n.send(501),!1)}handleResponse(e){const t=this.requests.get(e.id);return this.requests.delete(e.id),!!t&&(t(new ve(e)),!0)}}((async e=>{const t=He();return!!t&&(await Ne.send({event:"sendToPropertyInspector",context:t.action.id,payload:e}),!0)}),(e=>je.getActionById(e.context)));function Xe(e){return Ye?.action?.id===e.context&&Ye?.action?.manifestId===e.action&&Ye?.action?.device?.id===e.device}Ne.on("propertyInspectorDidAppear",(e=>{Xe(e)?Ke++:(Ke=1,Ye=new Je(Ze,e))})),Ne.on("propertyInspectorDidDisappear",(e=>{Xe(e)&&(Ke--,Ke<=0&&(Ye=void 0))})),Ne.on("sendToPlugin",(e=>Ze.process(e)));const Qe=new class{get current(){return He()}onDidAppear(e){return Ne.disposableOn("propertyInspectorDidAppear",(t=>{const n=je.getActionById(t.context);n&&e(new we(n,t))}))}onDidDisappear(e){return Ne.disposableOn("propertyInspectorDidDisappear",(t=>{const n=je.getActionById(t.context);n&&e(new we(n,t))}))}onSendToPlugin(e){return Ze.disposableOn("unhandledMessage",(t=>{const n=je.getActionById(t.context);n&&e(new qe(n,t))}))}registerRoute(e,t,n){return Ze.route(`${_e}${e}`,t,n)}},et=new Map;class tt extends Re{constructor(){super(et)}getDeviceById(e){return et.get(e)}}const nt=new class extends tt{set(e){et.set(e.id,e)}};class it{#i;#r;constructor(e){this.#r=e;const t=nt.getDeviceById(e.device);if(!t)throw new Error(`Failed to initialize action; device ${e.device} not found`);this.#i=t}get controllerType(){return this.#r.payload.controller}get device(){return this.#i}get id(){return this.#r.context}get manifestId(){return this.#r.action}toJSON(){return{controllerType:this.controllerType,device:this.device,id:this.id,manifestId:this.manifestId}}}class rt extends it{getSettings(){return new Promise((e=>{const t=n=>{n.context==this.id&&(e(n.payload.settings),Ne.removeListener("didReceiveSettings",t))};Ne.on("didReceiveSettings",t),Ne.send({event:"getSettings",context:this.id})}))}isDial(){return"Encoder"===this.controllerType}isKey(){return"Keypad"===this.controllerType}setSettings(e){return Ne.send({event:"setSettings",context:this.id,payload:e})}showAlert(){return Ne.send({event:"showAlert",context:this.id})}}class ot extends rt{#o;constructor(e){if(super(e),"Encoder"!==e.payload.controller)throw new Error("Unable to create DialAction; source event is not a Encoder");this.#o=Object.freeze(e.payload.coordinates)}get coordinates(){return this.#o}setFeedback(e){return Ne.send({event:"setFeedback",context:this.id,payload:e})}setFeedbackLayout(e){return Ne.send({event:"setFeedbackLayout",context:this.id,payload:{layout:e}})}setImage(e){return Ne.send({event:"setImage",context:this.id,payload:{image:e}})}setTitle(e){return this.setFeedback({title:e})}setTriggerDescription(e){return Ne.send({event:"setTriggerDescription",context:this.id,payload:e||{}})}toJSON(){return{...super.toJSON(),coordinates:this.coordinates}}}class st extends rt{#o;#r;constructor(e){if(super(e),"Keypad"!==e.payload.controller)throw new Error("Unable to create KeyAction; source event is not a Keypad");this.#o=e.payload.isInMultiAction?void 0:Object.freeze(e.payload.coordinates),this.#r=e}get coordinates(){return this.#o}isInMultiAction(){return this.#r.payload.isInMultiAction}setImage(e,t){return Ne.send({event:"setImage",context:this.id,payload:{image:e,...t}})}setState(e){return Ne.send({event:"setState",context:this.id,payload:{state:e}})}setTitle(e,t){return Ne.send({event:"setTitle",context:this.id,payload:{title:e,...t}})}showOk(){return Ne.send({event:"showOk",context:this.id})}toJSON(){return{...super.toJSON(),coordinates:this.coordinates,isInMultiAction:this.isInMultiAction()}}}const at=Le();const ct=new class extends Me{constructor(){super(),Ne.prependListener("willAppear",(e=>{const t="Encoder"===e.payload.controller?new ot(e):new st(e);je.set(t)})),Ne.prependListener("willDisappear",(e=>je.delete(e.context)))}onDialDown(e){return Ne.disposableOn("dialDown",(t=>{const n=je.getActionById(t.context);n?.isDial()&&e(new Se(n,t))}))}onDialRotate(e){return Ne.disposableOn("dialRotate",(t=>{const n=je.getActionById(t.context);n?.isDial()&&e(new Se(n,t))}))}onDialUp(e){return Ne.disposableOn("dialUp",(t=>{const n=je.getActionById(t.context);n?.isDial()&&e(new Se(n,t))}))}onKeyDown(e){return Ne.disposableOn("keyDown",(t=>{const n=je.getActionById(t.context);n?.isKey()&&e(new Se(n,t))}))}onKeyUp(e){return Ne.disposableOn("keyUp",(t=>{const n=je.getActionById(t.context);n?.isKey()&&e(new Se(n,t))}))}onTitleParametersDidChange(e){return Ne.disposableOn("titleParametersDidChange",(t=>{const n=je.getActionById(t.context);n&&e(new Se(n,t))}))}onTouchTap(e){return Ne.disposableOn("touchTap",(t=>{const n=je.getActionById(t.context);n?.isDial()&&e(new Se(n,t))}))}onWillAppear(e){return Ne.disposableOn("willAppear",(t=>{const n=je.getActionById(t.context);n&&e(new Se(n,t))}))}onWillDisappear(e){return Ne.disposableOn("willDisappear",(t=>e(new Se(new it(t),t))))}registerAction(e){if(void 0===e.manifestId)throw new Error("The action's manifestId cannot be undefined.");if(!at.Actions.some((t=>t.UUID===e.manifestId)))throw new Error(`The action's manifestId was not found within the manifest: ${e.manifestId}`);const{manifestId:t}=e,n=(n,i)=>{const r=i?.bind(e);void 0!==r&&n.bind(e)((async e=>{e.action.manifestId==t&&await r(e)}))};n(this.onDialDown,e.onDialDown),n(this.onDialUp,e.onDialUp),n(this.onDialRotate,e.onDialRotate),n(Qe.onSendToPlugin,e.onSendToPlugin),n(Ve,e.onDidReceiveSettings),n(this.onKeyDown,e.onKeyDown),n(this.onKeyUp,e.onKeyUp),n(Qe.onDidAppear,e.onPropertyInspectorDidAppear),n(Qe.onDidDisappear,e.onPropertyInspectorDidDisappear),n(this.onTitleParametersDidChange,e.onTitleParametersDidChange),n(this.onTouchTap,e.onTouchTap),n(this.onWillAppear,e.onWillAppear),n(this.onWillDisappear,e.onWillDisappear)}};class lt{#s=!1;#a;id;constructor(e,t,n){this.id=e,this.#a=t,this.#s=n,Ne.prependListener("deviceDidConnect",(e=>{e.device===this.id&&(this.#a=e.deviceInfo,this.#s=!0)})),Ne.prependListener("deviceDidDisconnect",(e=>{e.device===this.id&&(this.#s=!1)}))}get actions(){return je.filter((e=>e.device.id===this.id))}get isConnected(){return this.#s}get name(){return this.#a.name}get size(){return this.#a.size}get type(){return this.#a.type}}const ut=new class extends tt{constructor(){super(),Ne.once("connected",(e=>{e.devices.forEach((e=>nt.set(new lt(e.id,e,!1))))})),Ne.on("deviceDidConnect",(({device:e,deviceInfo:t})=>{nt.getDeviceById(e)||nt.set(new lt(e,t,!0))}))}onDeviceDidConnect(e){return Ne.disposableOn("deviceDidConnect",(t=>e(new Fe(t,this.getDeviceById(t.device)))))}onDeviceDidDisconnect(e){return Ne.disposableOn("deviceDidDisconnect",(t=>e(new Fe(t,this.getDeviceById(t.device)))))}};function ht(e){const t=u.join(process.cwd(),`${e}.json`);if(!p.existsSync(t))return null;try{const e=p.readFileSync(t,{flag:"r"})?.toString();return function(e){const t=JSON.parse(e);if(null!=t&&"object"==typeof t&&"Localization"in t)return t.Localization;throw new TypeError('Translations must be a JSON object nested under a property named "Localization"')}(e)}catch(e){return Te.error(`Failed to load translations from ${t}`,e),null}}function dt(e,t,n){const i={major:Math.floor(e),minor:e%1*10,patch:0,build:0};if(-1===t.compareTo(i))throw new Error(`[ERR_NOT_SUPPORTED]: ${n} requires Stream Deck version ${i.major}.${i.minor} or higher, but current version is ${t.major}.${t.minor}; please update Stream Deck and the "Software.MinimumVersion" in the plugin's manifest to "${i.major}.${i.minor}" or higher.`);if(-1===(Pe??=new Ee(Le().Software.MinimumVersion)).compareTo(i))throw new Error(`[ERR_NOT_SUPPORTED]: ${n} requires Stream Deck version ${i.major}.${i.minor} or higher; please update the "Software.MinimumVersion" in the plugin's manifest to "${i.major}.${i.minor}" or higher.`)}var pt=Object.freeze({__proto__:null,switchToProfile:function(e,t,n){return void 0!==n&&dt(6.5,Ne.version,"Switching to a profile page"),Ne.send({event:"switchToProfile",context:Ne.registrationParameters.pluginUUID,device:e,payload:{page:n,profile:t}})}});var ft=Object.freeze({__proto__:null,onApplicationDidLaunch:function(e){return Ne.disposableOn("applicationDidLaunch",(t=>e(new Be(t))))},onApplicationDidTerminate:function(e){return Ne.disposableOn("applicationDidTerminate",(t=>e(new Be(t))))},onDidReceiveDeepLink:function(e){return dt(6.5,Ne.version,"Receiving deep-link messages"),Ne.disposableOn("didReceiveDeepLink",(t=>e(new $e(t))))},onSystemDidWakeUp:function(e){return Ne.disposableOn("systemDidWakeUp",(t=>e(new be(t))))},openUrl:function(e){return Ne.send({event:"openUrl",payload:{url:e}})}});function gt(e){const t=e.UUID;return function(e,n){return class extends e{manifestId=t}}}class mt{manifestId;get actions(){return je.filter((e=>e.manifestId===this.manifestId))}}let yt;const _t={get actions(){return ct},get devices(){return ut},get i18n(){return yt??=new le(this.info.application.language,ht)},get info(){return Ne.registrationParameters.info},get logger(){return Te},get manifest(){return Le()},get profiles(){return pt},get settings(){return ze},get system(){return ft},get ui(){return Qe},connect:()=>Ne.connect()};function vt(e,t,n,i,r,o){function s(e){if(void 0!==e&&"function"!=typeof e)throw new TypeError("Function expected");return e}for(var a,c=i.kind,l="getter"===c?"get":"setter"===c?"set":"value",u=!t&&e?i.static?e:e.prototype:null,h=t||(u?Object.getOwnPropertyDescriptor(u,i.name):{}),d=!1,p=n.length-1;p>=0;p--){var f={};for(var g in i)f[g]="access"===g?{}:i[g];for(var g in i.access)f.access[g]=i.access[g];f.addInitializer=function(e){if(d)throw new TypeError("Cannot add initializers after decoration has completed");o.push(s(e||null))};var m=(0,n[p])("accessor"===c?{get:h.get,set:h.set}:h[l],f);if("accessor"===c){if(void 0===m)continue;if(null===m||"object"!=typeof m)throw new TypeError("Object expected");(a=s(m.get))&&(h.get=a),(a=s(m.set))&&(h.set=a),(a=s(m.init))&&r.unshift(a)}else(a=s(m))&&("field"===c?r.unshift(a):h[l]=a)}u&&Object.defineProperty(u,i.name,h),d=!0}function bt(e,t,n){for(var i=arguments.length>2,r=0;r<t.length;r++)n=i?t[r].call(e,n):t[r].call(e);return i?n:void 0}
+/**
+ * Stream Deck device types.
+ */
+var DeviceType;
+(function (DeviceType) {
+    /**
+     * Stream Deck, comprised of 15 customizable LCD keys in a 5 x 3 layout.
+     */
+    DeviceType[DeviceType["StreamDeck"] = 0] = "StreamDeck";
+    /**
+     * Stream Deck Mini, comprised of 6 customizable LCD keys in a 3 x 2 layout.
+     */
+    DeviceType[DeviceType["StreamDeckMini"] = 1] = "StreamDeckMini";
+    /**
+     * Stream Deck XL, comprised of 32 customizable LCD keys in an 8 x 4 layout.
+     */
+    DeviceType[DeviceType["StreamDeckXL"] = 2] = "StreamDeckXL";
+    /**
+     * Stream Deck Mobile, for iOS and Android.
+     */
+    DeviceType[DeviceType["StreamDeckMobile"] = 3] = "StreamDeckMobile";
+    /**
+     * Corsair G Keys, available on select Corsair keyboards.
+     */
+    DeviceType[DeviceType["CorsairGKeys"] = 4] = "CorsairGKeys";
+    /**
+     * Stream Deck Pedal, comprised of 3 customizable pedals.
+     */
+    DeviceType[DeviceType["StreamDeckPedal"] = 5] = "StreamDeckPedal";
+    /**
+     * Corsair Voyager laptop, comprising 10 buttons in a horizontal line above the keyboard.
+     */
+    DeviceType[DeviceType["CorsairVoyager"] = 6] = "CorsairVoyager";
+    /**
+     * Stream Deck +, comprised of 8 customizable LCD keys in a 4 x 2 layout, a touch strip, and 4 dials.
+     */
+    DeviceType[DeviceType["StreamDeckPlus"] = 7] = "StreamDeckPlus";
+    /**
+     * SCUF controller G keys, available on select SCUF controllers, for example SCUF Envision.
+     */
+    DeviceType[DeviceType["SCUFController"] = 8] = "SCUFController";
+    /**
+     * Stream Deck Neo, comprised of 8 customizable LCD keys in a 4 x 2 layout, an info bar, and 2 touch points for page navigation.
+     */
+    DeviceType[DeviceType["StreamDeckNeo"] = 9] = "StreamDeckNeo";
+})(DeviceType || (DeviceType = {}));
+
+/**
+ * List of available types that can be applied to {@link Bar} and {@link GBar} to determine their style.
+ */
+var BarSubType;
+(function (BarSubType) {
+    /**
+     * Rectangle bar; the bar fills from left to right, determined by the {@link Bar.value}, similar to a standard progress bar.
+     */
+    BarSubType[BarSubType["Rectangle"] = 0] = "Rectangle";
+    /**
+     * Rectangle bar; the bar fills outwards from the centre of the bar, determined by the {@link Bar.value}.
+     * @example
+     * // Value is 2, range is 1-10.
+     * // [  ███     ]
+     * @example
+     * // Value is 10, range is 1-10.
+     * // [     █████]
+     */
+    BarSubType[BarSubType["DoubleRectangle"] = 1] = "DoubleRectangle";
+    /**
+     * Trapezoid bar, represented as a right-angle triangle; the bar fills from left to right, determined by the {@link Bar.value}, similar to a volume meter.
+     */
+    BarSubType[BarSubType["Trapezoid"] = 2] = "Trapezoid";
+    /**
+     * Trapezoid bar, represented by two right-angle triangles; the bar fills outwards from the centre of the bar, determined by the {@link Bar.value}. See {@link BarSubType.DoubleRectangle}.
+     */
+    BarSubType[BarSubType["DoubleTrapezoid"] = 3] = "DoubleTrapezoid";
+    /**
+     * Rounded rectangle bar; the bar fills from left to right, determined by the {@link Bar.value}, similar to a standard progress bar.
+     */
+    BarSubType[BarSubType["Groove"] = 4] = "Groove";
+})(BarSubType || (BarSubType = {}));
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+var bufferUtil = {exports: {}};
+
+var constants;
+var hasRequiredConstants;
+
+function requireConstants () {
+	if (hasRequiredConstants) return constants;
+	hasRequiredConstants = 1;
+
+	const BINARY_TYPES = ['nodebuffer', 'arraybuffer', 'fragments'];
+	const hasBlob = typeof Blob !== 'undefined';
+
+	if (hasBlob) BINARY_TYPES.push('blob');
+
+	constants = {
+	  BINARY_TYPES,
+	  EMPTY_BUFFER: Buffer.alloc(0),
+	  GUID: '258EAFA5-E914-47DA-95CA-C5AB0DC85B11',
+	  hasBlob,
+	  kForOnEventAttribute: Symbol('kIsForOnEventAttribute'),
+	  kListener: Symbol('kListener'),
+	  kStatusCode: Symbol('status-code'),
+	  kWebSocket: Symbol('websocket'),
+	  NOOP: () => {}
+	};
+	return constants;
+}
+
+var hasRequiredBufferUtil;
+
+function requireBufferUtil () {
+	if (hasRequiredBufferUtil) return bufferUtil.exports;
+	hasRequiredBufferUtil = 1;
+
+	const { EMPTY_BUFFER } = requireConstants();
+
+	const FastBuffer = Buffer[Symbol.species];
+
+	/**
+	 * Merges an array of buffers into a new buffer.
+	 *
+	 * @param {Buffer[]} list The array of buffers to concat
+	 * @param {Number} totalLength The total length of buffers in the list
+	 * @return {Buffer} The resulting buffer
+	 * @public
+	 */
+	function concat(list, totalLength) {
+	  if (list.length === 0) return EMPTY_BUFFER;
+	  if (list.length === 1) return list[0];
+
+	  const target = Buffer.allocUnsafe(totalLength);
+	  let offset = 0;
+
+	  for (let i = 0; i < list.length; i++) {
+	    const buf = list[i];
+	    target.set(buf, offset);
+	    offset += buf.length;
+	  }
+
+	  if (offset < totalLength) {
+	    return new FastBuffer(target.buffer, target.byteOffset, offset);
+	  }
+
+	  return target;
+	}
+
+	/**
+	 * Masks a buffer using the given mask.
+	 *
+	 * @param {Buffer} source The buffer to mask
+	 * @param {Buffer} mask The mask to use
+	 * @param {Buffer} output The buffer where to store the result
+	 * @param {Number} offset The offset at which to start writing
+	 * @param {Number} length The number of bytes to mask.
+	 * @public
+	 */
+	function _mask(source, mask, output, offset, length) {
+	  for (let i = 0; i < length; i++) {
+	    output[offset + i] = source[i] ^ mask[i & 3];
+	  }
+	}
+
+	/**
+	 * Unmasks a buffer using the given mask.
+	 *
+	 * @param {Buffer} buffer The buffer to unmask
+	 * @param {Buffer} mask The mask to use
+	 * @public
+	 */
+	function _unmask(buffer, mask) {
+	  for (let i = 0; i < buffer.length; i++) {
+	    buffer[i] ^= mask[i & 3];
+	  }
+	}
+
+	/**
+	 * Converts a buffer to an `ArrayBuffer`.
+	 *
+	 * @param {Buffer} buf The buffer to convert
+	 * @return {ArrayBuffer} Converted buffer
+	 * @public
+	 */
+	function toArrayBuffer(buf) {
+	  if (buf.length === buf.buffer.byteLength) {
+	    return buf.buffer;
+	  }
+
+	  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.length);
+	}
+
+	/**
+	 * Converts `data` to a `Buffer`.
+	 *
+	 * @param {*} data The data to convert
+	 * @return {Buffer} The buffer
+	 * @throws {TypeError}
+	 * @public
+	 */
+	function toBuffer(data) {
+	  toBuffer.readOnly = true;
+
+	  if (Buffer.isBuffer(data)) return data;
+
+	  let buf;
+
+	  if (data instanceof ArrayBuffer) {
+	    buf = new FastBuffer(data);
+	  } else if (ArrayBuffer.isView(data)) {
+	    buf = new FastBuffer(data.buffer, data.byteOffset, data.byteLength);
+	  } else {
+	    buf = Buffer.from(data);
+	    toBuffer.readOnly = false;
+	  }
+
+	  return buf;
+	}
+
+	bufferUtil.exports = {
+	  concat,
+	  mask: _mask,
+	  toArrayBuffer,
+	  toBuffer,
+	  unmask: _unmask
+	};
+
+	/* istanbul ignore else  */
+	if (!process.env.WS_NO_BUFFER_UTIL) {
+	  try {
+	    const bufferUtil$1 = require('bufferutil');
+
+	    bufferUtil.exports.mask = function (source, mask, output, offset, length) {
+	      if (length < 48) _mask(source, mask, output, offset, length);
+	      else bufferUtil$1.mask(source, mask, output, offset, length);
+	    };
+
+	    bufferUtil.exports.unmask = function (buffer, mask) {
+	      if (buffer.length < 32) _unmask(buffer, mask);
+	      else bufferUtil$1.unmask(buffer, mask);
+	    };
+	  } catch (e) {
+	    // Continue regardless of the error.
+	  }
+	}
+	return bufferUtil.exports;
+}
+
+var limiter;
+var hasRequiredLimiter;
+
+function requireLimiter () {
+	if (hasRequiredLimiter) return limiter;
+	hasRequiredLimiter = 1;
+
+	const kDone = Symbol('kDone');
+	const kRun = Symbol('kRun');
+
+	/**
+	 * A very simple job queue with adjustable concurrency. Adapted from
+	 * https://github.com/STRML/async-limiter
+	 */
+	class Limiter {
+	  /**
+	   * Creates a new `Limiter`.
+	   *
+	   * @param {Number} [concurrency=Infinity] The maximum number of jobs allowed
+	   *     to run concurrently
+	   */
+	  constructor(concurrency) {
+	    this[kDone] = () => {
+	      this.pending--;
+	      this[kRun]();
+	    };
+	    this.concurrency = concurrency || Infinity;
+	    this.jobs = [];
+	    this.pending = 0;
+	  }
+
+	  /**
+	   * Adds a job to the queue.
+	   *
+	   * @param {Function} job The job to run
+	   * @public
+	   */
+	  add(job) {
+	    this.jobs.push(job);
+	    this[kRun]();
+	  }
+
+	  /**
+	   * Removes a job from the queue and runs it if possible.
+	   *
+	   * @private
+	   */
+	  [kRun]() {
+	    if (this.pending === this.concurrency) return;
+
+	    if (this.jobs.length) {
+	      const job = this.jobs.shift();
+
+	      this.pending++;
+	      job(this[kDone]);
+	    }
+	  }
+	}
+
+	limiter = Limiter;
+	return limiter;
+}
+
+var permessageDeflate;
+var hasRequiredPermessageDeflate;
+
+function requirePermessageDeflate () {
+	if (hasRequiredPermessageDeflate) return permessageDeflate;
+	hasRequiredPermessageDeflate = 1;
+
+	const zlib = require$$0;
+
+	const bufferUtil = requireBufferUtil();
+	const Limiter = requireLimiter();
+	const { kStatusCode } = requireConstants();
+
+	const FastBuffer = Buffer[Symbol.species];
+	const TRAILER = Buffer.from([0x00, 0x00, 0xff, 0xff]);
+	const kPerMessageDeflate = Symbol('permessage-deflate');
+	const kTotalLength = Symbol('total-length');
+	const kCallback = Symbol('callback');
+	const kBuffers = Symbol('buffers');
+	const kError = Symbol('error');
+
+	//
+	// We limit zlib concurrency, which prevents severe memory fragmentation
+	// as documented in https://github.com/nodejs/node/issues/8871#issuecomment-250915913
+	// and https://github.com/websockets/ws/issues/1202
+	//
+	// Intentionally global; it's the global thread pool that's an issue.
+	//
+	let zlibLimiter;
+
+	/**
+	 * permessage-deflate implementation.
+	 */
+	class PerMessageDeflate {
+	  /**
+	   * Creates a PerMessageDeflate instance.
+	   *
+	   * @param {Object} [options] Configuration options
+	   * @param {(Boolean|Number)} [options.clientMaxWindowBits] Advertise support
+	   *     for, or request, a custom client window size
+	   * @param {Boolean} [options.clientNoContextTakeover=false] Advertise/
+	   *     acknowledge disabling of client context takeover
+	   * @param {Number} [options.concurrencyLimit=10] The number of concurrent
+	   *     calls to zlib
+	   * @param {(Boolean|Number)} [options.serverMaxWindowBits] Request/confirm the
+	   *     use of a custom server window size
+	   * @param {Boolean} [options.serverNoContextTakeover=false] Request/accept
+	   *     disabling of server context takeover
+	   * @param {Number} [options.threshold=1024] Size (in bytes) below which
+	   *     messages should not be compressed if context takeover is disabled
+	   * @param {Object} [options.zlibDeflateOptions] Options to pass to zlib on
+	   *     deflate
+	   * @param {Object} [options.zlibInflateOptions] Options to pass to zlib on
+	   *     inflate
+	   * @param {Boolean} [isServer=false] Create the instance in either server or
+	   *     client mode
+	   * @param {Number} [maxPayload=0] The maximum allowed message length
+	   */
+	  constructor(options, isServer, maxPayload) {
+	    this._maxPayload = maxPayload | 0;
+	    this._options = options || {};
+	    this._threshold =
+	      this._options.threshold !== undefined ? this._options.threshold : 1024;
+	    this._isServer = !!isServer;
+	    this._deflate = null;
+	    this._inflate = null;
+
+	    this.params = null;
+
+	    if (!zlibLimiter) {
+	      const concurrency =
+	        this._options.concurrencyLimit !== undefined
+	          ? this._options.concurrencyLimit
+	          : 10;
+	      zlibLimiter = new Limiter(concurrency);
+	    }
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  static get extensionName() {
+	    return 'permessage-deflate';
+	  }
+
+	  /**
+	   * Create an extension negotiation offer.
+	   *
+	   * @return {Object} Extension parameters
+	   * @public
+	   */
+	  offer() {
+	    const params = {};
+
+	    if (this._options.serverNoContextTakeover) {
+	      params.server_no_context_takeover = true;
+	    }
+	    if (this._options.clientNoContextTakeover) {
+	      params.client_no_context_takeover = true;
+	    }
+	    if (this._options.serverMaxWindowBits) {
+	      params.server_max_window_bits = this._options.serverMaxWindowBits;
+	    }
+	    if (this._options.clientMaxWindowBits) {
+	      params.client_max_window_bits = this._options.clientMaxWindowBits;
+	    } else if (this._options.clientMaxWindowBits == null) {
+	      params.client_max_window_bits = true;
+	    }
+
+	    return params;
+	  }
+
+	  /**
+	   * Accept an extension negotiation offer/response.
+	   *
+	   * @param {Array} configurations The extension negotiation offers/reponse
+	   * @return {Object} Accepted configuration
+	   * @public
+	   */
+	  accept(configurations) {
+	    configurations = this.normalizeParams(configurations);
+
+	    this.params = this._isServer
+	      ? this.acceptAsServer(configurations)
+	      : this.acceptAsClient(configurations);
+
+	    return this.params;
+	  }
+
+	  /**
+	   * Releases all resources used by the extension.
+	   *
+	   * @public
+	   */
+	  cleanup() {
+	    if (this._inflate) {
+	      this._inflate.close();
+	      this._inflate = null;
+	    }
+
+	    if (this._deflate) {
+	      const callback = this._deflate[kCallback];
+
+	      this._deflate.close();
+	      this._deflate = null;
+
+	      if (callback) {
+	        callback(
+	          new Error(
+	            'The deflate stream was closed while data was being processed'
+	          )
+	        );
+	      }
+	    }
+	  }
+
+	  /**
+	   *  Accept an extension negotiation offer.
+	   *
+	   * @param {Array} offers The extension negotiation offers
+	   * @return {Object} Accepted configuration
+	   * @private
+	   */
+	  acceptAsServer(offers) {
+	    const opts = this._options;
+	    const accepted = offers.find((params) => {
+	      if (
+	        (opts.serverNoContextTakeover === false &&
+	          params.server_no_context_takeover) ||
+	        (params.server_max_window_bits &&
+	          (opts.serverMaxWindowBits === false ||
+	            (typeof opts.serverMaxWindowBits === 'number' &&
+	              opts.serverMaxWindowBits > params.server_max_window_bits))) ||
+	        (typeof opts.clientMaxWindowBits === 'number' &&
+	          !params.client_max_window_bits)
+	      ) {
+	        return false;
+	      }
+
+	      return true;
+	    });
+
+	    if (!accepted) {
+	      throw new Error('None of the extension offers can be accepted');
+	    }
+
+	    if (opts.serverNoContextTakeover) {
+	      accepted.server_no_context_takeover = true;
+	    }
+	    if (opts.clientNoContextTakeover) {
+	      accepted.client_no_context_takeover = true;
+	    }
+	    if (typeof opts.serverMaxWindowBits === 'number') {
+	      accepted.server_max_window_bits = opts.serverMaxWindowBits;
+	    }
+	    if (typeof opts.clientMaxWindowBits === 'number') {
+	      accepted.client_max_window_bits = opts.clientMaxWindowBits;
+	    } else if (
+	      accepted.client_max_window_bits === true ||
+	      opts.clientMaxWindowBits === false
+	    ) {
+	      delete accepted.client_max_window_bits;
+	    }
+
+	    return accepted;
+	  }
+
+	  /**
+	   * Accept the extension negotiation response.
+	   *
+	   * @param {Array} response The extension negotiation response
+	   * @return {Object} Accepted configuration
+	   * @private
+	   */
+	  acceptAsClient(response) {
+	    const params = response[0];
+
+	    if (
+	      this._options.clientNoContextTakeover === false &&
+	      params.client_no_context_takeover
+	    ) {
+	      throw new Error('Unexpected parameter "client_no_context_takeover"');
+	    }
+
+	    if (!params.client_max_window_bits) {
+	      if (typeof this._options.clientMaxWindowBits === 'number') {
+	        params.client_max_window_bits = this._options.clientMaxWindowBits;
+	      }
+	    } else if (
+	      this._options.clientMaxWindowBits === false ||
+	      (typeof this._options.clientMaxWindowBits === 'number' &&
+	        params.client_max_window_bits > this._options.clientMaxWindowBits)
+	    ) {
+	      throw new Error(
+	        'Unexpected or invalid parameter "client_max_window_bits"'
+	      );
+	    }
+
+	    return params;
+	  }
+
+	  /**
+	   * Normalize parameters.
+	   *
+	   * @param {Array} configurations The extension negotiation offers/reponse
+	   * @return {Array} The offers/response with normalized parameters
+	   * @private
+	   */
+	  normalizeParams(configurations) {
+	    configurations.forEach((params) => {
+	      Object.keys(params).forEach((key) => {
+	        let value = params[key];
+
+	        if (value.length > 1) {
+	          throw new Error(`Parameter "${key}" must have only a single value`);
+	        }
+
+	        value = value[0];
+
+	        if (key === 'client_max_window_bits') {
+	          if (value !== true) {
+	            const num = +value;
+	            if (!Number.isInteger(num) || num < 8 || num > 15) {
+	              throw new TypeError(
+	                `Invalid value for parameter "${key}": ${value}`
+	              );
+	            }
+	            value = num;
+	          } else if (!this._isServer) {
+	            throw new TypeError(
+	              `Invalid value for parameter "${key}": ${value}`
+	            );
+	          }
+	        } else if (key === 'server_max_window_bits') {
+	          const num = +value;
+	          if (!Number.isInteger(num) || num < 8 || num > 15) {
+	            throw new TypeError(
+	              `Invalid value for parameter "${key}": ${value}`
+	            );
+	          }
+	          value = num;
+	        } else if (
+	          key === 'client_no_context_takeover' ||
+	          key === 'server_no_context_takeover'
+	        ) {
+	          if (value !== true) {
+	            throw new TypeError(
+	              `Invalid value for parameter "${key}": ${value}`
+	            );
+	          }
+	        } else {
+	          throw new Error(`Unknown parameter "${key}"`);
+	        }
+
+	        params[key] = value;
+	      });
+	    });
+
+	    return configurations;
+	  }
+
+	  /**
+	   * Decompress data. Concurrency limited.
+	   *
+	   * @param {Buffer} data Compressed data
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @public
+	   */
+	  decompress(data, fin, callback) {
+	    zlibLimiter.add((done) => {
+	      this._decompress(data, fin, (err, result) => {
+	        done();
+	        callback(err, result);
+	      });
+	    });
+	  }
+
+	  /**
+	   * Compress data. Concurrency limited.
+	   *
+	   * @param {(Buffer|String)} data Data to compress
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @public
+	   */
+	  compress(data, fin, callback) {
+	    zlibLimiter.add((done) => {
+	      this._compress(data, fin, (err, result) => {
+	        done();
+	        callback(err, result);
+	      });
+	    });
+	  }
+
+	  /**
+	   * Decompress data.
+	   *
+	   * @param {Buffer} data Compressed data
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @private
+	   */
+	  _decompress(data, fin, callback) {
+	    const endpoint = this._isServer ? 'client' : 'server';
+
+	    if (!this._inflate) {
+	      const key = `${endpoint}_max_window_bits`;
+	      const windowBits =
+	        typeof this.params[key] !== 'number'
+	          ? zlib.Z_DEFAULT_WINDOWBITS
+	          : this.params[key];
+
+	      this._inflate = zlib.createInflateRaw({
+	        ...this._options.zlibInflateOptions,
+	        windowBits
+	      });
+	      this._inflate[kPerMessageDeflate] = this;
+	      this._inflate[kTotalLength] = 0;
+	      this._inflate[kBuffers] = [];
+	      this._inflate.on('error', inflateOnError);
+	      this._inflate.on('data', inflateOnData);
+	    }
+
+	    this._inflate[kCallback] = callback;
+
+	    this._inflate.write(data);
+	    if (fin) this._inflate.write(TRAILER);
+
+	    this._inflate.flush(() => {
+	      const err = this._inflate[kError];
+
+	      if (err) {
+	        this._inflate.close();
+	        this._inflate = null;
+	        callback(err);
+	        return;
+	      }
+
+	      const data = bufferUtil.concat(
+	        this._inflate[kBuffers],
+	        this._inflate[kTotalLength]
+	      );
+
+	      if (this._inflate._readableState.endEmitted) {
+	        this._inflate.close();
+	        this._inflate = null;
+	      } else {
+	        this._inflate[kTotalLength] = 0;
+	        this._inflate[kBuffers] = [];
+
+	        if (fin && this.params[`${endpoint}_no_context_takeover`]) {
+	          this._inflate.reset();
+	        }
+	      }
+
+	      callback(null, data);
+	    });
+	  }
+
+	  /**
+	   * Compress data.
+	   *
+	   * @param {(Buffer|String)} data Data to compress
+	   * @param {Boolean} fin Specifies whether or not this is the last fragment
+	   * @param {Function} callback Callback
+	   * @private
+	   */
+	  _compress(data, fin, callback) {
+	    const endpoint = this._isServer ? 'server' : 'client';
+
+	    if (!this._deflate) {
+	      const key = `${endpoint}_max_window_bits`;
+	      const windowBits =
+	        typeof this.params[key] !== 'number'
+	          ? zlib.Z_DEFAULT_WINDOWBITS
+	          : this.params[key];
+
+	      this._deflate = zlib.createDeflateRaw({
+	        ...this._options.zlibDeflateOptions,
+	        windowBits
+	      });
+
+	      this._deflate[kTotalLength] = 0;
+	      this._deflate[kBuffers] = [];
+
+	      this._deflate.on('data', deflateOnData);
+	    }
+
+	    this._deflate[kCallback] = callback;
+
+	    this._deflate.write(data);
+	    this._deflate.flush(zlib.Z_SYNC_FLUSH, () => {
+	      if (!this._deflate) {
+	        //
+	        // The deflate stream was closed while data was being processed.
+	        //
+	        return;
+	      }
+
+	      let data = bufferUtil.concat(
+	        this._deflate[kBuffers],
+	        this._deflate[kTotalLength]
+	      );
+
+	      if (fin) {
+	        data = new FastBuffer(data.buffer, data.byteOffset, data.length - 4);
+	      }
+
+	      //
+	      // Ensure that the callback will not be called again in
+	      // `PerMessageDeflate#cleanup()`.
+	      //
+	      this._deflate[kCallback] = null;
+
+	      this._deflate[kTotalLength] = 0;
+	      this._deflate[kBuffers] = [];
+
+	      if (fin && this.params[`${endpoint}_no_context_takeover`]) {
+	        this._deflate.reset();
+	      }
+
+	      callback(null, data);
+	    });
+	  }
+	}
+
+	permessageDeflate = PerMessageDeflate;
+
+	/**
+	 * The listener of the `zlib.DeflateRaw` stream `'data'` event.
+	 *
+	 * @param {Buffer} chunk A chunk of data
+	 * @private
+	 */
+	function deflateOnData(chunk) {
+	  this[kBuffers].push(chunk);
+	  this[kTotalLength] += chunk.length;
+	}
+
+	/**
+	 * The listener of the `zlib.InflateRaw` stream `'data'` event.
+	 *
+	 * @param {Buffer} chunk A chunk of data
+	 * @private
+	 */
+	function inflateOnData(chunk) {
+	  this[kTotalLength] += chunk.length;
+
+	  if (
+	    this[kPerMessageDeflate]._maxPayload < 1 ||
+	    this[kTotalLength] <= this[kPerMessageDeflate]._maxPayload
+	  ) {
+	    this[kBuffers].push(chunk);
+	    return;
+	  }
+
+	  this[kError] = new RangeError('Max payload size exceeded');
+	  this[kError].code = 'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH';
+	  this[kError][kStatusCode] = 1009;
+	  this.removeListener('data', inflateOnData);
+	  this.reset();
+	}
+
+	/**
+	 * The listener of the `zlib.InflateRaw` stream `'error'` event.
+	 *
+	 * @param {Error} err The emitted error
+	 * @private
+	 */
+	function inflateOnError(err) {
+	  //
+	  // There is no need to call `Zlib#close()` as the handle is automatically
+	  // closed when an error is emitted.
+	  //
+	  this[kPerMessageDeflate]._inflate = null;
+	  err[kStatusCode] = 1007;
+	  this[kCallback](err);
+	}
+	return permessageDeflate;
+}
+
+var validation = {exports: {}};
+
+var hasRequiredValidation;
+
+function requireValidation () {
+	if (hasRequiredValidation) return validation.exports;
+	hasRequiredValidation = 1;
+
+	const { isUtf8 } = require$$0$1;
+
+	const { hasBlob } = requireConstants();
+
+	//
+	// Allowed token characters:
+	//
+	// '!', '#', '$', '%', '&', ''', '*', '+', '-',
+	// '.', 0-9, A-Z, '^', '_', '`', a-z, '|', '~'
+	//
+	// tokenChars[32] === 0 // ' '
+	// tokenChars[33] === 1 // '!'
+	// tokenChars[34] === 0 // '"'
+	// ...
+	//
+	// prettier-ignore
+	const tokenChars = [
+	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0 - 15
+	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16 - 31
+	  0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, // 32 - 47
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, // 48 - 63
+	  0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 64 - 79
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, // 80 - 95
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 96 - 111
+	  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0 // 112 - 127
+	];
+
+	/**
+	 * Checks if a status code is allowed in a close frame.
+	 *
+	 * @param {Number} code The status code
+	 * @return {Boolean} `true` if the status code is valid, else `false`
+	 * @public
+	 */
+	function isValidStatusCode(code) {
+	  return (
+	    (code >= 1000 &&
+	      code <= 1014 &&
+	      code !== 1004 &&
+	      code !== 1005 &&
+	      code !== 1006) ||
+	    (code >= 3000 && code <= 4999)
+	  );
+	}
+
+	/**
+	 * Checks if a given buffer contains only correct UTF-8.
+	 * Ported from https://www.cl.cam.ac.uk/%7Emgk25/ucs/utf8_check.c by
+	 * Markus Kuhn.
+	 *
+	 * @param {Buffer} buf The buffer to check
+	 * @return {Boolean} `true` if `buf` contains only correct UTF-8, else `false`
+	 * @public
+	 */
+	function _isValidUTF8(buf) {
+	  const len = buf.length;
+	  let i = 0;
+
+	  while (i < len) {
+	    if ((buf[i] & 0x80) === 0) {
+	      // 0xxxxxxx
+	      i++;
+	    } else if ((buf[i] & 0xe0) === 0xc0) {
+	      // 110xxxxx 10xxxxxx
+	      if (
+	        i + 1 === len ||
+	        (buf[i + 1] & 0xc0) !== 0x80 ||
+	        (buf[i] & 0xfe) === 0xc0 // Overlong
+	      ) {
+	        return false;
+	      }
+
+	      i += 2;
+	    } else if ((buf[i] & 0xf0) === 0xe0) {
+	      // 1110xxxx 10xxxxxx 10xxxxxx
+	      if (
+	        i + 2 >= len ||
+	        (buf[i + 1] & 0xc0) !== 0x80 ||
+	        (buf[i + 2] & 0xc0) !== 0x80 ||
+	        (buf[i] === 0xe0 && (buf[i + 1] & 0xe0) === 0x80) || // Overlong
+	        (buf[i] === 0xed && (buf[i + 1] & 0xe0) === 0xa0) // Surrogate (U+D800 - U+DFFF)
+	      ) {
+	        return false;
+	      }
+
+	      i += 3;
+	    } else if ((buf[i] & 0xf8) === 0xf0) {
+	      // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+	      if (
+	        i + 3 >= len ||
+	        (buf[i + 1] & 0xc0) !== 0x80 ||
+	        (buf[i + 2] & 0xc0) !== 0x80 ||
+	        (buf[i + 3] & 0xc0) !== 0x80 ||
+	        (buf[i] === 0xf0 && (buf[i + 1] & 0xf0) === 0x80) || // Overlong
+	        (buf[i] === 0xf4 && buf[i + 1] > 0x8f) ||
+	        buf[i] > 0xf4 // > U+10FFFF
+	      ) {
+	        return false;
+	      }
+
+	      i += 4;
+	    } else {
+	      return false;
+	    }
+	  }
+
+	  return true;
+	}
+
+	/**
+	 * Determines whether a value is a `Blob`.
+	 *
+	 * @param {*} value The value to be tested
+	 * @return {Boolean} `true` if `value` is a `Blob`, else `false`
+	 * @private
+	 */
+	function isBlob(value) {
+	  return (
+	    hasBlob &&
+	    typeof value === 'object' &&
+	    typeof value.arrayBuffer === 'function' &&
+	    typeof value.type === 'string' &&
+	    typeof value.stream === 'function' &&
+	    (value[Symbol.toStringTag] === 'Blob' ||
+	      value[Symbol.toStringTag] === 'File')
+	  );
+	}
+
+	validation.exports = {
+	  isBlob,
+	  isValidStatusCode,
+	  isValidUTF8: _isValidUTF8,
+	  tokenChars
+	};
+
+	if (isUtf8) {
+	  validation.exports.isValidUTF8 = function (buf) {
+	    return buf.length < 24 ? _isValidUTF8(buf) : isUtf8(buf);
+	  };
+	} /* istanbul ignore else  */ else if (!process.env.WS_NO_UTF_8_VALIDATE) {
+	  try {
+	    const isValidUTF8 = require('utf-8-validate');
+
+	    validation.exports.isValidUTF8 = function (buf) {
+	      return buf.length < 32 ? _isValidUTF8(buf) : isValidUTF8(buf);
+	    };
+	  } catch (e) {
+	    // Continue regardless of the error.
+	  }
+	}
+	return validation.exports;
+}
+
+var receiver;
+var hasRequiredReceiver;
+
+function requireReceiver () {
+	if (hasRequiredReceiver) return receiver;
+	hasRequiredReceiver = 1;
+
+	const { Writable } = require$$0$2;
+
+	const PerMessageDeflate = requirePermessageDeflate();
+	const {
+	  BINARY_TYPES,
+	  EMPTY_BUFFER,
+	  kStatusCode,
+	  kWebSocket
+	} = requireConstants();
+	const { concat, toArrayBuffer, unmask } = requireBufferUtil();
+	const { isValidStatusCode, isValidUTF8 } = requireValidation();
+
+	const FastBuffer = Buffer[Symbol.species];
+
+	const GET_INFO = 0;
+	const GET_PAYLOAD_LENGTH_16 = 1;
+	const GET_PAYLOAD_LENGTH_64 = 2;
+	const GET_MASK = 3;
+	const GET_DATA = 4;
+	const INFLATING = 5;
+	const DEFER_EVENT = 6;
+
+	/**
+	 * HyBi Receiver implementation.
+	 *
+	 * @extends Writable
+	 */
+	class Receiver extends Writable {
+	  /**
+	   * Creates a Receiver instance.
+	   *
+	   * @param {Object} [options] Options object
+	   * @param {Boolean} [options.allowSynchronousEvents=true] Specifies whether
+	   *     any of the `'message'`, `'ping'`, and `'pong'` events can be emitted
+	   *     multiple times in the same tick
+	   * @param {String} [options.binaryType=nodebuffer] The type for binary data
+	   * @param {Object} [options.extensions] An object containing the negotiated
+	   *     extensions
+	   * @param {Boolean} [options.isServer=false] Specifies whether to operate in
+	   *     client or server mode
+	   * @param {Number} [options.maxPayload=0] The maximum allowed message length
+	   * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
+	   *     not to skip UTF-8 validation for text and close messages
+	   */
+	  constructor(options = {}) {
+	    super();
+
+	    this._allowSynchronousEvents =
+	      options.allowSynchronousEvents !== undefined
+	        ? options.allowSynchronousEvents
+	        : true;
+	    this._binaryType = options.binaryType || BINARY_TYPES[0];
+	    this._extensions = options.extensions || {};
+	    this._isServer = !!options.isServer;
+	    this._maxPayload = options.maxPayload | 0;
+	    this._skipUTF8Validation = !!options.skipUTF8Validation;
+	    this[kWebSocket] = undefined;
+
+	    this._bufferedBytes = 0;
+	    this._buffers = [];
+
+	    this._compressed = false;
+	    this._payloadLength = 0;
+	    this._mask = undefined;
+	    this._fragmented = 0;
+	    this._masked = false;
+	    this._fin = false;
+	    this._opcode = 0;
+
+	    this._totalPayloadLength = 0;
+	    this._messageLength = 0;
+	    this._fragments = [];
+
+	    this._errored = false;
+	    this._loop = false;
+	    this._state = GET_INFO;
+	  }
+
+	  /**
+	   * Implements `Writable.prototype._write()`.
+	   *
+	   * @param {Buffer} chunk The chunk of data to write
+	   * @param {String} encoding The character encoding of `chunk`
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  _write(chunk, encoding, cb) {
+	    if (this._opcode === 0x08 && this._state == GET_INFO) return cb();
+
+	    this._bufferedBytes += chunk.length;
+	    this._buffers.push(chunk);
+	    this.startLoop(cb);
+	  }
+
+	  /**
+	   * Consumes `n` bytes from the buffered data.
+	   *
+	   * @param {Number} n The number of bytes to consume
+	   * @return {Buffer} The consumed bytes
+	   * @private
+	   */
+	  consume(n) {
+	    this._bufferedBytes -= n;
+
+	    if (n === this._buffers[0].length) return this._buffers.shift();
+
+	    if (n < this._buffers[0].length) {
+	      const buf = this._buffers[0];
+	      this._buffers[0] = new FastBuffer(
+	        buf.buffer,
+	        buf.byteOffset + n,
+	        buf.length - n
+	      );
+
+	      return new FastBuffer(buf.buffer, buf.byteOffset, n);
+	    }
+
+	    const dst = Buffer.allocUnsafe(n);
+
+	    do {
+	      const buf = this._buffers[0];
+	      const offset = dst.length - n;
+
+	      if (n >= buf.length) {
+	        dst.set(this._buffers.shift(), offset);
+	      } else {
+	        dst.set(new Uint8Array(buf.buffer, buf.byteOffset, n), offset);
+	        this._buffers[0] = new FastBuffer(
+	          buf.buffer,
+	          buf.byteOffset + n,
+	          buf.length - n
+	        );
+	      }
+
+	      n -= buf.length;
+	    } while (n > 0);
+
+	    return dst;
+	  }
+
+	  /**
+	   * Starts the parsing loop.
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  startLoop(cb) {
+	    this._loop = true;
+
+	    do {
+	      switch (this._state) {
+	        case GET_INFO:
+	          this.getInfo(cb);
+	          break;
+	        case GET_PAYLOAD_LENGTH_16:
+	          this.getPayloadLength16(cb);
+	          break;
+	        case GET_PAYLOAD_LENGTH_64:
+	          this.getPayloadLength64(cb);
+	          break;
+	        case GET_MASK:
+	          this.getMask();
+	          break;
+	        case GET_DATA:
+	          this.getData(cb);
+	          break;
+	        case INFLATING:
+	        case DEFER_EVENT:
+	          this._loop = false;
+	          return;
+	      }
+	    } while (this._loop);
+
+	    if (!this._errored) cb();
+	  }
+
+	  /**
+	   * Reads the first two bytes of a frame.
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  getInfo(cb) {
+	    if (this._bufferedBytes < 2) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    const buf = this.consume(2);
+
+	    if ((buf[0] & 0x30) !== 0x00) {
+	      const error = this.createError(
+	        RangeError,
+	        'RSV2 and RSV3 must be clear',
+	        true,
+	        1002,
+	        'WS_ERR_UNEXPECTED_RSV_2_3'
+	      );
+
+	      cb(error);
+	      return;
+	    }
+
+	    const compressed = (buf[0] & 0x40) === 0x40;
+
+	    if (compressed && !this._extensions[PerMessageDeflate.extensionName]) {
+	      const error = this.createError(
+	        RangeError,
+	        'RSV1 must be clear',
+	        true,
+	        1002,
+	        'WS_ERR_UNEXPECTED_RSV_1'
+	      );
+
+	      cb(error);
+	      return;
+	    }
+
+	    this._fin = (buf[0] & 0x80) === 0x80;
+	    this._opcode = buf[0] & 0x0f;
+	    this._payloadLength = buf[1] & 0x7f;
+
+	    if (this._opcode === 0x00) {
+	      if (compressed) {
+	        const error = this.createError(
+	          RangeError,
+	          'RSV1 must be clear',
+	          true,
+	          1002,
+	          'WS_ERR_UNEXPECTED_RSV_1'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+
+	      if (!this._fragmented) {
+	        const error = this.createError(
+	          RangeError,
+	          'invalid opcode 0',
+	          true,
+	          1002,
+	          'WS_ERR_INVALID_OPCODE'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+
+	      this._opcode = this._fragmented;
+	    } else if (this._opcode === 0x01 || this._opcode === 0x02) {
+	      if (this._fragmented) {
+	        const error = this.createError(
+	          RangeError,
+	          `invalid opcode ${this._opcode}`,
+	          true,
+	          1002,
+	          'WS_ERR_INVALID_OPCODE'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+
+	      this._compressed = compressed;
+	    } else if (this._opcode > 0x07 && this._opcode < 0x0b) {
+	      if (!this._fin) {
+	        const error = this.createError(
+	          RangeError,
+	          'FIN must be set',
+	          true,
+	          1002,
+	          'WS_ERR_EXPECTED_FIN'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+
+	      if (compressed) {
+	        const error = this.createError(
+	          RangeError,
+	          'RSV1 must be clear',
+	          true,
+	          1002,
+	          'WS_ERR_UNEXPECTED_RSV_1'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+
+	      if (
+	        this._payloadLength > 0x7d ||
+	        (this._opcode === 0x08 && this._payloadLength === 1)
+	      ) {
+	        const error = this.createError(
+	          RangeError,
+	          `invalid payload length ${this._payloadLength}`,
+	          true,
+	          1002,
+	          'WS_ERR_INVALID_CONTROL_PAYLOAD_LENGTH'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+	    } else {
+	      const error = this.createError(
+	        RangeError,
+	        `invalid opcode ${this._opcode}`,
+	        true,
+	        1002,
+	        'WS_ERR_INVALID_OPCODE'
+	      );
+
+	      cb(error);
+	      return;
+	    }
+
+	    if (!this._fin && !this._fragmented) this._fragmented = this._opcode;
+	    this._masked = (buf[1] & 0x80) === 0x80;
+
+	    if (this._isServer) {
+	      if (!this._masked) {
+	        const error = this.createError(
+	          RangeError,
+	          'MASK must be set',
+	          true,
+	          1002,
+	          'WS_ERR_EXPECTED_MASK'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+	    } else if (this._masked) {
+	      const error = this.createError(
+	        RangeError,
+	        'MASK must be clear',
+	        true,
+	        1002,
+	        'WS_ERR_UNEXPECTED_MASK'
+	      );
+
+	      cb(error);
+	      return;
+	    }
+
+	    if (this._payloadLength === 126) this._state = GET_PAYLOAD_LENGTH_16;
+	    else if (this._payloadLength === 127) this._state = GET_PAYLOAD_LENGTH_64;
+	    else this.haveLength(cb);
+	  }
+
+	  /**
+	   * Gets extended payload length (7+16).
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  getPayloadLength16(cb) {
+	    if (this._bufferedBytes < 2) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    this._payloadLength = this.consume(2).readUInt16BE(0);
+	    this.haveLength(cb);
+	  }
+
+	  /**
+	   * Gets extended payload length (7+64).
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  getPayloadLength64(cb) {
+	    if (this._bufferedBytes < 8) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    const buf = this.consume(8);
+	    const num = buf.readUInt32BE(0);
+
+	    //
+	    // The maximum safe integer in JavaScript is 2^53 - 1. An error is returned
+	    // if payload length is greater than this number.
+	    //
+	    if (num > Math.pow(2, 53 - 32) - 1) {
+	      const error = this.createError(
+	        RangeError,
+	        'Unsupported WebSocket frame: payload length > 2^53 - 1',
+	        false,
+	        1009,
+	        'WS_ERR_UNSUPPORTED_DATA_PAYLOAD_LENGTH'
+	      );
+
+	      cb(error);
+	      return;
+	    }
+
+	    this._payloadLength = num * Math.pow(2, 32) + buf.readUInt32BE(4);
+	    this.haveLength(cb);
+	  }
+
+	  /**
+	   * Payload length has been read.
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  haveLength(cb) {
+	    if (this._payloadLength && this._opcode < 0x08) {
+	      this._totalPayloadLength += this._payloadLength;
+	      if (this._totalPayloadLength > this._maxPayload && this._maxPayload > 0) {
+	        const error = this.createError(
+	          RangeError,
+	          'Max payload size exceeded',
+	          false,
+	          1009,
+	          'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+	    }
+
+	    if (this._masked) this._state = GET_MASK;
+	    else this._state = GET_DATA;
+	  }
+
+	  /**
+	   * Reads mask bytes.
+	   *
+	   * @private
+	   */
+	  getMask() {
+	    if (this._bufferedBytes < 4) {
+	      this._loop = false;
+	      return;
+	    }
+
+	    this._mask = this.consume(4);
+	    this._state = GET_DATA;
+	  }
+
+	  /**
+	   * Reads data bytes.
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  getData(cb) {
+	    let data = EMPTY_BUFFER;
+
+	    if (this._payloadLength) {
+	      if (this._bufferedBytes < this._payloadLength) {
+	        this._loop = false;
+	        return;
+	      }
+
+	      data = this.consume(this._payloadLength);
+
+	      if (
+	        this._masked &&
+	        (this._mask[0] | this._mask[1] | this._mask[2] | this._mask[3]) !== 0
+	      ) {
+	        unmask(data, this._mask);
+	      }
+	    }
+
+	    if (this._opcode > 0x07) {
+	      this.controlMessage(data, cb);
+	      return;
+	    }
+
+	    if (this._compressed) {
+	      this._state = INFLATING;
+	      this.decompress(data, cb);
+	      return;
+	    }
+
+	    if (data.length) {
+	      //
+	      // This message is not compressed so its length is the sum of the payload
+	      // length of all fragments.
+	      //
+	      this._messageLength = this._totalPayloadLength;
+	      this._fragments.push(data);
+	    }
+
+	    this.dataMessage(cb);
+	  }
+
+	  /**
+	   * Decompresses data.
+	   *
+	   * @param {Buffer} data Compressed data
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  decompress(data, cb) {
+	    const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
+
+	    perMessageDeflate.decompress(data, this._fin, (err, buf) => {
+	      if (err) return cb(err);
+
+	      if (buf.length) {
+	        this._messageLength += buf.length;
+	        if (this._messageLength > this._maxPayload && this._maxPayload > 0) {
+	          const error = this.createError(
+	            RangeError,
+	            'Max payload size exceeded',
+	            false,
+	            1009,
+	            'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH'
+	          );
+
+	          cb(error);
+	          return;
+	        }
+
+	        this._fragments.push(buf);
+	      }
+
+	      this.dataMessage(cb);
+	      if (this._state === GET_INFO) this.startLoop(cb);
+	    });
+	  }
+
+	  /**
+	   * Handles a data message.
+	   *
+	   * @param {Function} cb Callback
+	   * @private
+	   */
+	  dataMessage(cb) {
+	    if (!this._fin) {
+	      this._state = GET_INFO;
+	      return;
+	    }
+
+	    const messageLength = this._messageLength;
+	    const fragments = this._fragments;
+
+	    this._totalPayloadLength = 0;
+	    this._messageLength = 0;
+	    this._fragmented = 0;
+	    this._fragments = [];
+
+	    if (this._opcode === 2) {
+	      let data;
+
+	      if (this._binaryType === 'nodebuffer') {
+	        data = concat(fragments, messageLength);
+	      } else if (this._binaryType === 'arraybuffer') {
+	        data = toArrayBuffer(concat(fragments, messageLength));
+	      } else if (this._binaryType === 'blob') {
+	        data = new Blob(fragments);
+	      } else {
+	        data = fragments;
+	      }
+
+	      if (this._allowSynchronousEvents) {
+	        this.emit('message', data, true);
+	        this._state = GET_INFO;
+	      } else {
+	        this._state = DEFER_EVENT;
+	        setImmediate(() => {
+	          this.emit('message', data, true);
+	          this._state = GET_INFO;
+	          this.startLoop(cb);
+	        });
+	      }
+	    } else {
+	      const buf = concat(fragments, messageLength);
+
+	      if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
+	        const error = this.createError(
+	          Error,
+	          'invalid UTF-8 sequence',
+	          true,
+	          1007,
+	          'WS_ERR_INVALID_UTF8'
+	        );
+
+	        cb(error);
+	        return;
+	      }
+
+	      if (this._state === INFLATING || this._allowSynchronousEvents) {
+	        this.emit('message', buf, false);
+	        this._state = GET_INFO;
+	      } else {
+	        this._state = DEFER_EVENT;
+	        setImmediate(() => {
+	          this.emit('message', buf, false);
+	          this._state = GET_INFO;
+	          this.startLoop(cb);
+	        });
+	      }
+	    }
+	  }
+
+	  /**
+	   * Handles a control message.
+	   *
+	   * @param {Buffer} data Data to handle
+	   * @return {(Error|RangeError|undefined)} A possible error
+	   * @private
+	   */
+	  controlMessage(data, cb) {
+	    if (this._opcode === 0x08) {
+	      if (data.length === 0) {
+	        this._loop = false;
+	        this.emit('conclude', 1005, EMPTY_BUFFER);
+	        this.end();
+	      } else {
+	        const code = data.readUInt16BE(0);
+
+	        if (!isValidStatusCode(code)) {
+	          const error = this.createError(
+	            RangeError,
+	            `invalid status code ${code}`,
+	            true,
+	            1002,
+	            'WS_ERR_INVALID_CLOSE_CODE'
+	          );
+
+	          cb(error);
+	          return;
+	        }
+
+	        const buf = new FastBuffer(
+	          data.buffer,
+	          data.byteOffset + 2,
+	          data.length - 2
+	        );
+
+	        if (!this._skipUTF8Validation && !isValidUTF8(buf)) {
+	          const error = this.createError(
+	            Error,
+	            'invalid UTF-8 sequence',
+	            true,
+	            1007,
+	            'WS_ERR_INVALID_UTF8'
+	          );
+
+	          cb(error);
+	          return;
+	        }
+
+	        this._loop = false;
+	        this.emit('conclude', code, buf);
+	        this.end();
+	      }
+
+	      this._state = GET_INFO;
+	      return;
+	    }
+
+	    if (this._allowSynchronousEvents) {
+	      this.emit(this._opcode === 0x09 ? 'ping' : 'pong', data);
+	      this._state = GET_INFO;
+	    } else {
+	      this._state = DEFER_EVENT;
+	      setImmediate(() => {
+	        this.emit(this._opcode === 0x09 ? 'ping' : 'pong', data);
+	        this._state = GET_INFO;
+	        this.startLoop(cb);
+	      });
+	    }
+	  }
+
+	  /**
+	   * Builds an error object.
+	   *
+	   * @param {function(new:Error|RangeError)} ErrorCtor The error constructor
+	   * @param {String} message The error message
+	   * @param {Boolean} prefix Specifies whether or not to add a default prefix to
+	   *     `message`
+	   * @param {Number} statusCode The status code
+	   * @param {String} errorCode The exposed error code
+	   * @return {(Error|RangeError)} The error
+	   * @private
+	   */
+	  createError(ErrorCtor, message, prefix, statusCode, errorCode) {
+	    this._loop = false;
+	    this._errored = true;
+
+	    const err = new ErrorCtor(
+	      prefix ? `Invalid WebSocket frame: ${message}` : message
+	    );
+
+	    Error.captureStackTrace(err, this.createError);
+	    err.code = errorCode;
+	    err[kStatusCode] = statusCode;
+	    return err;
+	  }
+	}
+
+	receiver = Receiver;
+	return receiver;
+}
+
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "^Duplex" }] */
+
+var sender;
+var hasRequiredSender;
+
+function requireSender () {
+	if (hasRequiredSender) return sender;
+	hasRequiredSender = 1;
+
+	const { Duplex } = require$$0$2;
+	const { randomFillSync } = require$$1;
+
+	const PerMessageDeflate = requirePermessageDeflate();
+	const { EMPTY_BUFFER, kWebSocket, NOOP } = requireConstants();
+	const { isBlob, isValidStatusCode } = requireValidation();
+	const { mask: applyMask, toBuffer } = requireBufferUtil();
+
+	const kByteLength = Symbol('kByteLength');
+	const maskBuffer = Buffer.alloc(4);
+	const RANDOM_POOL_SIZE = 8 * 1024;
+	let randomPool;
+	let randomPoolPointer = RANDOM_POOL_SIZE;
+
+	const DEFAULT = 0;
+	const DEFLATING = 1;
+	const GET_BLOB_DATA = 2;
+
+	/**
+	 * HyBi Sender implementation.
+	 */
+	class Sender {
+	  /**
+	   * Creates a Sender instance.
+	   *
+	   * @param {Duplex} socket The connection socket
+	   * @param {Object} [extensions] An object containing the negotiated extensions
+	   * @param {Function} [generateMask] The function used to generate the masking
+	   *     key
+	   */
+	  constructor(socket, extensions, generateMask) {
+	    this._extensions = extensions || {};
+
+	    if (generateMask) {
+	      this._generateMask = generateMask;
+	      this._maskBuffer = Buffer.alloc(4);
+	    }
+
+	    this._socket = socket;
+
+	    this._firstFragment = true;
+	    this._compress = false;
+
+	    this._bufferedBytes = 0;
+	    this._queue = [];
+	    this._state = DEFAULT;
+	    this.onerror = NOOP;
+	    this[kWebSocket] = undefined;
+	  }
+
+	  /**
+	   * Frames a piece of data according to the HyBi WebSocket protocol.
+	   *
+	   * @param {(Buffer|String)} data The data to frame
+	   * @param {Object} options Options object
+	   * @param {Boolean} [options.fin=false] Specifies whether or not to set the
+	   *     FIN bit
+	   * @param {Function} [options.generateMask] The function used to generate the
+	   *     masking key
+	   * @param {Boolean} [options.mask=false] Specifies whether or not to mask
+	   *     `data`
+	   * @param {Buffer} [options.maskBuffer] The buffer used to store the masking
+	   *     key
+	   * @param {Number} options.opcode The opcode
+	   * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
+	   *     modified
+	   * @param {Boolean} [options.rsv1=false] Specifies whether or not to set the
+	   *     RSV1 bit
+	   * @return {(Buffer|String)[]} The framed data
+	   * @public
+	   */
+	  static frame(data, options) {
+	    let mask;
+	    let merge = false;
+	    let offset = 2;
+	    let skipMasking = false;
+
+	    if (options.mask) {
+	      mask = options.maskBuffer || maskBuffer;
+
+	      if (options.generateMask) {
+	        options.generateMask(mask);
+	      } else {
+	        if (randomPoolPointer === RANDOM_POOL_SIZE) {
+	          /* istanbul ignore else  */
+	          if (randomPool === undefined) {
+	            //
+	            // This is lazily initialized because server-sent frames must not
+	            // be masked so it may never be used.
+	            //
+	            randomPool = Buffer.alloc(RANDOM_POOL_SIZE);
+	          }
+
+	          randomFillSync(randomPool, 0, RANDOM_POOL_SIZE);
+	          randomPoolPointer = 0;
+	        }
+
+	        mask[0] = randomPool[randomPoolPointer++];
+	        mask[1] = randomPool[randomPoolPointer++];
+	        mask[2] = randomPool[randomPoolPointer++];
+	        mask[3] = randomPool[randomPoolPointer++];
+	      }
+
+	      skipMasking = (mask[0] | mask[1] | mask[2] | mask[3]) === 0;
+	      offset = 6;
+	    }
+
+	    let dataLength;
+
+	    if (typeof data === 'string') {
+	      if (
+	        (!options.mask || skipMasking) &&
+	        options[kByteLength] !== undefined
+	      ) {
+	        dataLength = options[kByteLength];
+	      } else {
+	        data = Buffer.from(data);
+	        dataLength = data.length;
+	      }
+	    } else {
+	      dataLength = data.length;
+	      merge = options.mask && options.readOnly && !skipMasking;
+	    }
+
+	    let payloadLength = dataLength;
+
+	    if (dataLength >= 65536) {
+	      offset += 8;
+	      payloadLength = 127;
+	    } else if (dataLength > 125) {
+	      offset += 2;
+	      payloadLength = 126;
+	    }
+
+	    const target = Buffer.allocUnsafe(merge ? dataLength + offset : offset);
+
+	    target[0] = options.fin ? options.opcode | 0x80 : options.opcode;
+	    if (options.rsv1) target[0] |= 0x40;
+
+	    target[1] = payloadLength;
+
+	    if (payloadLength === 126) {
+	      target.writeUInt16BE(dataLength, 2);
+	    } else if (payloadLength === 127) {
+	      target[2] = target[3] = 0;
+	      target.writeUIntBE(dataLength, 4, 6);
+	    }
+
+	    if (!options.mask) return [target, data];
+
+	    target[1] |= 0x80;
+	    target[offset - 4] = mask[0];
+	    target[offset - 3] = mask[1];
+	    target[offset - 2] = mask[2];
+	    target[offset - 1] = mask[3];
+
+	    if (skipMasking) return [target, data];
+
+	    if (merge) {
+	      applyMask(data, mask, target, offset, dataLength);
+	      return [target];
+	    }
+
+	    applyMask(data, mask, data, 0, dataLength);
+	    return [target, data];
+	  }
+
+	  /**
+	   * Sends a close message to the other peer.
+	   *
+	   * @param {Number} [code] The status code component of the body
+	   * @param {(String|Buffer)} [data] The message component of the body
+	   * @param {Boolean} [mask=false] Specifies whether or not to mask the message
+	   * @param {Function} [cb] Callback
+	   * @public
+	   */
+	  close(code, data, mask, cb) {
+	    let buf;
+
+	    if (code === undefined) {
+	      buf = EMPTY_BUFFER;
+	    } else if (typeof code !== 'number' || !isValidStatusCode(code)) {
+	      throw new TypeError('First argument must be a valid error code number');
+	    } else if (data === undefined || !data.length) {
+	      buf = Buffer.allocUnsafe(2);
+	      buf.writeUInt16BE(code, 0);
+	    } else {
+	      const length = Buffer.byteLength(data);
+
+	      if (length > 123) {
+	        throw new RangeError('The message must not be greater than 123 bytes');
+	      }
+
+	      buf = Buffer.allocUnsafe(2 + length);
+	      buf.writeUInt16BE(code, 0);
+
+	      if (typeof data === 'string') {
+	        buf.write(data, 2);
+	      } else {
+	        buf.set(data, 2);
+	      }
+	    }
+
+	    const options = {
+	      [kByteLength]: buf.length,
+	      fin: true,
+	      generateMask: this._generateMask,
+	      mask,
+	      maskBuffer: this._maskBuffer,
+	      opcode: 0x08,
+	      readOnly: false,
+	      rsv1: false
+	    };
+
+	    if (this._state !== DEFAULT) {
+	      this.enqueue([this.dispatch, buf, false, options, cb]);
+	    } else {
+	      this.sendFrame(Sender.frame(buf, options), cb);
+	    }
+	  }
+
+	  /**
+	   * Sends a ping message to the other peer.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Boolean} [mask=false] Specifies whether or not to mask `data`
+	   * @param {Function} [cb] Callback
+	   * @public
+	   */
+	  ping(data, mask, cb) {
+	    let byteLength;
+	    let readOnly;
+
+	    if (typeof data === 'string') {
+	      byteLength = Buffer.byteLength(data);
+	      readOnly = false;
+	    } else if (isBlob(data)) {
+	      byteLength = data.size;
+	      readOnly = false;
+	    } else {
+	      data = toBuffer(data);
+	      byteLength = data.length;
+	      readOnly = toBuffer.readOnly;
+	    }
+
+	    if (byteLength > 125) {
+	      throw new RangeError('The data size must not be greater than 125 bytes');
+	    }
+
+	    const options = {
+	      [kByteLength]: byteLength,
+	      fin: true,
+	      generateMask: this._generateMask,
+	      mask,
+	      maskBuffer: this._maskBuffer,
+	      opcode: 0x09,
+	      readOnly,
+	      rsv1: false
+	    };
+
+	    if (isBlob(data)) {
+	      if (this._state !== DEFAULT) {
+	        this.enqueue([this.getBlobData, data, false, options, cb]);
+	      } else {
+	        this.getBlobData(data, false, options, cb);
+	      }
+	    } else if (this._state !== DEFAULT) {
+	      this.enqueue([this.dispatch, data, false, options, cb]);
+	    } else {
+	      this.sendFrame(Sender.frame(data, options), cb);
+	    }
+	  }
+
+	  /**
+	   * Sends a pong message to the other peer.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Boolean} [mask=false] Specifies whether or not to mask `data`
+	   * @param {Function} [cb] Callback
+	   * @public
+	   */
+	  pong(data, mask, cb) {
+	    let byteLength;
+	    let readOnly;
+
+	    if (typeof data === 'string') {
+	      byteLength = Buffer.byteLength(data);
+	      readOnly = false;
+	    } else if (isBlob(data)) {
+	      byteLength = data.size;
+	      readOnly = false;
+	    } else {
+	      data = toBuffer(data);
+	      byteLength = data.length;
+	      readOnly = toBuffer.readOnly;
+	    }
+
+	    if (byteLength > 125) {
+	      throw new RangeError('The data size must not be greater than 125 bytes');
+	    }
+
+	    const options = {
+	      [kByteLength]: byteLength,
+	      fin: true,
+	      generateMask: this._generateMask,
+	      mask,
+	      maskBuffer: this._maskBuffer,
+	      opcode: 0x0a,
+	      readOnly,
+	      rsv1: false
+	    };
+
+	    if (isBlob(data)) {
+	      if (this._state !== DEFAULT) {
+	        this.enqueue([this.getBlobData, data, false, options, cb]);
+	      } else {
+	        this.getBlobData(data, false, options, cb);
+	      }
+	    } else if (this._state !== DEFAULT) {
+	      this.enqueue([this.dispatch, data, false, options, cb]);
+	    } else {
+	      this.sendFrame(Sender.frame(data, options), cb);
+	    }
+	  }
+
+	  /**
+	   * Sends a data message to the other peer.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Object} options Options object
+	   * @param {Boolean} [options.binary=false] Specifies whether `data` is binary
+	   *     or text
+	   * @param {Boolean} [options.compress=false] Specifies whether or not to
+	   *     compress `data`
+	   * @param {Boolean} [options.fin=false] Specifies whether the fragment is the
+	   *     last one
+	   * @param {Boolean} [options.mask=false] Specifies whether or not to mask
+	   *     `data`
+	   * @param {Function} [cb] Callback
+	   * @public
+	   */
+	  send(data, options, cb) {
+	    const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
+	    let opcode = options.binary ? 2 : 1;
+	    let rsv1 = options.compress;
+
+	    let byteLength;
+	    let readOnly;
+
+	    if (typeof data === 'string') {
+	      byteLength = Buffer.byteLength(data);
+	      readOnly = false;
+	    } else if (isBlob(data)) {
+	      byteLength = data.size;
+	      readOnly = false;
+	    } else {
+	      data = toBuffer(data);
+	      byteLength = data.length;
+	      readOnly = toBuffer.readOnly;
+	    }
+
+	    if (this._firstFragment) {
+	      this._firstFragment = false;
+	      if (
+	        rsv1 &&
+	        perMessageDeflate &&
+	        perMessageDeflate.params[
+	          perMessageDeflate._isServer
+	            ? 'server_no_context_takeover'
+	            : 'client_no_context_takeover'
+	        ]
+	      ) {
+	        rsv1 = byteLength >= perMessageDeflate._threshold;
+	      }
+	      this._compress = rsv1;
+	    } else {
+	      rsv1 = false;
+	      opcode = 0;
+	    }
+
+	    if (options.fin) this._firstFragment = true;
+
+	    const opts = {
+	      [kByteLength]: byteLength,
+	      fin: options.fin,
+	      generateMask: this._generateMask,
+	      mask: options.mask,
+	      maskBuffer: this._maskBuffer,
+	      opcode,
+	      readOnly,
+	      rsv1
+	    };
+
+	    if (isBlob(data)) {
+	      if (this._state !== DEFAULT) {
+	        this.enqueue([this.getBlobData, data, this._compress, opts, cb]);
+	      } else {
+	        this.getBlobData(data, this._compress, opts, cb);
+	      }
+	    } else if (this._state !== DEFAULT) {
+	      this.enqueue([this.dispatch, data, this._compress, opts, cb]);
+	    } else {
+	      this.dispatch(data, this._compress, opts, cb);
+	    }
+	  }
+
+	  /**
+	   * Gets the contents of a blob as binary data.
+	   *
+	   * @param {Blob} blob The blob
+	   * @param {Boolean} [compress=false] Specifies whether or not to compress
+	   *     the data
+	   * @param {Object} options Options object
+	   * @param {Boolean} [options.fin=false] Specifies whether or not to set the
+	   *     FIN bit
+	   * @param {Function} [options.generateMask] The function used to generate the
+	   *     masking key
+	   * @param {Boolean} [options.mask=false] Specifies whether or not to mask
+	   *     `data`
+	   * @param {Buffer} [options.maskBuffer] The buffer used to store the masking
+	   *     key
+	   * @param {Number} options.opcode The opcode
+	   * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
+	   *     modified
+	   * @param {Boolean} [options.rsv1=false] Specifies whether or not to set the
+	   *     RSV1 bit
+	   * @param {Function} [cb] Callback
+	   * @private
+	   */
+	  getBlobData(blob, compress, options, cb) {
+	    this._bufferedBytes += options[kByteLength];
+	    this._state = GET_BLOB_DATA;
+
+	    blob
+	      .arrayBuffer()
+	      .then((arrayBuffer) => {
+	        if (this._socket.destroyed) {
+	          const err = new Error(
+	            'The socket was closed while the blob was being read'
+	          );
+
+	          //
+	          // `callCallbacks` is called in the next tick to ensure that errors
+	          // that might be thrown in the callbacks behave like errors thrown
+	          // outside the promise chain.
+	          //
+	          process.nextTick(callCallbacks, this, err, cb);
+	          return;
+	        }
+
+	        this._bufferedBytes -= options[kByteLength];
+	        const data = toBuffer(arrayBuffer);
+
+	        if (!compress) {
+	          this._state = DEFAULT;
+	          this.sendFrame(Sender.frame(data, options), cb);
+	          this.dequeue();
+	        } else {
+	          this.dispatch(data, compress, options, cb);
+	        }
+	      })
+	      .catch((err) => {
+	        //
+	        // `onError` is called in the next tick for the same reason that
+	        // `callCallbacks` above is.
+	        //
+	        process.nextTick(onError, this, err, cb);
+	      });
+	  }
+
+	  /**
+	   * Dispatches a message.
+	   *
+	   * @param {(Buffer|String)} data The message to send
+	   * @param {Boolean} [compress=false] Specifies whether or not to compress
+	   *     `data`
+	   * @param {Object} options Options object
+	   * @param {Boolean} [options.fin=false] Specifies whether or not to set the
+	   *     FIN bit
+	   * @param {Function} [options.generateMask] The function used to generate the
+	   *     masking key
+	   * @param {Boolean} [options.mask=false] Specifies whether or not to mask
+	   *     `data`
+	   * @param {Buffer} [options.maskBuffer] The buffer used to store the masking
+	   *     key
+	   * @param {Number} options.opcode The opcode
+	   * @param {Boolean} [options.readOnly=false] Specifies whether `data` can be
+	   *     modified
+	   * @param {Boolean} [options.rsv1=false] Specifies whether or not to set the
+	   *     RSV1 bit
+	   * @param {Function} [cb] Callback
+	   * @private
+	   */
+	  dispatch(data, compress, options, cb) {
+	    if (!compress) {
+	      this.sendFrame(Sender.frame(data, options), cb);
+	      return;
+	    }
+
+	    const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
+
+	    this._bufferedBytes += options[kByteLength];
+	    this._state = DEFLATING;
+	    perMessageDeflate.compress(data, options.fin, (_, buf) => {
+	      if (this._socket.destroyed) {
+	        const err = new Error(
+	          'The socket was closed while data was being compressed'
+	        );
+
+	        callCallbacks(this, err, cb);
+	        return;
+	      }
+
+	      this._bufferedBytes -= options[kByteLength];
+	      this._state = DEFAULT;
+	      options.readOnly = false;
+	      this.sendFrame(Sender.frame(buf, options), cb);
+	      this.dequeue();
+	    });
+	  }
+
+	  /**
+	   * Executes queued send operations.
+	   *
+	   * @private
+	   */
+	  dequeue() {
+	    while (this._state === DEFAULT && this._queue.length) {
+	      const params = this._queue.shift();
+
+	      this._bufferedBytes -= params[3][kByteLength];
+	      Reflect.apply(params[0], this, params.slice(1));
+	    }
+	  }
+
+	  /**
+	   * Enqueues a send operation.
+	   *
+	   * @param {Array} params Send operation parameters.
+	   * @private
+	   */
+	  enqueue(params) {
+	    this._bufferedBytes += params[3][kByteLength];
+	    this._queue.push(params);
+	  }
+
+	  /**
+	   * Sends a frame.
+	   *
+	   * @param {(Buffer | String)[]} list The frame to send
+	   * @param {Function} [cb] Callback
+	   * @private
+	   */
+	  sendFrame(list, cb) {
+	    if (list.length === 2) {
+	      this._socket.cork();
+	      this._socket.write(list[0]);
+	      this._socket.write(list[1], cb);
+	      this._socket.uncork();
+	    } else {
+	      this._socket.write(list[0], cb);
+	    }
+	  }
+	}
+
+	sender = Sender;
+
+	/**
+	 * Calls queued callbacks with an error.
+	 *
+	 * @param {Sender} sender The `Sender` instance
+	 * @param {Error} err The error to call the callbacks with
+	 * @param {Function} [cb] The first callback
+	 * @private
+	 */
+	function callCallbacks(sender, err, cb) {
+	  if (typeof cb === 'function') cb(err);
+
+	  for (let i = 0; i < sender._queue.length; i++) {
+	    const params = sender._queue[i];
+	    const callback = params[params.length - 1];
+
+	    if (typeof callback === 'function') callback(err);
+	  }
+	}
+
+	/**
+	 * Handles a `Sender` error.
+	 *
+	 * @param {Sender} sender The `Sender` instance
+	 * @param {Error} err The error
+	 * @param {Function} [cb] The first pending callback
+	 * @private
+	 */
+	function onError(sender, err, cb) {
+	  callCallbacks(sender, err, cb);
+	  sender.onerror(err);
+	}
+	return sender;
+}
+
+var eventTarget;
+var hasRequiredEventTarget;
+
+function requireEventTarget () {
+	if (hasRequiredEventTarget) return eventTarget;
+	hasRequiredEventTarget = 1;
+
+	const { kForOnEventAttribute, kListener } = requireConstants();
+
+	const kCode = Symbol('kCode');
+	const kData = Symbol('kData');
+	const kError = Symbol('kError');
+	const kMessage = Symbol('kMessage');
+	const kReason = Symbol('kReason');
+	const kTarget = Symbol('kTarget');
+	const kType = Symbol('kType');
+	const kWasClean = Symbol('kWasClean');
+
+	/**
+	 * Class representing an event.
+	 */
+	class Event {
+	  /**
+	   * Create a new `Event`.
+	   *
+	   * @param {String} type The name of the event
+	   * @throws {TypeError} If the `type` argument is not specified
+	   */
+	  constructor(type) {
+	    this[kTarget] = null;
+	    this[kType] = type;
+	  }
+
+	  /**
+	   * @type {*}
+	   */
+	  get target() {
+	    return this[kTarget];
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  get type() {
+	    return this[kType];
+	  }
+	}
+
+	Object.defineProperty(Event.prototype, 'target', { enumerable: true });
+	Object.defineProperty(Event.prototype, 'type', { enumerable: true });
+
+	/**
+	 * Class representing a close event.
+	 *
+	 * @extends Event
+	 */
+	class CloseEvent extends Event {
+	  /**
+	   * Create a new `CloseEvent`.
+	   *
+	   * @param {String} type The name of the event
+	   * @param {Object} [options] A dictionary object that allows for setting
+	   *     attributes via object members of the same name
+	   * @param {Number} [options.code=0] The status code explaining why the
+	   *     connection was closed
+	   * @param {String} [options.reason=''] A human-readable string explaining why
+	   *     the connection was closed
+	   * @param {Boolean} [options.wasClean=false] Indicates whether or not the
+	   *     connection was cleanly closed
+	   */
+	  constructor(type, options = {}) {
+	    super(type);
+
+	    this[kCode] = options.code === undefined ? 0 : options.code;
+	    this[kReason] = options.reason === undefined ? '' : options.reason;
+	    this[kWasClean] = options.wasClean === undefined ? false : options.wasClean;
+	  }
+
+	  /**
+	   * @type {Number}
+	   */
+	  get code() {
+	    return this[kCode];
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  get reason() {
+	    return this[kReason];
+	  }
+
+	  /**
+	   * @type {Boolean}
+	   */
+	  get wasClean() {
+	    return this[kWasClean];
+	  }
+	}
+
+	Object.defineProperty(CloseEvent.prototype, 'code', { enumerable: true });
+	Object.defineProperty(CloseEvent.prototype, 'reason', { enumerable: true });
+	Object.defineProperty(CloseEvent.prototype, 'wasClean', { enumerable: true });
+
+	/**
+	 * Class representing an error event.
+	 *
+	 * @extends Event
+	 */
+	class ErrorEvent extends Event {
+	  /**
+	   * Create a new `ErrorEvent`.
+	   *
+	   * @param {String} type The name of the event
+	   * @param {Object} [options] A dictionary object that allows for setting
+	   *     attributes via object members of the same name
+	   * @param {*} [options.error=null] The error that generated this event
+	   * @param {String} [options.message=''] The error message
+	   */
+	  constructor(type, options = {}) {
+	    super(type);
+
+	    this[kError] = options.error === undefined ? null : options.error;
+	    this[kMessage] = options.message === undefined ? '' : options.message;
+	  }
+
+	  /**
+	   * @type {*}
+	   */
+	  get error() {
+	    return this[kError];
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  get message() {
+	    return this[kMessage];
+	  }
+	}
+
+	Object.defineProperty(ErrorEvent.prototype, 'error', { enumerable: true });
+	Object.defineProperty(ErrorEvent.prototype, 'message', { enumerable: true });
+
+	/**
+	 * Class representing a message event.
+	 *
+	 * @extends Event
+	 */
+	class MessageEvent extends Event {
+	  /**
+	   * Create a new `MessageEvent`.
+	   *
+	   * @param {String} type The name of the event
+	   * @param {Object} [options] A dictionary object that allows for setting
+	   *     attributes via object members of the same name
+	   * @param {*} [options.data=null] The message content
+	   */
+	  constructor(type, options = {}) {
+	    super(type);
+
+	    this[kData] = options.data === undefined ? null : options.data;
+	  }
+
+	  /**
+	   * @type {*}
+	   */
+	  get data() {
+	    return this[kData];
+	  }
+	}
+
+	Object.defineProperty(MessageEvent.prototype, 'data', { enumerable: true });
+
+	/**
+	 * This provides methods for emulating the `EventTarget` interface. It's not
+	 * meant to be used directly.
+	 *
+	 * @mixin
+	 */
+	const EventTarget = {
+	  /**
+	   * Register an event listener.
+	   *
+	   * @param {String} type A string representing the event type to listen for
+	   * @param {(Function|Object)} handler The listener to add
+	   * @param {Object} [options] An options object specifies characteristics about
+	   *     the event listener
+	   * @param {Boolean} [options.once=false] A `Boolean` indicating that the
+	   *     listener should be invoked at most once after being added. If `true`,
+	   *     the listener would be automatically removed when invoked.
+	   * @public
+	   */
+	  addEventListener(type, handler, options = {}) {
+	    for (const listener of this.listeners(type)) {
+	      if (
+	        !options[kForOnEventAttribute] &&
+	        listener[kListener] === handler &&
+	        !listener[kForOnEventAttribute]
+	      ) {
+	        return;
+	      }
+	    }
+
+	    let wrapper;
+
+	    if (type === 'message') {
+	      wrapper = function onMessage(data, isBinary) {
+	        const event = new MessageEvent('message', {
+	          data: isBinary ? data : data.toString()
+	        });
+
+	        event[kTarget] = this;
+	        callListener(handler, this, event);
+	      };
+	    } else if (type === 'close') {
+	      wrapper = function onClose(code, message) {
+	        const event = new CloseEvent('close', {
+	          code,
+	          reason: message.toString(),
+	          wasClean: this._closeFrameReceived && this._closeFrameSent
+	        });
+
+	        event[kTarget] = this;
+	        callListener(handler, this, event);
+	      };
+	    } else if (type === 'error') {
+	      wrapper = function onError(error) {
+	        const event = new ErrorEvent('error', {
+	          error,
+	          message: error.message
+	        });
+
+	        event[kTarget] = this;
+	        callListener(handler, this, event);
+	      };
+	    } else if (type === 'open') {
+	      wrapper = function onOpen() {
+	        const event = new Event('open');
+
+	        event[kTarget] = this;
+	        callListener(handler, this, event);
+	      };
+	    } else {
+	      return;
+	    }
+
+	    wrapper[kForOnEventAttribute] = !!options[kForOnEventAttribute];
+	    wrapper[kListener] = handler;
+
+	    if (options.once) {
+	      this.once(type, wrapper);
+	    } else {
+	      this.on(type, wrapper);
+	    }
+	  },
+
+	  /**
+	   * Remove an event listener.
+	   *
+	   * @param {String} type A string representing the event type to remove
+	   * @param {(Function|Object)} handler The listener to remove
+	   * @public
+	   */
+	  removeEventListener(type, handler) {
+	    for (const listener of this.listeners(type)) {
+	      if (listener[kListener] === handler && !listener[kForOnEventAttribute]) {
+	        this.removeListener(type, listener);
+	        break;
+	      }
+	    }
+	  }
+	};
+
+	eventTarget = {
+	  CloseEvent,
+	  ErrorEvent,
+	  Event,
+	  EventTarget,
+	  MessageEvent
+	};
+
+	/**
+	 * Call an event listener
+	 *
+	 * @param {(Function|Object)} listener The listener to call
+	 * @param {*} thisArg The value to use as `this`` when calling the listener
+	 * @param {Event} event The event to pass to the listener
+	 * @private
+	 */
+	function callListener(listener, thisArg, event) {
+	  if (typeof listener === 'object' && listener.handleEvent) {
+	    listener.handleEvent.call(listener, event);
+	  } else {
+	    listener.call(thisArg, event);
+	  }
+	}
+	return eventTarget;
+}
+
+var extension;
+var hasRequiredExtension;
+
+function requireExtension () {
+	if (hasRequiredExtension) return extension;
+	hasRequiredExtension = 1;
+
+	const { tokenChars } = requireValidation();
+
+	/**
+	 * Adds an offer to the map of extension offers or a parameter to the map of
+	 * parameters.
+	 *
+	 * @param {Object} dest The map of extension offers or parameters
+	 * @param {String} name The extension or parameter name
+	 * @param {(Object|Boolean|String)} elem The extension parameters or the
+	 *     parameter value
+	 * @private
+	 */
+	function push(dest, name, elem) {
+	  if (dest[name] === undefined) dest[name] = [elem];
+	  else dest[name].push(elem);
+	}
+
+	/**
+	 * Parses the `Sec-WebSocket-Extensions` header into an object.
+	 *
+	 * @param {String} header The field value of the header
+	 * @return {Object} The parsed object
+	 * @public
+	 */
+	function parse(header) {
+	  const offers = Object.create(null);
+	  let params = Object.create(null);
+	  let mustUnescape = false;
+	  let isEscaping = false;
+	  let inQuotes = false;
+	  let extensionName;
+	  let paramName;
+	  let start = -1;
+	  let code = -1;
+	  let end = -1;
+	  let i = 0;
+
+	  for (; i < header.length; i++) {
+	    code = header.charCodeAt(i);
+
+	    if (extensionName === undefined) {
+	      if (end === -1 && tokenChars[code] === 1) {
+	        if (start === -1) start = i;
+	      } else if (
+	        i !== 0 &&
+	        (code === 0x20 /* ' ' */ || code === 0x09) /* '\t' */
+	      ) {
+	        if (end === -1 && start !== -1) end = i;
+	      } else if (code === 0x3b /* ';' */ || code === 0x2c /* ',' */) {
+	        if (start === -1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+
+	        if (end === -1) end = i;
+	        const name = header.slice(start, end);
+	        if (code === 0x2c) {
+	          push(offers, name, params);
+	          params = Object.create(null);
+	        } else {
+	          extensionName = name;
+	        }
+
+	        start = end = -1;
+	      } else {
+	        throw new SyntaxError(`Unexpected character at index ${i}`);
+	      }
+	    } else if (paramName === undefined) {
+	      if (end === -1 && tokenChars[code] === 1) {
+	        if (start === -1) start = i;
+	      } else if (code === 0x20 || code === 0x09) {
+	        if (end === -1 && start !== -1) end = i;
+	      } else if (code === 0x3b || code === 0x2c) {
+	        if (start === -1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+
+	        if (end === -1) end = i;
+	        push(params, header.slice(start, end), true);
+	        if (code === 0x2c) {
+	          push(offers, extensionName, params);
+	          params = Object.create(null);
+	          extensionName = undefined;
+	        }
+
+	        start = end = -1;
+	      } else if (code === 0x3d /* '=' */ && start !== -1 && end === -1) {
+	        paramName = header.slice(start, i);
+	        start = end = -1;
+	      } else {
+	        throw new SyntaxError(`Unexpected character at index ${i}`);
+	      }
+	    } else {
+	      //
+	      // The value of a quoted-string after unescaping must conform to the
+	      // token ABNF, so only token characters are valid.
+	      // Ref: https://tools.ietf.org/html/rfc6455#section-9.1
+	      //
+	      if (isEscaping) {
+	        if (tokenChars[code] !== 1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+	        if (start === -1) start = i;
+	        else if (!mustUnescape) mustUnescape = true;
+	        isEscaping = false;
+	      } else if (inQuotes) {
+	        if (tokenChars[code] === 1) {
+	          if (start === -1) start = i;
+	        } else if (code === 0x22 /* '"' */ && start !== -1) {
+	          inQuotes = false;
+	          end = i;
+	        } else if (code === 0x5c /* '\' */) {
+	          isEscaping = true;
+	        } else {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+	      } else if (code === 0x22 && header.charCodeAt(i - 1) === 0x3d) {
+	        inQuotes = true;
+	      } else if (end === -1 && tokenChars[code] === 1) {
+	        if (start === -1) start = i;
+	      } else if (start !== -1 && (code === 0x20 || code === 0x09)) {
+	        if (end === -1) end = i;
+	      } else if (code === 0x3b || code === 0x2c) {
+	        if (start === -1) {
+	          throw new SyntaxError(`Unexpected character at index ${i}`);
+	        }
+
+	        if (end === -1) end = i;
+	        let value = header.slice(start, end);
+	        if (mustUnescape) {
+	          value = value.replace(/\\/g, '');
+	          mustUnescape = false;
+	        }
+	        push(params, paramName, value);
+	        if (code === 0x2c) {
+	          push(offers, extensionName, params);
+	          params = Object.create(null);
+	          extensionName = undefined;
+	        }
+
+	        paramName = undefined;
+	        start = end = -1;
+	      } else {
+	        throw new SyntaxError(`Unexpected character at index ${i}`);
+	      }
+	    }
+	  }
+
+	  if (start === -1 || inQuotes || code === 0x20 || code === 0x09) {
+	    throw new SyntaxError('Unexpected end of input');
+	  }
+
+	  if (end === -1) end = i;
+	  const token = header.slice(start, end);
+	  if (extensionName === undefined) {
+	    push(offers, token, params);
+	  } else {
+	    if (paramName === undefined) {
+	      push(params, token, true);
+	    } else if (mustUnescape) {
+	      push(params, paramName, token.replace(/\\/g, ''));
+	    } else {
+	      push(params, paramName, token);
+	    }
+	    push(offers, extensionName, params);
+	  }
+
+	  return offers;
+	}
+
+	/**
+	 * Builds the `Sec-WebSocket-Extensions` header field value.
+	 *
+	 * @param {Object} extensions The map of extensions and parameters to format
+	 * @return {String} A string representing the given object
+	 * @public
+	 */
+	function format(extensions) {
+	  return Object.keys(extensions)
+	    .map((extension) => {
+	      let configurations = extensions[extension];
+	      if (!Array.isArray(configurations)) configurations = [configurations];
+	      return configurations
+	        .map((params) => {
+	          return [extension]
+	            .concat(
+	              Object.keys(params).map((k) => {
+	                let values = params[k];
+	                if (!Array.isArray(values)) values = [values];
+	                return values
+	                  .map((v) => (v === true ? k : `${k}=${v}`))
+	                  .join('; ');
+	              })
+	            )
+	            .join('; ');
+	        })
+	        .join(', ');
+	    })
+	    .join(', ');
+	}
+
+	extension = { format, parse };
+	return extension;
+}
+
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "^Duplex|Readable$", "caughtErrors": "none" }] */
+
+var websocket;
+var hasRequiredWebsocket;
+
+function requireWebsocket () {
+	if (hasRequiredWebsocket) return websocket;
+	hasRequiredWebsocket = 1;
+
+	const EventEmitter = require$$0$3;
+	const https = require$$1$1;
+	const http = require$$2;
+	const net = require$$3;
+	const tls = require$$4;
+	const { randomBytes, createHash } = require$$1;
+	const { Duplex, Readable } = require$$0$2;
+	const { URL } = require$$7;
+
+	const PerMessageDeflate = requirePermessageDeflate();
+	const Receiver = requireReceiver();
+	const Sender = requireSender();
+	const { isBlob } = requireValidation();
+
+	const {
+	  BINARY_TYPES,
+	  EMPTY_BUFFER,
+	  GUID,
+	  kForOnEventAttribute,
+	  kListener,
+	  kStatusCode,
+	  kWebSocket,
+	  NOOP
+	} = requireConstants();
+	const {
+	  EventTarget: { addEventListener, removeEventListener }
+	} = requireEventTarget();
+	const { format, parse } = requireExtension();
+	const { toBuffer } = requireBufferUtil();
+
+	const closeTimeout = 30 * 1000;
+	const kAborted = Symbol('kAborted');
+	const protocolVersions = [8, 13];
+	const readyStates = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'];
+	const subprotocolRegex = /^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;
+
+	/**
+	 * Class representing a WebSocket.
+	 *
+	 * @extends EventEmitter
+	 */
+	class WebSocket extends EventEmitter {
+	  /**
+	   * Create a new `WebSocket`.
+	   *
+	   * @param {(String|URL)} address The URL to which to connect
+	   * @param {(String|String[])} [protocols] The subprotocols
+	   * @param {Object} [options] Connection options
+	   */
+	  constructor(address, protocols, options) {
+	    super();
+
+	    this._binaryType = BINARY_TYPES[0];
+	    this._closeCode = 1006;
+	    this._closeFrameReceived = false;
+	    this._closeFrameSent = false;
+	    this._closeMessage = EMPTY_BUFFER;
+	    this._closeTimer = null;
+	    this._errorEmitted = false;
+	    this._extensions = {};
+	    this._paused = false;
+	    this._protocol = '';
+	    this._readyState = WebSocket.CONNECTING;
+	    this._receiver = null;
+	    this._sender = null;
+	    this._socket = null;
+
+	    if (address !== null) {
+	      this._bufferedAmount = 0;
+	      this._isServer = false;
+	      this._redirects = 0;
+
+	      if (protocols === undefined) {
+	        protocols = [];
+	      } else if (!Array.isArray(protocols)) {
+	        if (typeof protocols === 'object' && protocols !== null) {
+	          options = protocols;
+	          protocols = [];
+	        } else {
+	          protocols = [protocols];
+	        }
+	      }
+
+	      initAsClient(this, address, protocols, options);
+	    } else {
+	      this._autoPong = options.autoPong;
+	      this._isServer = true;
+	    }
+	  }
+
+	  /**
+	   * For historical reasons, the custom "nodebuffer" type is used by the default
+	   * instead of "blob".
+	   *
+	   * @type {String}
+	   */
+	  get binaryType() {
+	    return this._binaryType;
+	  }
+
+	  set binaryType(type) {
+	    if (!BINARY_TYPES.includes(type)) return;
+
+	    this._binaryType = type;
+
+	    //
+	    // Allow to change `binaryType` on the fly.
+	    //
+	    if (this._receiver) this._receiver._binaryType = type;
+	  }
+
+	  /**
+	   * @type {Number}
+	   */
+	  get bufferedAmount() {
+	    if (!this._socket) return this._bufferedAmount;
+
+	    return this._socket._writableState.length + this._sender._bufferedBytes;
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  get extensions() {
+	    return Object.keys(this._extensions).join();
+	  }
+
+	  /**
+	   * @type {Boolean}
+	   */
+	  get isPaused() {
+	    return this._paused;
+	  }
+
+	  /**
+	   * @type {Function}
+	   */
+	  /* istanbul ignore next */
+	  get onclose() {
+	    return null;
+	  }
+
+	  /**
+	   * @type {Function}
+	   */
+	  /* istanbul ignore next */
+	  get onerror() {
+	    return null;
+	  }
+
+	  /**
+	   * @type {Function}
+	   */
+	  /* istanbul ignore next */
+	  get onopen() {
+	    return null;
+	  }
+
+	  /**
+	   * @type {Function}
+	   */
+	  /* istanbul ignore next */
+	  get onmessage() {
+	    return null;
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  get protocol() {
+	    return this._protocol;
+	  }
+
+	  /**
+	   * @type {Number}
+	   */
+	  get readyState() {
+	    return this._readyState;
+	  }
+
+	  /**
+	   * @type {String}
+	   */
+	  get url() {
+	    return this._url;
+	  }
+
+	  /**
+	   * Set up the socket and the internal resources.
+	   *
+	   * @param {Duplex} socket The network socket between the server and client
+	   * @param {Buffer} head The first packet of the upgraded stream
+	   * @param {Object} options Options object
+	   * @param {Boolean} [options.allowSynchronousEvents=false] Specifies whether
+	   *     any of the `'message'`, `'ping'`, and `'pong'` events can be emitted
+	   *     multiple times in the same tick
+	   * @param {Function} [options.generateMask] The function used to generate the
+	   *     masking key
+	   * @param {Number} [options.maxPayload=0] The maximum allowed message size
+	   * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
+	   *     not to skip UTF-8 validation for text and close messages
+	   * @private
+	   */
+	  setSocket(socket, head, options) {
+	    const receiver = new Receiver({
+	      allowSynchronousEvents: options.allowSynchronousEvents,
+	      binaryType: this.binaryType,
+	      extensions: this._extensions,
+	      isServer: this._isServer,
+	      maxPayload: options.maxPayload,
+	      skipUTF8Validation: options.skipUTF8Validation
+	    });
+
+	    const sender = new Sender(socket, this._extensions, options.generateMask);
+
+	    this._receiver = receiver;
+	    this._sender = sender;
+	    this._socket = socket;
+
+	    receiver[kWebSocket] = this;
+	    sender[kWebSocket] = this;
+	    socket[kWebSocket] = this;
+
+	    receiver.on('conclude', receiverOnConclude);
+	    receiver.on('drain', receiverOnDrain);
+	    receiver.on('error', receiverOnError);
+	    receiver.on('message', receiverOnMessage);
+	    receiver.on('ping', receiverOnPing);
+	    receiver.on('pong', receiverOnPong);
+
+	    sender.onerror = senderOnError;
+
+	    //
+	    // These methods may not be available if `socket` is just a `Duplex`.
+	    //
+	    if (socket.setTimeout) socket.setTimeout(0);
+	    if (socket.setNoDelay) socket.setNoDelay();
+
+	    if (head.length > 0) socket.unshift(head);
+
+	    socket.on('close', socketOnClose);
+	    socket.on('data', socketOnData);
+	    socket.on('end', socketOnEnd);
+	    socket.on('error', socketOnError);
+
+	    this._readyState = WebSocket.OPEN;
+	    this.emit('open');
+	  }
+
+	  /**
+	   * Emit the `'close'` event.
+	   *
+	   * @private
+	   */
+	  emitClose() {
+	    if (!this._socket) {
+	      this._readyState = WebSocket.CLOSED;
+	      this.emit('close', this._closeCode, this._closeMessage);
+	      return;
+	    }
+
+	    if (this._extensions[PerMessageDeflate.extensionName]) {
+	      this._extensions[PerMessageDeflate.extensionName].cleanup();
+	    }
+
+	    this._receiver.removeAllListeners();
+	    this._readyState = WebSocket.CLOSED;
+	    this.emit('close', this._closeCode, this._closeMessage);
+	  }
+
+	  /**
+	   * Start a closing handshake.
+	   *
+	   *          +----------+   +-----------+   +----------+
+	   *     - - -|ws.close()|-->|close frame|-->|ws.close()|- - -
+	   *    |     +----------+   +-----------+   +----------+     |
+	   *          +----------+   +-----------+         |
+	   * CLOSING  |ws.close()|<--|close frame|<--+-----+       CLOSING
+	   *          +----------+   +-----------+   |
+	   *    |           |                        |   +---+        |
+	   *                +------------------------+-->|fin| - - - -
+	   *    |         +---+                      |   +---+
+	   *     - - - - -|fin|<---------------------+
+	   *              +---+
+	   *
+	   * @param {Number} [code] Status code explaining why the connection is closing
+	   * @param {(String|Buffer)} [data] The reason why the connection is
+	   *     closing
+	   * @public
+	   */
+	  close(code, data) {
+	    if (this.readyState === WebSocket.CLOSED) return;
+	    if (this.readyState === WebSocket.CONNECTING) {
+	      const msg = 'WebSocket was closed before the connection was established';
+	      abortHandshake(this, this._req, msg);
+	      return;
+	    }
+
+	    if (this.readyState === WebSocket.CLOSING) {
+	      if (
+	        this._closeFrameSent &&
+	        (this._closeFrameReceived || this._receiver._writableState.errorEmitted)
+	      ) {
+	        this._socket.end();
+	      }
+
+	      return;
+	    }
+
+	    this._readyState = WebSocket.CLOSING;
+	    this._sender.close(code, data, !this._isServer, (err) => {
+	      //
+	      // This error is handled by the `'error'` listener on the socket. We only
+	      // want to know if the close frame has been sent here.
+	      //
+	      if (err) return;
+
+	      this._closeFrameSent = true;
+
+	      if (
+	        this._closeFrameReceived ||
+	        this._receiver._writableState.errorEmitted
+	      ) {
+	        this._socket.end();
+	      }
+	    });
+
+	    setCloseTimer(this);
+	  }
+
+	  /**
+	   * Pause the socket.
+	   *
+	   * @public
+	   */
+	  pause() {
+	    if (
+	      this.readyState === WebSocket.CONNECTING ||
+	      this.readyState === WebSocket.CLOSED
+	    ) {
+	      return;
+	    }
+
+	    this._paused = true;
+	    this._socket.pause();
+	  }
+
+	  /**
+	   * Send a ping.
+	   *
+	   * @param {*} [data] The data to send
+	   * @param {Boolean} [mask] Indicates whether or not to mask `data`
+	   * @param {Function} [cb] Callback which is executed when the ping is sent
+	   * @public
+	   */
+	  ping(data, mask, cb) {
+	    if (this.readyState === WebSocket.CONNECTING) {
+	      throw new Error('WebSocket is not open: readyState 0 (CONNECTING)');
+	    }
+
+	    if (typeof data === 'function') {
+	      cb = data;
+	      data = mask = undefined;
+	    } else if (typeof mask === 'function') {
+	      cb = mask;
+	      mask = undefined;
+	    }
+
+	    if (typeof data === 'number') data = data.toString();
+
+	    if (this.readyState !== WebSocket.OPEN) {
+	      sendAfterClose(this, data, cb);
+	      return;
+	    }
+
+	    if (mask === undefined) mask = !this._isServer;
+	    this._sender.ping(data || EMPTY_BUFFER, mask, cb);
+	  }
+
+	  /**
+	   * Send a pong.
+	   *
+	   * @param {*} [data] The data to send
+	   * @param {Boolean} [mask] Indicates whether or not to mask `data`
+	   * @param {Function} [cb] Callback which is executed when the pong is sent
+	   * @public
+	   */
+	  pong(data, mask, cb) {
+	    if (this.readyState === WebSocket.CONNECTING) {
+	      throw new Error('WebSocket is not open: readyState 0 (CONNECTING)');
+	    }
+
+	    if (typeof data === 'function') {
+	      cb = data;
+	      data = mask = undefined;
+	    } else if (typeof mask === 'function') {
+	      cb = mask;
+	      mask = undefined;
+	    }
+
+	    if (typeof data === 'number') data = data.toString();
+
+	    if (this.readyState !== WebSocket.OPEN) {
+	      sendAfterClose(this, data, cb);
+	      return;
+	    }
+
+	    if (mask === undefined) mask = !this._isServer;
+	    this._sender.pong(data || EMPTY_BUFFER, mask, cb);
+	  }
+
+	  /**
+	   * Resume the socket.
+	   *
+	   * @public
+	   */
+	  resume() {
+	    if (
+	      this.readyState === WebSocket.CONNECTING ||
+	      this.readyState === WebSocket.CLOSED
+	    ) {
+	      return;
+	    }
+
+	    this._paused = false;
+	    if (!this._receiver._writableState.needDrain) this._socket.resume();
+	  }
+
+	  /**
+	   * Send a data message.
+	   *
+	   * @param {*} data The message to send
+	   * @param {Object} [options] Options object
+	   * @param {Boolean} [options.binary] Specifies whether `data` is binary or
+	   *     text
+	   * @param {Boolean} [options.compress] Specifies whether or not to compress
+	   *     `data`
+	   * @param {Boolean} [options.fin=true] Specifies whether the fragment is the
+	   *     last one
+	   * @param {Boolean} [options.mask] Specifies whether or not to mask `data`
+	   * @param {Function} [cb] Callback which is executed when data is written out
+	   * @public
+	   */
+	  send(data, options, cb) {
+	    if (this.readyState === WebSocket.CONNECTING) {
+	      throw new Error('WebSocket is not open: readyState 0 (CONNECTING)');
+	    }
+
+	    if (typeof options === 'function') {
+	      cb = options;
+	      options = {};
+	    }
+
+	    if (typeof data === 'number') data = data.toString();
+
+	    if (this.readyState !== WebSocket.OPEN) {
+	      sendAfterClose(this, data, cb);
+	      return;
+	    }
+
+	    const opts = {
+	      binary: typeof data !== 'string',
+	      mask: !this._isServer,
+	      compress: true,
+	      fin: true,
+	      ...options
+	    };
+
+	    if (!this._extensions[PerMessageDeflate.extensionName]) {
+	      opts.compress = false;
+	    }
+
+	    this._sender.send(data || EMPTY_BUFFER, opts, cb);
+	  }
+
+	  /**
+	   * Forcibly close the connection.
+	   *
+	   * @public
+	   */
+	  terminate() {
+	    if (this.readyState === WebSocket.CLOSED) return;
+	    if (this.readyState === WebSocket.CONNECTING) {
+	      const msg = 'WebSocket was closed before the connection was established';
+	      abortHandshake(this, this._req, msg);
+	      return;
+	    }
+
+	    if (this._socket) {
+	      this._readyState = WebSocket.CLOSING;
+	      this._socket.destroy();
+	    }
+	  }
+	}
+
+	/**
+	 * @constant {Number} CONNECTING
+	 * @memberof WebSocket
+	 */
+	Object.defineProperty(WebSocket, 'CONNECTING', {
+	  enumerable: true,
+	  value: readyStates.indexOf('CONNECTING')
+	});
+
+	/**
+	 * @constant {Number} CONNECTING
+	 * @memberof WebSocket.prototype
+	 */
+	Object.defineProperty(WebSocket.prototype, 'CONNECTING', {
+	  enumerable: true,
+	  value: readyStates.indexOf('CONNECTING')
+	});
+
+	/**
+	 * @constant {Number} OPEN
+	 * @memberof WebSocket
+	 */
+	Object.defineProperty(WebSocket, 'OPEN', {
+	  enumerable: true,
+	  value: readyStates.indexOf('OPEN')
+	});
+
+	/**
+	 * @constant {Number} OPEN
+	 * @memberof WebSocket.prototype
+	 */
+	Object.defineProperty(WebSocket.prototype, 'OPEN', {
+	  enumerable: true,
+	  value: readyStates.indexOf('OPEN')
+	});
+
+	/**
+	 * @constant {Number} CLOSING
+	 * @memberof WebSocket
+	 */
+	Object.defineProperty(WebSocket, 'CLOSING', {
+	  enumerable: true,
+	  value: readyStates.indexOf('CLOSING')
+	});
+
+	/**
+	 * @constant {Number} CLOSING
+	 * @memberof WebSocket.prototype
+	 */
+	Object.defineProperty(WebSocket.prototype, 'CLOSING', {
+	  enumerable: true,
+	  value: readyStates.indexOf('CLOSING')
+	});
+
+	/**
+	 * @constant {Number} CLOSED
+	 * @memberof WebSocket
+	 */
+	Object.defineProperty(WebSocket, 'CLOSED', {
+	  enumerable: true,
+	  value: readyStates.indexOf('CLOSED')
+	});
+
+	/**
+	 * @constant {Number} CLOSED
+	 * @memberof WebSocket.prototype
+	 */
+	Object.defineProperty(WebSocket.prototype, 'CLOSED', {
+	  enumerable: true,
+	  value: readyStates.indexOf('CLOSED')
+	});
+
+	[
+	  'binaryType',
+	  'bufferedAmount',
+	  'extensions',
+	  'isPaused',
+	  'protocol',
+	  'readyState',
+	  'url'
+	].forEach((property) => {
+	  Object.defineProperty(WebSocket.prototype, property, { enumerable: true });
+	});
+
+	//
+	// Add the `onopen`, `onerror`, `onclose`, and `onmessage` attributes.
+	// See https://html.spec.whatwg.org/multipage/comms.html#the-websocket-interface
+	//
+	['open', 'error', 'close', 'message'].forEach((method) => {
+	  Object.defineProperty(WebSocket.prototype, `on${method}`, {
+	    enumerable: true,
+	    get() {
+	      for (const listener of this.listeners(method)) {
+	        if (listener[kForOnEventAttribute]) return listener[kListener];
+	      }
+
+	      return null;
+	    },
+	    set(handler) {
+	      for (const listener of this.listeners(method)) {
+	        if (listener[kForOnEventAttribute]) {
+	          this.removeListener(method, listener);
+	          break;
+	        }
+	      }
+
+	      if (typeof handler !== 'function') return;
+
+	      this.addEventListener(method, handler, {
+	        [kForOnEventAttribute]: true
+	      });
+	    }
+	  });
+	});
+
+	WebSocket.prototype.addEventListener = addEventListener;
+	WebSocket.prototype.removeEventListener = removeEventListener;
+
+	websocket = WebSocket;
+
+	/**
+	 * Initialize a WebSocket client.
+	 *
+	 * @param {WebSocket} websocket The client to initialize
+	 * @param {(String|URL)} address The URL to which to connect
+	 * @param {Array} protocols The subprotocols
+	 * @param {Object} [options] Connection options
+	 * @param {Boolean} [options.allowSynchronousEvents=true] Specifies whether any
+	 *     of the `'message'`, `'ping'`, and `'pong'` events can be emitted multiple
+	 *     times in the same tick
+	 * @param {Boolean} [options.autoPong=true] Specifies whether or not to
+	 *     automatically send a pong in response to a ping
+	 * @param {Function} [options.finishRequest] A function which can be used to
+	 *     customize the headers of each http request before it is sent
+	 * @param {Boolean} [options.followRedirects=false] Whether or not to follow
+	 *     redirects
+	 * @param {Function} [options.generateMask] The function used to generate the
+	 *     masking key
+	 * @param {Number} [options.handshakeTimeout] Timeout in milliseconds for the
+	 *     handshake request
+	 * @param {Number} [options.maxPayload=104857600] The maximum allowed message
+	 *     size
+	 * @param {Number} [options.maxRedirects=10] The maximum number of redirects
+	 *     allowed
+	 * @param {String} [options.origin] Value of the `Origin` or
+	 *     `Sec-WebSocket-Origin` header
+	 * @param {(Boolean|Object)} [options.perMessageDeflate=true] Enable/disable
+	 *     permessage-deflate
+	 * @param {Number} [options.protocolVersion=13] Value of the
+	 *     `Sec-WebSocket-Version` header
+	 * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
+	 *     not to skip UTF-8 validation for text and close messages
+	 * @private
+	 */
+	function initAsClient(websocket, address, protocols, options) {
+	  const opts = {
+	    allowSynchronousEvents: true,
+	    autoPong: true,
+	    protocolVersion: protocolVersions[1],
+	    maxPayload: 100 * 1024 * 1024,
+	    skipUTF8Validation: false,
+	    perMessageDeflate: true,
+	    followRedirects: false,
+	    maxRedirects: 10,
+	    ...options,
+	    socketPath: undefined,
+	    hostname: undefined,
+	    protocol: undefined,
+	    timeout: undefined,
+	    method: 'GET',
+	    host: undefined,
+	    path: undefined,
+	    port: undefined
+	  };
+
+	  websocket._autoPong = opts.autoPong;
+
+	  if (!protocolVersions.includes(opts.protocolVersion)) {
+	    throw new RangeError(
+	      `Unsupported protocol version: ${opts.protocolVersion} ` +
+	        `(supported versions: ${protocolVersions.join(', ')})`
+	    );
+	  }
+
+	  let parsedUrl;
+
+	  if (address instanceof URL) {
+	    parsedUrl = address;
+	  } else {
+	    try {
+	      parsedUrl = new URL(address);
+	    } catch (e) {
+	      throw new SyntaxError(`Invalid URL: ${address}`);
+	    }
+	  }
+
+	  if (parsedUrl.protocol === 'http:') {
+	    parsedUrl.protocol = 'ws:';
+	  } else if (parsedUrl.protocol === 'https:') {
+	    parsedUrl.protocol = 'wss:';
+	  }
+
+	  websocket._url = parsedUrl.href;
+
+	  const isSecure = parsedUrl.protocol === 'wss:';
+	  const isIpcUrl = parsedUrl.protocol === 'ws+unix:';
+	  let invalidUrlMessage;
+
+	  if (parsedUrl.protocol !== 'ws:' && !isSecure && !isIpcUrl) {
+	    invalidUrlMessage =
+	      'The URL\'s protocol must be one of "ws:", "wss:", ' +
+	      '"http:", "https", or "ws+unix:"';
+	  } else if (isIpcUrl && !parsedUrl.pathname) {
+	    invalidUrlMessage = "The URL's pathname is empty";
+	  } else if (parsedUrl.hash) {
+	    invalidUrlMessage = 'The URL contains a fragment identifier';
+	  }
+
+	  if (invalidUrlMessage) {
+	    const err = new SyntaxError(invalidUrlMessage);
+
+	    if (websocket._redirects === 0) {
+	      throw err;
+	    } else {
+	      emitErrorAndClose(websocket, err);
+	      return;
+	    }
+	  }
+
+	  const defaultPort = isSecure ? 443 : 80;
+	  const key = randomBytes(16).toString('base64');
+	  const request = isSecure ? https.request : http.request;
+	  const protocolSet = new Set();
+	  let perMessageDeflate;
+
+	  opts.createConnection =
+	    opts.createConnection || (isSecure ? tlsConnect : netConnect);
+	  opts.defaultPort = opts.defaultPort || defaultPort;
+	  opts.port = parsedUrl.port || defaultPort;
+	  opts.host = parsedUrl.hostname.startsWith('[')
+	    ? parsedUrl.hostname.slice(1, -1)
+	    : parsedUrl.hostname;
+	  opts.headers = {
+	    ...opts.headers,
+	    'Sec-WebSocket-Version': opts.protocolVersion,
+	    'Sec-WebSocket-Key': key,
+	    Connection: 'Upgrade',
+	    Upgrade: 'websocket'
+	  };
+	  opts.path = parsedUrl.pathname + parsedUrl.search;
+	  opts.timeout = opts.handshakeTimeout;
+
+	  if (opts.perMessageDeflate) {
+	    perMessageDeflate = new PerMessageDeflate(
+	      opts.perMessageDeflate !== true ? opts.perMessageDeflate : {},
+	      false,
+	      opts.maxPayload
+	    );
+	    opts.headers['Sec-WebSocket-Extensions'] = format({
+	      [PerMessageDeflate.extensionName]: perMessageDeflate.offer()
+	    });
+	  }
+	  if (protocols.length) {
+	    for (const protocol of protocols) {
+	      if (
+	        typeof protocol !== 'string' ||
+	        !subprotocolRegex.test(protocol) ||
+	        protocolSet.has(protocol)
+	      ) {
+	        throw new SyntaxError(
+	          'An invalid or duplicated subprotocol was specified'
+	        );
+	      }
+
+	      protocolSet.add(protocol);
+	    }
+
+	    opts.headers['Sec-WebSocket-Protocol'] = protocols.join(',');
+	  }
+	  if (opts.origin) {
+	    if (opts.protocolVersion < 13) {
+	      opts.headers['Sec-WebSocket-Origin'] = opts.origin;
+	    } else {
+	      opts.headers.Origin = opts.origin;
+	    }
+	  }
+	  if (parsedUrl.username || parsedUrl.password) {
+	    opts.auth = `${parsedUrl.username}:${parsedUrl.password}`;
+	  }
+
+	  if (isIpcUrl) {
+	    const parts = opts.path.split(':');
+
+	    opts.socketPath = parts[0];
+	    opts.path = parts[1];
+	  }
+
+	  let req;
+
+	  if (opts.followRedirects) {
+	    if (websocket._redirects === 0) {
+	      websocket._originalIpc = isIpcUrl;
+	      websocket._originalSecure = isSecure;
+	      websocket._originalHostOrSocketPath = isIpcUrl
+	        ? opts.socketPath
+	        : parsedUrl.host;
+
+	      const headers = options && options.headers;
+
+	      //
+	      // Shallow copy the user provided options so that headers can be changed
+	      // without mutating the original object.
+	      //
+	      options = { ...options, headers: {} };
+
+	      if (headers) {
+	        for (const [key, value] of Object.entries(headers)) {
+	          options.headers[key.toLowerCase()] = value;
+	        }
+	      }
+	    } else if (websocket.listenerCount('redirect') === 0) {
+	      const isSameHost = isIpcUrl
+	        ? websocket._originalIpc
+	          ? opts.socketPath === websocket._originalHostOrSocketPath
+	          : false
+	        : websocket._originalIpc
+	          ? false
+	          : parsedUrl.host === websocket._originalHostOrSocketPath;
+
+	      if (!isSameHost || (websocket._originalSecure && !isSecure)) {
+	        //
+	        // Match curl 7.77.0 behavior and drop the following headers. These
+	        // headers are also dropped when following a redirect to a subdomain.
+	        //
+	        delete opts.headers.authorization;
+	        delete opts.headers.cookie;
+
+	        if (!isSameHost) delete opts.headers.host;
+
+	        opts.auth = undefined;
+	      }
+	    }
+
+	    //
+	    // Match curl 7.77.0 behavior and make the first `Authorization` header win.
+	    // If the `Authorization` header is set, then there is nothing to do as it
+	    // will take precedence.
+	    //
+	    if (opts.auth && !options.headers.authorization) {
+	      options.headers.authorization =
+	        'Basic ' + Buffer.from(opts.auth).toString('base64');
+	    }
+
+	    req = websocket._req = request(opts);
+
+	    if (websocket._redirects) {
+	      //
+	      // Unlike what is done for the `'upgrade'` event, no early exit is
+	      // triggered here if the user calls `websocket.close()` or
+	      // `websocket.terminate()` from a listener of the `'redirect'` event. This
+	      // is because the user can also call `request.destroy()` with an error
+	      // before calling `websocket.close()` or `websocket.terminate()` and this
+	      // would result in an error being emitted on the `request` object with no
+	      // `'error'` event listeners attached.
+	      //
+	      websocket.emit('redirect', websocket.url, req);
+	    }
+	  } else {
+	    req = websocket._req = request(opts);
+	  }
+
+	  if (opts.timeout) {
+	    req.on('timeout', () => {
+	      abortHandshake(websocket, req, 'Opening handshake has timed out');
+	    });
+	  }
+
+	  req.on('error', (err) => {
+	    if (req === null || req[kAborted]) return;
+
+	    req = websocket._req = null;
+	    emitErrorAndClose(websocket, err);
+	  });
+
+	  req.on('response', (res) => {
+	    const location = res.headers.location;
+	    const statusCode = res.statusCode;
+
+	    if (
+	      location &&
+	      opts.followRedirects &&
+	      statusCode >= 300 &&
+	      statusCode < 400
+	    ) {
+	      if (++websocket._redirects > opts.maxRedirects) {
+	        abortHandshake(websocket, req, 'Maximum redirects exceeded');
+	        return;
+	      }
+
+	      req.abort();
+
+	      let addr;
+
+	      try {
+	        addr = new URL(location, address);
+	      } catch (e) {
+	        const err = new SyntaxError(`Invalid URL: ${location}`);
+	        emitErrorAndClose(websocket, err);
+	        return;
+	      }
+
+	      initAsClient(websocket, addr, protocols, options);
+	    } else if (!websocket.emit('unexpected-response', req, res)) {
+	      abortHandshake(
+	        websocket,
+	        req,
+	        `Unexpected server response: ${res.statusCode}`
+	      );
+	    }
+	  });
+
+	  req.on('upgrade', (res, socket, head) => {
+	    websocket.emit('upgrade', res);
+
+	    //
+	    // The user may have closed the connection from a listener of the
+	    // `'upgrade'` event.
+	    //
+	    if (websocket.readyState !== WebSocket.CONNECTING) return;
+
+	    req = websocket._req = null;
+
+	    const upgrade = res.headers.upgrade;
+
+	    if (upgrade === undefined || upgrade.toLowerCase() !== 'websocket') {
+	      abortHandshake(websocket, socket, 'Invalid Upgrade header');
+	      return;
+	    }
+
+	    const digest = createHash('sha1')
+	      .update(key + GUID)
+	      .digest('base64');
+
+	    if (res.headers['sec-websocket-accept'] !== digest) {
+	      abortHandshake(websocket, socket, 'Invalid Sec-WebSocket-Accept header');
+	      return;
+	    }
+
+	    const serverProt = res.headers['sec-websocket-protocol'];
+	    let protError;
+
+	    if (serverProt !== undefined) {
+	      if (!protocolSet.size) {
+	        protError = 'Server sent a subprotocol but none was requested';
+	      } else if (!protocolSet.has(serverProt)) {
+	        protError = 'Server sent an invalid subprotocol';
+	      }
+	    } else if (protocolSet.size) {
+	      protError = 'Server sent no subprotocol';
+	    }
+
+	    if (protError) {
+	      abortHandshake(websocket, socket, protError);
+	      return;
+	    }
+
+	    if (serverProt) websocket._protocol = serverProt;
+
+	    const secWebSocketExtensions = res.headers['sec-websocket-extensions'];
+
+	    if (secWebSocketExtensions !== undefined) {
+	      if (!perMessageDeflate) {
+	        const message =
+	          'Server sent a Sec-WebSocket-Extensions header but no extension ' +
+	          'was requested';
+	        abortHandshake(websocket, socket, message);
+	        return;
+	      }
+
+	      let extensions;
+
+	      try {
+	        extensions = parse(secWebSocketExtensions);
+	      } catch (err) {
+	        const message = 'Invalid Sec-WebSocket-Extensions header';
+	        abortHandshake(websocket, socket, message);
+	        return;
+	      }
+
+	      const extensionNames = Object.keys(extensions);
+
+	      if (
+	        extensionNames.length !== 1 ||
+	        extensionNames[0] !== PerMessageDeflate.extensionName
+	      ) {
+	        const message = 'Server indicated an extension that was not requested';
+	        abortHandshake(websocket, socket, message);
+	        return;
+	      }
+
+	      try {
+	        perMessageDeflate.accept(extensions[PerMessageDeflate.extensionName]);
+	      } catch (err) {
+	        const message = 'Invalid Sec-WebSocket-Extensions header';
+	        abortHandshake(websocket, socket, message);
+	        return;
+	      }
+
+	      websocket._extensions[PerMessageDeflate.extensionName] =
+	        perMessageDeflate;
+	    }
+
+	    websocket.setSocket(socket, head, {
+	      allowSynchronousEvents: opts.allowSynchronousEvents,
+	      generateMask: opts.generateMask,
+	      maxPayload: opts.maxPayload,
+	      skipUTF8Validation: opts.skipUTF8Validation
+	    });
+	  });
+
+	  if (opts.finishRequest) {
+	    opts.finishRequest(req, websocket);
+	  } else {
+	    req.end();
+	  }
+	}
+
+	/**
+	 * Emit the `'error'` and `'close'` events.
+	 *
+	 * @param {WebSocket} websocket The WebSocket instance
+	 * @param {Error} The error to emit
+	 * @private
+	 */
+	function emitErrorAndClose(websocket, err) {
+	  websocket._readyState = WebSocket.CLOSING;
+	  //
+	  // The following assignment is practically useless and is done only for
+	  // consistency.
+	  //
+	  websocket._errorEmitted = true;
+	  websocket.emit('error', err);
+	  websocket.emitClose();
+	}
+
+	/**
+	 * Create a `net.Socket` and initiate a connection.
+	 *
+	 * @param {Object} options Connection options
+	 * @return {net.Socket} The newly created socket used to start the connection
+	 * @private
+	 */
+	function netConnect(options) {
+	  options.path = options.socketPath;
+	  return net.connect(options);
+	}
+
+	/**
+	 * Create a `tls.TLSSocket` and initiate a connection.
+	 *
+	 * @param {Object} options Connection options
+	 * @return {tls.TLSSocket} The newly created socket used to start the connection
+	 * @private
+	 */
+	function tlsConnect(options) {
+	  options.path = undefined;
+
+	  if (!options.servername && options.servername !== '') {
+	    options.servername = net.isIP(options.host) ? '' : options.host;
+	  }
+
+	  return tls.connect(options);
+	}
+
+	/**
+	 * Abort the handshake and emit an error.
+	 *
+	 * @param {WebSocket} websocket The WebSocket instance
+	 * @param {(http.ClientRequest|net.Socket|tls.Socket)} stream The request to
+	 *     abort or the socket to destroy
+	 * @param {String} message The error message
+	 * @private
+	 */
+	function abortHandshake(websocket, stream, message) {
+	  websocket._readyState = WebSocket.CLOSING;
+
+	  const err = new Error(message);
+	  Error.captureStackTrace(err, abortHandshake);
+
+	  if (stream.setHeader) {
+	    stream[kAborted] = true;
+	    stream.abort();
+
+	    if (stream.socket && !stream.socket.destroyed) {
+	      //
+	      // On Node.js >= 14.3.0 `request.abort()` does not destroy the socket if
+	      // called after the request completed. See
+	      // https://github.com/websockets/ws/issues/1869.
+	      //
+	      stream.socket.destroy();
+	    }
+
+	    process.nextTick(emitErrorAndClose, websocket, err);
+	  } else {
+	    stream.destroy(err);
+	    stream.once('error', websocket.emit.bind(websocket, 'error'));
+	    stream.once('close', websocket.emitClose.bind(websocket));
+	  }
+	}
+
+	/**
+	 * Handle cases where the `ping()`, `pong()`, or `send()` methods are called
+	 * when the `readyState` attribute is `CLOSING` or `CLOSED`.
+	 *
+	 * @param {WebSocket} websocket The WebSocket instance
+	 * @param {*} [data] The data to send
+	 * @param {Function} [cb] Callback
+	 * @private
+	 */
+	function sendAfterClose(websocket, data, cb) {
+	  if (data) {
+	    const length = isBlob(data) ? data.size : toBuffer(data).length;
+
+	    //
+	    // The `_bufferedAmount` property is used only when the peer is a client and
+	    // the opening handshake fails. Under these circumstances, in fact, the
+	    // `setSocket()` method is not called, so the `_socket` and `_sender`
+	    // properties are set to `null`.
+	    //
+	    if (websocket._socket) websocket._sender._bufferedBytes += length;
+	    else websocket._bufferedAmount += length;
+	  }
+
+	  if (cb) {
+	    const err = new Error(
+	      `WebSocket is not open: readyState ${websocket.readyState} ` +
+	        `(${readyStates[websocket.readyState]})`
+	    );
+	    process.nextTick(cb, err);
+	  }
+	}
+
+	/**
+	 * The listener of the `Receiver` `'conclude'` event.
+	 *
+	 * @param {Number} code The status code
+	 * @param {Buffer} reason The reason for closing
+	 * @private
+	 */
+	function receiverOnConclude(code, reason) {
+	  const websocket = this[kWebSocket];
+
+	  websocket._closeFrameReceived = true;
+	  websocket._closeMessage = reason;
+	  websocket._closeCode = code;
+
+	  if (websocket._socket[kWebSocket] === undefined) return;
+
+	  websocket._socket.removeListener('data', socketOnData);
+	  process.nextTick(resume, websocket._socket);
+
+	  if (code === 1005) websocket.close();
+	  else websocket.close(code, reason);
+	}
+
+	/**
+	 * The listener of the `Receiver` `'drain'` event.
+	 *
+	 * @private
+	 */
+	function receiverOnDrain() {
+	  const websocket = this[kWebSocket];
+
+	  if (!websocket.isPaused) websocket._socket.resume();
+	}
+
+	/**
+	 * The listener of the `Receiver` `'error'` event.
+	 *
+	 * @param {(RangeError|Error)} err The emitted error
+	 * @private
+	 */
+	function receiverOnError(err) {
+	  const websocket = this[kWebSocket];
+
+	  if (websocket._socket[kWebSocket] !== undefined) {
+	    websocket._socket.removeListener('data', socketOnData);
+
+	    //
+	    // On Node.js < 14.0.0 the `'error'` event is emitted synchronously. See
+	    // https://github.com/websockets/ws/issues/1940.
+	    //
+	    process.nextTick(resume, websocket._socket);
+
+	    websocket.close(err[kStatusCode]);
+	  }
+
+	  if (!websocket._errorEmitted) {
+	    websocket._errorEmitted = true;
+	    websocket.emit('error', err);
+	  }
+	}
+
+	/**
+	 * The listener of the `Receiver` `'finish'` event.
+	 *
+	 * @private
+	 */
+	function receiverOnFinish() {
+	  this[kWebSocket].emitClose();
+	}
+
+	/**
+	 * The listener of the `Receiver` `'message'` event.
+	 *
+	 * @param {Buffer|ArrayBuffer|Buffer[])} data The message
+	 * @param {Boolean} isBinary Specifies whether the message is binary or not
+	 * @private
+	 */
+	function receiverOnMessage(data, isBinary) {
+	  this[kWebSocket].emit('message', data, isBinary);
+	}
+
+	/**
+	 * The listener of the `Receiver` `'ping'` event.
+	 *
+	 * @param {Buffer} data The data included in the ping frame
+	 * @private
+	 */
+	function receiverOnPing(data) {
+	  const websocket = this[kWebSocket];
+
+	  if (websocket._autoPong) websocket.pong(data, !this._isServer, NOOP);
+	  websocket.emit('ping', data);
+	}
+
+	/**
+	 * The listener of the `Receiver` `'pong'` event.
+	 *
+	 * @param {Buffer} data The data included in the pong frame
+	 * @private
+	 */
+	function receiverOnPong(data) {
+	  this[kWebSocket].emit('pong', data);
+	}
+
+	/**
+	 * Resume a readable stream
+	 *
+	 * @param {Readable} stream The readable stream
+	 * @private
+	 */
+	function resume(stream) {
+	  stream.resume();
+	}
+
+	/**
+	 * The `Sender` error event handler.
+	 *
+	 * @param {Error} The error
+	 * @private
+	 */
+	function senderOnError(err) {
+	  const websocket = this[kWebSocket];
+
+	  if (websocket.readyState === WebSocket.CLOSED) return;
+	  if (websocket.readyState === WebSocket.OPEN) {
+	    websocket._readyState = WebSocket.CLOSING;
+	    setCloseTimer(websocket);
+	  }
+
+	  //
+	  // `socket.end()` is used instead of `socket.destroy()` to allow the other
+	  // peer to finish sending queued data. There is no need to set a timer here
+	  // because `CLOSING` means that it is already set or not needed.
+	  //
+	  this._socket.end();
+
+	  if (!websocket._errorEmitted) {
+	    websocket._errorEmitted = true;
+	    websocket.emit('error', err);
+	  }
+	}
+
+	/**
+	 * Set a timer to destroy the underlying raw socket of a WebSocket.
+	 *
+	 * @param {WebSocket} websocket The WebSocket instance
+	 * @private
+	 */
+	function setCloseTimer(websocket) {
+	  websocket._closeTimer = setTimeout(
+	    websocket._socket.destroy.bind(websocket._socket),
+	    closeTimeout
+	  );
+	}
+
+	/**
+	 * The listener of the socket `'close'` event.
+	 *
+	 * @private
+	 */
+	function socketOnClose() {
+	  const websocket = this[kWebSocket];
+
+	  this.removeListener('close', socketOnClose);
+	  this.removeListener('data', socketOnData);
+	  this.removeListener('end', socketOnEnd);
+
+	  websocket._readyState = WebSocket.CLOSING;
+
+	  let chunk;
+
+	  //
+	  // The close frame might not have been received or the `'end'` event emitted,
+	  // for example, if the socket was destroyed due to an error. Ensure that the
+	  // `receiver` stream is closed after writing any remaining buffered data to
+	  // it. If the readable side of the socket is in flowing mode then there is no
+	  // buffered data as everything has been already written and `readable.read()`
+	  // will return `null`. If instead, the socket is paused, any possible buffered
+	  // data will be read as a single chunk.
+	  //
+	  if (
+	    !this._readableState.endEmitted &&
+	    !websocket._closeFrameReceived &&
+	    !websocket._receiver._writableState.errorEmitted &&
+	    (chunk = websocket._socket.read()) !== null
+	  ) {
+	    websocket._receiver.write(chunk);
+	  }
+
+	  websocket._receiver.end();
+
+	  this[kWebSocket] = undefined;
+
+	  clearTimeout(websocket._closeTimer);
+
+	  if (
+	    websocket._receiver._writableState.finished ||
+	    websocket._receiver._writableState.errorEmitted
+	  ) {
+	    websocket.emitClose();
+	  } else {
+	    websocket._receiver.on('error', receiverOnFinish);
+	    websocket._receiver.on('finish', receiverOnFinish);
+	  }
+	}
+
+	/**
+	 * The listener of the socket `'data'` event.
+	 *
+	 * @param {Buffer} chunk A chunk of data
+	 * @private
+	 */
+	function socketOnData(chunk) {
+	  if (!this[kWebSocket]._receiver.write(chunk)) {
+	    this.pause();
+	  }
+	}
+
+	/**
+	 * The listener of the socket `'end'` event.
+	 *
+	 * @private
+	 */
+	function socketOnEnd() {
+	  const websocket = this[kWebSocket];
+
+	  websocket._readyState = WebSocket.CLOSING;
+	  websocket._receiver.end();
+	  this.end();
+	}
+
+	/**
+	 * The listener of the socket `'error'` event.
+	 *
+	 * @private
+	 */
+	function socketOnError() {
+	  const websocket = this[kWebSocket];
+
+	  this.removeListener('error', socketOnError);
+	  this.on('error', NOOP);
+
+	  if (websocket) {
+	    websocket._readyState = WebSocket.CLOSING;
+	    this.destroy();
+	  }
+	}
+	return websocket;
+}
+
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "^WebSocket$" }] */
+
+var stream;
+var hasRequiredStream;
+
+function requireStream () {
+	if (hasRequiredStream) return stream;
+	hasRequiredStream = 1;
+
+	requireWebsocket();
+	const { Duplex } = require$$0$2;
+
+	/**
+	 * Emits the `'close'` event on a stream.
+	 *
+	 * @param {Duplex} stream The stream.
+	 * @private
+	 */
+	function emitClose(stream) {
+	  stream.emit('close');
+	}
+
+	/**
+	 * The listener of the `'end'` event.
+	 *
+	 * @private
+	 */
+	function duplexOnEnd() {
+	  if (!this.destroyed && this._writableState.finished) {
+	    this.destroy();
+	  }
+	}
+
+	/**
+	 * The listener of the `'error'` event.
+	 *
+	 * @param {Error} err The error
+	 * @private
+	 */
+	function duplexOnError(err) {
+	  this.removeListener('error', duplexOnError);
+	  this.destroy();
+	  if (this.listenerCount('error') === 0) {
+	    // Do not suppress the throwing behavior.
+	    this.emit('error', err);
+	  }
+	}
+
+	/**
+	 * Wraps a `WebSocket` in a duplex stream.
+	 *
+	 * @param {WebSocket} ws The `WebSocket` to wrap
+	 * @param {Object} [options] The options for the `Duplex` constructor
+	 * @return {Duplex} The duplex stream
+	 * @public
+	 */
+	function createWebSocketStream(ws, options) {
+	  let terminateOnDestroy = true;
+
+	  const duplex = new Duplex({
+	    ...options,
+	    autoDestroy: false,
+	    emitClose: false,
+	    objectMode: false,
+	    writableObjectMode: false
+	  });
+
+	  ws.on('message', function message(msg, isBinary) {
+	    const data =
+	      !isBinary && duplex._readableState.objectMode ? msg.toString() : msg;
+
+	    if (!duplex.push(data)) ws.pause();
+	  });
+
+	  ws.once('error', function error(err) {
+	    if (duplex.destroyed) return;
+
+	    // Prevent `ws.terminate()` from being called by `duplex._destroy()`.
+	    //
+	    // - If the `'error'` event is emitted before the `'open'` event, then
+	    //   `ws.terminate()` is a noop as no socket is assigned.
+	    // - Otherwise, the error is re-emitted by the listener of the `'error'`
+	    //   event of the `Receiver` object. The listener already closes the
+	    //   connection by calling `ws.close()`. This allows a close frame to be
+	    //   sent to the other peer. If `ws.terminate()` is called right after this,
+	    //   then the close frame might not be sent.
+	    terminateOnDestroy = false;
+	    duplex.destroy(err);
+	  });
+
+	  ws.once('close', function close() {
+	    if (duplex.destroyed) return;
+
+	    duplex.push(null);
+	  });
+
+	  duplex._destroy = function (err, callback) {
+	    if (ws.readyState === ws.CLOSED) {
+	      callback(err);
+	      process.nextTick(emitClose, duplex);
+	      return;
+	    }
+
+	    let called = false;
+
+	    ws.once('error', function error(err) {
+	      called = true;
+	      callback(err);
+	    });
+
+	    ws.once('close', function close() {
+	      if (!called) callback(err);
+	      process.nextTick(emitClose, duplex);
+	    });
+
+	    if (terminateOnDestroy) ws.terminate();
+	  };
+
+	  duplex._final = function (callback) {
+	    if (ws.readyState === ws.CONNECTING) {
+	      ws.once('open', function open() {
+	        duplex._final(callback);
+	      });
+	      return;
+	    }
+
+	    // If the value of the `_socket` property is `null` it means that `ws` is a
+	    // client websocket and the handshake failed. In fact, when this happens, a
+	    // socket is never assigned to the websocket. Wait for the `'error'` event
+	    // that will be emitted by the websocket.
+	    if (ws._socket === null) return;
+
+	    if (ws._socket._writableState.finished) {
+	      callback();
+	      if (duplex._readableState.endEmitted) duplex.destroy();
+	    } else {
+	      ws._socket.once('finish', function finish() {
+	        // `duplex` is not destroyed here because the `'end'` event will be
+	        // emitted on `duplex` after this `'finish'` event. The EOF signaling
+	        // `null` chunk is, in fact, pushed when the websocket emits `'close'`.
+	        callback();
+	      });
+	      ws.close();
+	    }
+	  };
+
+	  duplex._read = function () {
+	    if (ws.isPaused) ws.resume();
+	  };
+
+	  duplex._write = function (chunk, encoding, callback) {
+	    if (ws.readyState === ws.CONNECTING) {
+	      ws.once('open', function open() {
+	        duplex._write(chunk, encoding, callback);
+	      });
+	      return;
+	    }
+
+	    ws.send(chunk, callback);
+	  };
+
+	  duplex.on('end', duplexOnEnd);
+	  duplex.on('error', duplexOnError);
+	  return duplex;
+	}
+
+	stream = createWebSocketStream;
+	return stream;
+}
+
+requireStream();
+
+requireReceiver();
+
+requireSender();
+
+var websocketExports = requireWebsocket();
+var WebSocket = /*@__PURE__*/getDefaultExportFromCjs(websocketExports);
+
+var subprotocol;
+var hasRequiredSubprotocol;
+
+function requireSubprotocol () {
+	if (hasRequiredSubprotocol) return subprotocol;
+	hasRequiredSubprotocol = 1;
+
+	const { tokenChars } = requireValidation();
+
+	/**
+	 * Parses the `Sec-WebSocket-Protocol` header into a set of subprotocol names.
+	 *
+	 * @param {String} header The field value of the header
+	 * @return {Set} The subprotocol names
+	 * @public
+	 */
+	function parse(header) {
+	  const protocols = new Set();
+	  let start = -1;
+	  let end = -1;
+	  let i = 0;
+
+	  for (i; i < header.length; i++) {
+	    const code = header.charCodeAt(i);
+
+	    if (end === -1 && tokenChars[code] === 1) {
+	      if (start === -1) start = i;
+	    } else if (
+	      i !== 0 &&
+	      (code === 0x20 /* ' ' */ || code === 0x09) /* '\t' */
+	    ) {
+	      if (end === -1 && start !== -1) end = i;
+	    } else if (code === 0x2c /* ',' */) {
+	      if (start === -1) {
+	        throw new SyntaxError(`Unexpected character at index ${i}`);
+	      }
+
+	      if (end === -1) end = i;
+
+	      const protocol = header.slice(start, end);
+
+	      if (protocols.has(protocol)) {
+	        throw new SyntaxError(`The "${protocol}" subprotocol is duplicated`);
+	      }
+
+	      protocols.add(protocol);
+	      start = end = -1;
+	    } else {
+	      throw new SyntaxError(`Unexpected character at index ${i}`);
+	    }
+	  }
+
+	  if (start === -1 || end !== -1) {
+	    throw new SyntaxError('Unexpected end of input');
+	  }
+
+	  const protocol = header.slice(start, i);
+
+	  if (protocols.has(protocol)) {
+	    throw new SyntaxError(`The "${protocol}" subprotocol is duplicated`);
+	  }
+
+	  protocols.add(protocol);
+	  return protocols;
+	}
+
+	subprotocol = { parse };
+	return subprotocol;
+}
+
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "^Duplex$", "caughtErrors": "none" }] */
+
+var websocketServer;
+var hasRequiredWebsocketServer;
+
+function requireWebsocketServer () {
+	if (hasRequiredWebsocketServer) return websocketServer;
+	hasRequiredWebsocketServer = 1;
+
+	const EventEmitter = require$$0$3;
+	const http = require$$2;
+	const { Duplex } = require$$0$2;
+	const { createHash } = require$$1;
+
+	const extension = requireExtension();
+	const PerMessageDeflate = requirePermessageDeflate();
+	const subprotocol = requireSubprotocol();
+	const WebSocket = requireWebsocket();
+	const { GUID, kWebSocket } = requireConstants();
+
+	const keyRegex = /^[+/0-9A-Za-z]{22}==$/;
+
+	const RUNNING = 0;
+	const CLOSING = 1;
+	const CLOSED = 2;
+
+	/**
+	 * Class representing a WebSocket server.
+	 *
+	 * @extends EventEmitter
+	 */
+	class WebSocketServer extends EventEmitter {
+	  /**
+	   * Create a `WebSocketServer` instance.
+	   *
+	   * @param {Object} options Configuration options
+	   * @param {Boolean} [options.allowSynchronousEvents=true] Specifies whether
+	   *     any of the `'message'`, `'ping'`, and `'pong'` events can be emitted
+	   *     multiple times in the same tick
+	   * @param {Boolean} [options.autoPong=true] Specifies whether or not to
+	   *     automatically send a pong in response to a ping
+	   * @param {Number} [options.backlog=511] The maximum length of the queue of
+	   *     pending connections
+	   * @param {Boolean} [options.clientTracking=true] Specifies whether or not to
+	   *     track clients
+	   * @param {Function} [options.handleProtocols] A hook to handle protocols
+	   * @param {String} [options.host] The hostname where to bind the server
+	   * @param {Number} [options.maxPayload=104857600] The maximum allowed message
+	   *     size
+	   * @param {Boolean} [options.noServer=false] Enable no server mode
+	   * @param {String} [options.path] Accept only connections matching this path
+	   * @param {(Boolean|Object)} [options.perMessageDeflate=false] Enable/disable
+	   *     permessage-deflate
+	   * @param {Number} [options.port] The port where to bind the server
+	   * @param {(http.Server|https.Server)} [options.server] A pre-created HTTP/S
+	   *     server to use
+	   * @param {Boolean} [options.skipUTF8Validation=false] Specifies whether or
+	   *     not to skip UTF-8 validation for text and close messages
+	   * @param {Function} [options.verifyClient] A hook to reject connections
+	   * @param {Function} [options.WebSocket=WebSocket] Specifies the `WebSocket`
+	   *     class to use. It must be the `WebSocket` class or class that extends it
+	   * @param {Function} [callback] A listener for the `listening` event
+	   */
+	  constructor(options, callback) {
+	    super();
+
+	    options = {
+	      allowSynchronousEvents: true,
+	      autoPong: true,
+	      maxPayload: 100 * 1024 * 1024,
+	      skipUTF8Validation: false,
+	      perMessageDeflate: false,
+	      handleProtocols: null,
+	      clientTracking: true,
+	      verifyClient: null,
+	      noServer: false,
+	      backlog: null, // use default (511 as implemented in net.js)
+	      server: null,
+	      host: null,
+	      path: null,
+	      port: null,
+	      WebSocket,
+	      ...options
+	    };
+
+	    if (
+	      (options.port == null && !options.server && !options.noServer) ||
+	      (options.port != null && (options.server || options.noServer)) ||
+	      (options.server && options.noServer)
+	    ) {
+	      throw new TypeError(
+	        'One and only one of the "port", "server", or "noServer" options ' +
+	          'must be specified'
+	      );
+	    }
+
+	    if (options.port != null) {
+	      this._server = http.createServer((req, res) => {
+	        const body = http.STATUS_CODES[426];
+
+	        res.writeHead(426, {
+	          'Content-Length': body.length,
+	          'Content-Type': 'text/plain'
+	        });
+	        res.end(body);
+	      });
+	      this._server.listen(
+	        options.port,
+	        options.host,
+	        options.backlog,
+	        callback
+	      );
+	    } else if (options.server) {
+	      this._server = options.server;
+	    }
+
+	    if (this._server) {
+	      const emitConnection = this.emit.bind(this, 'connection');
+
+	      this._removeListeners = addListeners(this._server, {
+	        listening: this.emit.bind(this, 'listening'),
+	        error: this.emit.bind(this, 'error'),
+	        upgrade: (req, socket, head) => {
+	          this.handleUpgrade(req, socket, head, emitConnection);
+	        }
+	      });
+	    }
+
+	    if (options.perMessageDeflate === true) options.perMessageDeflate = {};
+	    if (options.clientTracking) {
+	      this.clients = new Set();
+	      this._shouldEmitClose = false;
+	    }
+
+	    this.options = options;
+	    this._state = RUNNING;
+	  }
+
+	  /**
+	   * Returns the bound address, the address family name, and port of the server
+	   * as reported by the operating system if listening on an IP socket.
+	   * If the server is listening on a pipe or UNIX domain socket, the name is
+	   * returned as a string.
+	   *
+	   * @return {(Object|String|null)} The address of the server
+	   * @public
+	   */
+	  address() {
+	    if (this.options.noServer) {
+	      throw new Error('The server is operating in "noServer" mode');
+	    }
+
+	    if (!this._server) return null;
+	    return this._server.address();
+	  }
+
+	  /**
+	   * Stop the server from accepting new connections and emit the `'close'` event
+	   * when all existing connections are closed.
+	   *
+	   * @param {Function} [cb] A one-time listener for the `'close'` event
+	   * @public
+	   */
+	  close(cb) {
+	    if (this._state === CLOSED) {
+	      if (cb) {
+	        this.once('close', () => {
+	          cb(new Error('The server is not running'));
+	        });
+	      }
+
+	      process.nextTick(emitClose, this);
+	      return;
+	    }
+
+	    if (cb) this.once('close', cb);
+
+	    if (this._state === CLOSING) return;
+	    this._state = CLOSING;
+
+	    if (this.options.noServer || this.options.server) {
+	      if (this._server) {
+	        this._removeListeners();
+	        this._removeListeners = this._server = null;
+	      }
+
+	      if (this.clients) {
+	        if (!this.clients.size) {
+	          process.nextTick(emitClose, this);
+	        } else {
+	          this._shouldEmitClose = true;
+	        }
+	      } else {
+	        process.nextTick(emitClose, this);
+	      }
+	    } else {
+	      const server = this._server;
+
+	      this._removeListeners();
+	      this._removeListeners = this._server = null;
+
+	      //
+	      // The HTTP/S server was created internally. Close it, and rely on its
+	      // `'close'` event.
+	      //
+	      server.close(() => {
+	        emitClose(this);
+	      });
+	    }
+	  }
+
+	  /**
+	   * See if a given request should be handled by this server instance.
+	   *
+	   * @param {http.IncomingMessage} req Request object to inspect
+	   * @return {Boolean} `true` if the request is valid, else `false`
+	   * @public
+	   */
+	  shouldHandle(req) {
+	    if (this.options.path) {
+	      const index = req.url.indexOf('?');
+	      const pathname = index !== -1 ? req.url.slice(0, index) : req.url;
+
+	      if (pathname !== this.options.path) return false;
+	    }
+
+	    return true;
+	  }
+
+	  /**
+	   * Handle a HTTP Upgrade request.
+	   *
+	   * @param {http.IncomingMessage} req The request object
+	   * @param {Duplex} socket The network socket between the server and client
+	   * @param {Buffer} head The first packet of the upgraded stream
+	   * @param {Function} cb Callback
+	   * @public
+	   */
+	  handleUpgrade(req, socket, head, cb) {
+	    socket.on('error', socketOnError);
+
+	    const key = req.headers['sec-websocket-key'];
+	    const upgrade = req.headers.upgrade;
+	    const version = +req.headers['sec-websocket-version'];
+
+	    if (req.method !== 'GET') {
+	      const message = 'Invalid HTTP method';
+	      abortHandshakeOrEmitwsClientError(this, req, socket, 405, message);
+	      return;
+	    }
+
+	    if (upgrade === undefined || upgrade.toLowerCase() !== 'websocket') {
+	      const message = 'Invalid Upgrade header';
+	      abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
+	      return;
+	    }
+
+	    if (key === undefined || !keyRegex.test(key)) {
+	      const message = 'Missing or invalid Sec-WebSocket-Key header';
+	      abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
+	      return;
+	    }
+
+	    if (version !== 8 && version !== 13) {
+	      const message = 'Missing or invalid Sec-WebSocket-Version header';
+	      abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
+	      return;
+	    }
+
+	    if (!this.shouldHandle(req)) {
+	      abortHandshake(socket, 400);
+	      return;
+	    }
+
+	    const secWebSocketProtocol = req.headers['sec-websocket-protocol'];
+	    let protocols = new Set();
+
+	    if (secWebSocketProtocol !== undefined) {
+	      try {
+	        protocols = subprotocol.parse(secWebSocketProtocol);
+	      } catch (err) {
+	        const message = 'Invalid Sec-WebSocket-Protocol header';
+	        abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
+	        return;
+	      }
+	    }
+
+	    const secWebSocketExtensions = req.headers['sec-websocket-extensions'];
+	    const extensions = {};
+
+	    if (
+	      this.options.perMessageDeflate &&
+	      secWebSocketExtensions !== undefined
+	    ) {
+	      const perMessageDeflate = new PerMessageDeflate(
+	        this.options.perMessageDeflate,
+	        true,
+	        this.options.maxPayload
+	      );
+
+	      try {
+	        const offers = extension.parse(secWebSocketExtensions);
+
+	        if (offers[PerMessageDeflate.extensionName]) {
+	          perMessageDeflate.accept(offers[PerMessageDeflate.extensionName]);
+	          extensions[PerMessageDeflate.extensionName] = perMessageDeflate;
+	        }
+	      } catch (err) {
+	        const message =
+	          'Invalid or unacceptable Sec-WebSocket-Extensions header';
+	        abortHandshakeOrEmitwsClientError(this, req, socket, 400, message);
+	        return;
+	      }
+	    }
+
+	    //
+	    // Optionally call external client verification handler.
+	    //
+	    if (this.options.verifyClient) {
+	      const info = {
+	        origin:
+	          req.headers[`${version === 8 ? 'sec-websocket-origin' : 'origin'}`],
+	        secure: !!(req.socket.authorized || req.socket.encrypted),
+	        req
+	      };
+
+	      if (this.options.verifyClient.length === 2) {
+	        this.options.verifyClient(info, (verified, code, message, headers) => {
+	          if (!verified) {
+	            return abortHandshake(socket, code || 401, message, headers);
+	          }
+
+	          this.completeUpgrade(
+	            extensions,
+	            key,
+	            protocols,
+	            req,
+	            socket,
+	            head,
+	            cb
+	          );
+	        });
+	        return;
+	      }
+
+	      if (!this.options.verifyClient(info)) return abortHandshake(socket, 401);
+	    }
+
+	    this.completeUpgrade(extensions, key, protocols, req, socket, head, cb);
+	  }
+
+	  /**
+	   * Upgrade the connection to WebSocket.
+	   *
+	   * @param {Object} extensions The accepted extensions
+	   * @param {String} key The value of the `Sec-WebSocket-Key` header
+	   * @param {Set} protocols The subprotocols
+	   * @param {http.IncomingMessage} req The request object
+	   * @param {Duplex} socket The network socket between the server and client
+	   * @param {Buffer} head The first packet of the upgraded stream
+	   * @param {Function} cb Callback
+	   * @throws {Error} If called more than once with the same socket
+	   * @private
+	   */
+	  completeUpgrade(extensions, key, protocols, req, socket, head, cb) {
+	    //
+	    // Destroy the socket if the client has already sent a FIN packet.
+	    //
+	    if (!socket.readable || !socket.writable) return socket.destroy();
+
+	    if (socket[kWebSocket]) {
+	      throw new Error(
+	        'server.handleUpgrade() was called more than once with the same ' +
+	          'socket, possibly due to a misconfiguration'
+	      );
+	    }
+
+	    if (this._state > RUNNING) return abortHandshake(socket, 503);
+
+	    const digest = createHash('sha1')
+	      .update(key + GUID)
+	      .digest('base64');
+
+	    const headers = [
+	      'HTTP/1.1 101 Switching Protocols',
+	      'Upgrade: websocket',
+	      'Connection: Upgrade',
+	      `Sec-WebSocket-Accept: ${digest}`
+	    ];
+
+	    const ws = new this.options.WebSocket(null, undefined, this.options);
+
+	    if (protocols.size) {
+	      //
+	      // Optionally call external protocol selection handler.
+	      //
+	      const protocol = this.options.handleProtocols
+	        ? this.options.handleProtocols(protocols, req)
+	        : protocols.values().next().value;
+
+	      if (protocol) {
+	        headers.push(`Sec-WebSocket-Protocol: ${protocol}`);
+	        ws._protocol = protocol;
+	      }
+	    }
+
+	    if (extensions[PerMessageDeflate.extensionName]) {
+	      const params = extensions[PerMessageDeflate.extensionName].params;
+	      const value = extension.format({
+	        [PerMessageDeflate.extensionName]: [params]
+	      });
+	      headers.push(`Sec-WebSocket-Extensions: ${value}`);
+	      ws._extensions = extensions;
+	    }
+
+	    //
+	    // Allow external modification/inspection of handshake headers.
+	    //
+	    this.emit('headers', headers, req);
+
+	    socket.write(headers.concat('\r\n').join('\r\n'));
+	    socket.removeListener('error', socketOnError);
+
+	    ws.setSocket(socket, head, {
+	      allowSynchronousEvents: this.options.allowSynchronousEvents,
+	      maxPayload: this.options.maxPayload,
+	      skipUTF8Validation: this.options.skipUTF8Validation
+	    });
+
+	    if (this.clients) {
+	      this.clients.add(ws);
+	      ws.on('close', () => {
+	        this.clients.delete(ws);
+
+	        if (this._shouldEmitClose && !this.clients.size) {
+	          process.nextTick(emitClose, this);
+	        }
+	      });
+	    }
+
+	    cb(ws, req);
+	  }
+	}
+
+	websocketServer = WebSocketServer;
+
+	/**
+	 * Add event listeners on an `EventEmitter` using a map of <event, listener>
+	 * pairs.
+	 *
+	 * @param {EventEmitter} server The event emitter
+	 * @param {Object.<String, Function>} map The listeners to add
+	 * @return {Function} A function that will remove the added listeners when
+	 *     called
+	 * @private
+	 */
+	function addListeners(server, map) {
+	  for (const event of Object.keys(map)) server.on(event, map[event]);
+
+	  return function removeListeners() {
+	    for (const event of Object.keys(map)) {
+	      server.removeListener(event, map[event]);
+	    }
+	  };
+	}
+
+	/**
+	 * Emit a `'close'` event on an `EventEmitter`.
+	 *
+	 * @param {EventEmitter} server The event emitter
+	 * @private
+	 */
+	function emitClose(server) {
+	  server._state = CLOSED;
+	  server.emit('close');
+	}
+
+	/**
+	 * Handle socket errors.
+	 *
+	 * @private
+	 */
+	function socketOnError() {
+	  this.destroy();
+	}
+
+	/**
+	 * Close the connection when preconditions are not fulfilled.
+	 *
+	 * @param {Duplex} socket The socket of the upgrade request
+	 * @param {Number} code The HTTP response status code
+	 * @param {String} [message] The HTTP response body
+	 * @param {Object} [headers] Additional HTTP response headers
+	 * @private
+	 */
+	function abortHandshake(socket, code, message, headers) {
+	  //
+	  // The socket is writable unless the user destroyed or ended it before calling
+	  // `server.handleUpgrade()` or in the `verifyClient` function, which is a user
+	  // error. Handling this does not make much sense as the worst that can happen
+	  // is that some of the data written by the user might be discarded due to the
+	  // call to `socket.end()` below, which triggers an `'error'` event that in
+	  // turn causes the socket to be destroyed.
+	  //
+	  message = message || http.STATUS_CODES[code];
+	  headers = {
+	    Connection: 'close',
+	    'Content-Type': 'text/html',
+	    'Content-Length': Buffer.byteLength(message),
+	    ...headers
+	  };
+
+	  socket.once('finish', socket.destroy);
+
+	  socket.end(
+	    `HTTP/1.1 ${code} ${http.STATUS_CODES[code]}\r\n` +
+	      Object.keys(headers)
+	        .map((h) => `${h}: ${headers[h]}`)
+	        .join('\r\n') +
+	      '\r\n\r\n' +
+	      message
+	  );
+	}
+
+	/**
+	 * Emit a `'wsClientError'` event on a `WebSocketServer` if there is at least
+	 * one listener for it, otherwise call `abortHandshake()`.
+	 *
+	 * @param {WebSocketServer} server The WebSocket server
+	 * @param {http.IncomingMessage} req The request object
+	 * @param {Duplex} socket The socket of the upgrade request
+	 * @param {Number} code The HTTP response status code
+	 * @param {String} message The HTTP response body
+	 * @private
+	 */
+	function abortHandshakeOrEmitwsClientError(server, req, socket, code, message) {
+	  if (server.listenerCount('wsClientError')) {
+	    const err = new Error(message);
+	    Error.captureStackTrace(err, abortHandshakeOrEmitwsClientError);
+
+	    server.emit('wsClientError', err, socket, req);
+	  } else {
+	    abortHandshake(socket, code, message);
+	  }
+	}
+	return websocketServer;
+}
+
+requireWebsocketServer();
+
+/**!
+ * @author Elgato
+ * @module elgato/streamdeck
+ * @license MIT
+ * @copyright Copyright (c) Corsair Memory Inc.
+ */
+
+/**
+ * Languages supported by Stream Deck.
+ */
+const supportedLanguages = ["de", "en", "es", "fr", "ja", "ko", "zh_CN", "zh_TW"];
+
+/**
+ * Defines the type of argument supplied by Stream Deck.
+ */
+var RegistrationParameter;
+(function (RegistrationParameter) {
+    /**
+     * Identifies the argument that specifies the web socket port that Stream Deck is listening on.
+     */
+    RegistrationParameter["Port"] = "-port";
+    /**
+     * Identifies the argument that supplies information about the Stream Deck and the plugin.
+     */
+    RegistrationParameter["Info"] = "-info";
+    /**
+     * Identifies the argument that specifies the unique identifier that can be used when registering the plugin.
+     */
+    RegistrationParameter["PluginUUID"] = "-pluginUUID";
+    /**
+     * Identifies the argument that specifies the event to be sent to Stream Deck as part of the registration procedure.
+     */
+    RegistrationParameter["RegisterEvent"] = "-registerEvent";
+})(RegistrationParameter || (RegistrationParameter = {}));
+
+/**
+ * Defines the target of a request, i.e. whether the request should update the Stream Deck hardware, Stream Deck software (application), or both, when calling `setImage` and `setState`.
+ */
+var Target;
+(function (Target) {
+    /**
+     * Hardware and software should be updated as part of the request.
+     */
+    Target[Target["HardwareAndSoftware"] = 0] = "HardwareAndSoftware";
+    /**
+     * Hardware only should be updated as part of the request.
+     */
+    Target[Target["Hardware"] = 1] = "Hardware";
+    /**
+     * Software only should be updated as part of the request.
+     */
+    Target[Target["Software"] = 2] = "Software";
+})(Target || (Target = {}));
+
+/**
+ * Prevents the modification of existing property attributes and values on the value, and all of its child properties, and prevents the addition of new properties.
+ * @param value Value to freeze.
+ */
+function freeze(value) {
+    if (value !== undefined && value !== null && typeof value === "object" && !Object.isFrozen(value)) {
+        Object.freeze(value);
+        Object.values(value).forEach(freeze);
+    }
+}
+/**
+ * Gets the value at the specified {@link path}.
+ * @param path Path to the property to get.
+ * @param source Source object that is being read from.
+ * @returns Value of the property.
+ */
+function get(path, source) {
+    const props = path.split(".");
+    return props.reduce((obj, prop) => obj && obj[prop], source);
+}
+
+/**
+ * Internalization provider, responsible for managing localizations and translating resources.
+ */
+class I18nProvider {
+    language;
+    readTranslations;
+    /**
+     * Default language to be used when a resource does not exist for the desired language.
+     */
+    static DEFAULT_LANGUAGE = "en";
+    /**
+     * Map of localized resources, indexed by their language.
+     */
+    _translations = new Map();
+    /**
+     * Initializes a new instance of the {@link I18nProvider} class.
+     * @param language The default language to be used when retrieving translations for a given key.
+     * @param readTranslations Function responsible for loading translations.
+     */
+    constructor(language, readTranslations) {
+        this.language = language;
+        this.readTranslations = readTranslations;
+    }
+    /**
+     * Translates the specified {@link key}, as defined within the resources for the {@link language}. When the key is not found, the default language is checked.
+     *
+     * Alias of `I18nProvider.translate(string, Language)`
+     * @param key Key of the translation.
+     * @param language Optional language to get the translation for; otherwise the default language.
+     * @returns The translation; otherwise the key.
+     */
+    t(key, language = this.language) {
+        return this.translate(key, language);
+    }
+    /**
+     * Translates the specified {@link key}, as defined within the resources for the {@link language}. When the key is not found, the default language is checked.
+     * @param key Key of the translation.
+     * @param language Optional language to get the translation for; otherwise the default language.
+     * @returns The translation; otherwise the key.
+     */
+    translate(key, language = this.language) {
+        // When the language and default are the same, only check the language.
+        if (language === I18nProvider.DEFAULT_LANGUAGE) {
+            return get(key, this.getTranslations(language))?.toString() || key;
+        }
+        // Otherwise check the language and default.
+        return (get(key, this.getTranslations(language))?.toString() ||
+            get(key, this.getTranslations(I18nProvider.DEFAULT_LANGUAGE))?.toString() ||
+            key);
+    }
+    /**
+     * Gets the translations for the specified language.
+     * @param language Language whose translations are being retrieved.
+     * @returns The translations, otherwise `null`.
+     */
+    getTranslations(language) {
+        let translations = this._translations.get(language);
+        if (translations === undefined) {
+            translations = supportedLanguages.includes(language) ? this.readTranslations(language) : null;
+            freeze(translations);
+            this._translations.set(language, translations);
+        }
+        return translations;
+    }
+}
+/**
+ * Parses the localizations from the specified contents, or throws a `TypeError` when unsuccessful.
+ * @param contents Contents that represent the stringified JSON containing the localizations.
+ * @returns The localizations; otherwise a `TypeError`.
+ */
+function parseLocalizations(contents) {
+    const json = JSON.parse(contents);
+    if (json !== undefined && json !== null && typeof json === "object" && "Localization" in json) {
+        return json["Localization"];
+    }
+    throw new TypeError(`Translations must be a JSON object nested under a property named "Localization"`);
+}
+
+/**
+ * Levels of logging.
+ */
+var LogLevel;
+(function (LogLevel) {
+    /**
+     * Error message used to indicate an error was thrown, or something critically went wrong.
+     */
+    LogLevel[LogLevel["ERROR"] = 0] = "ERROR";
+    /**
+     * Warning message used to indicate something went wrong, but the application is able to recover.
+     */
+    LogLevel[LogLevel["WARN"] = 1] = "WARN";
+    /**
+     * Information message for general usage.
+     */
+    LogLevel[LogLevel["INFO"] = 2] = "INFO";
+    /**
+     * Debug message used to detail information useful for profiling the applications runtime.
+     */
+    LogLevel[LogLevel["DEBUG"] = 3] = "DEBUG";
+    /**
+     * Trace message used to monitor low-level information such as method calls, performance tracking, etc.
+     */
+    LogLevel[LogLevel["TRACE"] = 4] = "TRACE";
+})(LogLevel || (LogLevel = {}));
+
+/**
+ * Provides a {@link LogTarget} that logs to the console.
+ */
+class ConsoleTarget {
+    /**
+     * @inheritdoc
+     */
+    write(entry) {
+        switch (entry.level) {
+            case LogLevel.ERROR:
+                console.error(...entry.data);
+                break;
+            case LogLevel.WARN:
+                console.warn(...entry.data);
+                break;
+            default:
+                console.log(...entry.data);
+        }
+    }
+}
+
+// Remove any dependencies on node.
+const EOL = "\n";
+/**
+ * Creates a new string log entry formatter.
+ * @param opts Options that defines the type for the formatter.
+ * @returns The string {@link LogEntryFormatter}.
+ */
+function stringFormatter(opts) {
+    {
+        return (entry) => {
+            const { data, level, scope } = entry;
+            let prefix = `${new Date().toISOString()} ${LogLevel[level].padEnd(5)} `;
+            if (scope) {
+                prefix += `${scope}: `;
+            }
+            return `${prefix}${reduce(data)}`;
+        };
+    }
+}
+/**
+ * Stringifies the provided data parameters that make up the log entry.
+ * @param data Data parameters.
+ * @returns The data represented as a single `string`.
+ */
+function reduce(data) {
+    let result = "";
+    let previousWasError = false;
+    for (const value of data) {
+        // When the value is an error, write the stack.
+        if (typeof value === "object" && value instanceof Error) {
+            result += `${EOL}${value.stack}`;
+            previousWasError = true;
+            continue;
+        }
+        // When the previous was an error, write a new line.
+        if (previousWasError) {
+            result += EOL;
+            previousWasError = false;
+        }
+        result += typeof value === "object" ? JSON.stringify(value) : value;
+        result += " ";
+    }
+    return result.trimEnd();
+}
+
+/**
+ * Logger capable of forwarding messages to a {@link LogTarget}.
+ */
+class Logger {
+    /**
+     * Backing field for the {@link Logger.level}.
+     */
+    _level;
+    /**
+     * Options that define the loggers behavior.
+     */
+    options;
+    /**
+     * Scope associated with this {@link Logger}.
+     */
+    scope;
+    /**
+     * Initializes a new instance of the {@link Logger} class.
+     * @param opts Options that define the loggers behavior.
+     */
+    constructor(opts) {
+        this.options = { minimumLevel: LogLevel.TRACE, ...opts };
+        this.scope = this.options.scope === undefined || this.options.scope.trim() === "" ? "" : this.options.scope;
+        if (typeof this.options.level !== "function") {
+            this.setLevel(this.options.level);
+        }
+    }
+    /**
+     * Gets the {@link LogLevel}.
+     * @returns The {@link LogLevel}.
+     */
+    get level() {
+        if (this._level !== undefined) {
+            return this._level;
+        }
+        return typeof this.options.level === "function" ? this.options.level() : this.options.level;
+    }
+    /**
+     * Creates a scoped logger with the given {@link scope}; logs created by scoped-loggers include their scope to enable their source to be easily identified.
+     * @param scope Value that represents the scope of the new logger.
+     * @returns The scoped logger, or this instance when {@link scope} is not defined.
+     */
+    createScope(scope) {
+        scope = scope.trim();
+        if (scope === "") {
+            return this;
+        }
+        return new Logger({
+            ...this.options,
+            level: () => this.level,
+            scope: this.options.scope ? `${this.options.scope}->${scope}` : scope,
+        });
+    }
+    /**
+     * Writes the arguments as a debug log entry.
+     * @param data Message or data to log.
+     * @returns This instance for chaining.
+     */
+    debug(...data) {
+        return this.write({ level: LogLevel.DEBUG, data, scope: this.scope });
+    }
+    /**
+     * Writes the arguments as error log entry.
+     * @param data Message or data to log.
+     * @returns This instance for chaining.
+     */
+    error(...data) {
+        return this.write({ level: LogLevel.ERROR, data, scope: this.scope });
+    }
+    /**
+     * Writes the arguments as an info log entry.
+     * @param data Message or data to log.
+     * @returns This instance for chaining.
+     */
+    info(...data) {
+        return this.write({ level: LogLevel.INFO, data, scope: this.scope });
+    }
+    /**
+     * Sets the log-level that determines which logs should be written. The specified level will be inherited by all scoped loggers unless they have log-level explicitly defined.
+     * @param level The log-level that determines which logs should be written; when `undefined`, the level will be inherited from the parent logger, or default to the environment level.
+     * @returns This instance for chaining.
+     */
+    setLevel(level) {
+        if (level !== undefined && level > this.options.minimumLevel) {
+            this._level = LogLevel.INFO;
+            this.warn(`Log level cannot be set to ${LogLevel[level]} whilst not in debug mode.`);
+        }
+        else {
+            this._level = level;
+        }
+        return this;
+    }
+    /**
+     * Writes the arguments as a trace log entry.
+     * @param data Message or data to log.
+     * @returns This instance for chaining.
+     */
+    trace(...data) {
+        return this.write({ level: LogLevel.TRACE, data, scope: this.scope });
+    }
+    /**
+     * Writes the arguments as a warning log entry.
+     * @param data Message or data to log.
+     * @returns This instance for chaining.
+     */
+    warn(...data) {
+        return this.write({ level: LogLevel.WARN, data, scope: this.scope });
+    }
+    /**
+     * Writes the log entry.
+     * @param entry Log entry to write.
+     * @returns This instance for chaining.
+     */
+    write(entry) {
+        if (entry.level <= this.level) {
+            this.options.targets.forEach((t) => t.write(entry));
+        }
+        return this;
+    }
+}
+
+// Polyfill, explicit resource management https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html#using-declarations-and-explicit-resource-management
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+Symbol.dispose ??= Symbol("Symbol.dispose");
+/**
+ * Creates a {@link IDisposable} that defers the disposing to the {@link dispose} function; disposing is guarded so that it may only occur once.
+ * @param dispose Function responsible for disposing.
+ * @returns Disposable whereby the disposing is delegated to the {@link dispose}  function.
+ */
+function deferredDisposable(dispose) {
+    let isDisposed = false;
+    const guardedDispose = () => {
+        if (!isDisposed) {
+            dispose();
+            isDisposed = true;
+        }
+    };
+    return {
+        [Symbol.dispose]: guardedDispose,
+        dispose: guardedDispose,
+    };
+}
+
+/**
+ * An event emitter that enables the listening for, and emitting of, events.
+ */
+class EventEmitter {
+    /**
+     * Underlying collection of events and their listeners.
+     */
+    events = new Map();
+    /**
+     * Adds the event {@link listener} for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns This instance with the {@link listener} added.
+     */
+    addListener(eventName, listener) {
+        return this.on(eventName, listener);
+    }
+    /**
+     * Adds the event {@link listener} for the event named {@link eventName}, and returns a disposable capable of removing the event listener.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns A disposable that removes the listener when disposed.
+     */
+    disposableOn(eventName, listener) {
+        this.addListener(eventName, listener);
+        return deferredDisposable(() => this.removeListener(eventName, listener));
+    }
+    /**
+     * Emits the {@link eventName}, invoking all event listeners with the specified {@link args}.
+     * @param eventName Name of the event.
+     * @param args Arguments supplied to each event listener.
+     * @returns `true` when there was a listener associated with the event; otherwise `false`.
+     */
+    emit(eventName, ...args) {
+        const listeners = this.events.get(eventName);
+        if (listeners === undefined) {
+            return false;
+        }
+        for (let i = 0; i < listeners.length;) {
+            const { listener, once } = listeners[i];
+            if (once) {
+                listeners.splice(i, 1);
+            }
+            else {
+                i++;
+            }
+            listener(...args);
+        }
+        return true;
+    }
+    /**
+     * Gets the event names with event listeners.
+     * @returns Event names.
+     */
+    eventNames() {
+        return Array.from(this.events.keys());
+    }
+    /**
+     * Gets the number of event listeners for the event named {@link eventName}. When a {@link listener} is defined, only matching event listeners are counted.
+     * @param eventName Name of the event.
+     * @param listener Optional event listener to count.
+     * @returns Number of event listeners.
+     */
+    listenerCount(eventName, listener) {
+        const listeners = this.events.get(eventName);
+        if (listeners === undefined || listener == undefined) {
+            return listeners?.length || 0;
+        }
+        let count = 0;
+        listeners.forEach((ev) => {
+            if (ev.listener === listener) {
+                count++;
+            }
+        });
+        return count;
+    }
+    /**
+     * Gets the event listeners for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @returns The event listeners.
+     */
+    listeners(eventName) {
+        return Array.from(this.events.get(eventName) || []).map(({ listener }) => listener);
+    }
+    /**
+     * Removes the event {@link listener} for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns This instance with the event {@link listener} removed.
+     */
+    off(eventName, listener) {
+        const listeners = this.events.get(eventName) || [];
+        for (let i = listeners.length - 1; i >= 0; i--) {
+            if (listeners[i].listener === listener) {
+                listeners.splice(i, 1);
+            }
+        }
+        return this;
+    }
+    /**
+     * Adds the event {@link listener} for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns This instance with the event {@link listener} added.
+     */
+    on(eventName, listener) {
+        return this.add(eventName, (listeners) => listeners.push({ listener }));
+    }
+    /**
+     * Adds the **one-time** event {@link listener} for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns This instance with the event {@link listener} added.
+     */
+    once(eventName, listener) {
+        return this.add(eventName, (listeners) => listeners.push({ listener, once: true }));
+    }
+    /**
+     * Adds the event {@link listener} to the beginning of the listeners for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns This instance with the event {@link listener} prepended.
+     */
+    prependListener(eventName, listener) {
+        return this.add(eventName, (listeners) => listeners.splice(0, 0, { listener }));
+    }
+    /**
+     * Adds the **one-time** event {@link listener} to the beginning of the listeners for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns This instance with the event {@link listener} prepended.
+     */
+    prependOnceListener(eventName, listener) {
+        return this.add(eventName, (listeners) => listeners.splice(0, 0, { listener, once: true }));
+    }
+    /**
+     * Removes all event listeners for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @returns This instance with the event listeners removed
+     */
+    removeAllListeners(eventName) {
+        this.events.delete(eventName);
+        return this;
+    }
+    /**
+     * Removes the event {@link listener} for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param listener Event handler function.
+     * @returns This instance with the event {@link listener} removed.
+     */
+    removeListener(eventName, listener) {
+        return this.off(eventName, listener);
+    }
+    /**
+     * Adds the event {@link listener} for the event named {@link eventName}.
+     * @param eventName Name of the event.
+     * @param fn Function responsible for adding the new event handler function.
+     * @returns This instance with event {@link listener} added.
+     */
+    add(eventName, fn) {
+        let listeners = this.events.get(eventName);
+        if (listeners === undefined) {
+            listeners = [];
+            this.events.set(eventName, listeners);
+        }
+        fn(listeners);
+        return this;
+    }
+}
+
+/**
+ * Determines whether the specified {@link value} is a {@link RawMessageResponse}.
+ * @param value Value.
+ * @returns `true` when the value of a {@link RawMessageResponse}; otherwise `false`.
+ */
+function isRequest(value) {
+    return isMessage(value, "request") && has(value, "unidirectional", "boolean");
+}
+/**
+ * Determines whether the specified {@link value} is a {@link RawMessageResponse}.
+ * @param value Value.
+ * @returns `true` when the value of a {@link RawMessageResponse; otherwise `false`.
+ */
+function isResponse(value) {
+    return isMessage(value, "response") && has(value, "status", "number");
+}
+/**
+ * Determines whether the specified {@link value} is a message of type {@link type}.
+ * @param value Value.
+ * @param type Message type.
+ * @returns `true` when the value of a {@link Message} of type {@link type}; otherwise `false`.
+ */
+function isMessage(value, type) {
+    // The value should be an object.
+    if (value === undefined || value === null || typeof value !== "object") {
+        return false;
+    }
+    // The value should have a __type property of "response".
+    if (!("__type" in value) || value.__type !== type) {
+        return false;
+    }
+    // The value should should have at least an id, status, and path1.
+    return has(value, "id", "string") && has(value, "path", "string");
+}
+/**
+ * Determines whether the specified {@link key} exists in {@link obj}, and is typeof {@link type}.
+ * @param obj Object to check.
+ * @param key key to check for.
+ * @param type Expected type.
+ * @returns `true` when the {@link key} exists in the {@link obj}, and is typeof {@link type}.
+ */
+function has(obj, key, type) {
+    return key in obj && typeof obj[key] === type;
+}
+
+/**
+ * Message responder responsible for responding to a request.
+ */
+class MessageResponder {
+    request;
+    proxy;
+    /**
+     * Indicates whether a response has already been sent in relation to the response.
+     */
+    _responded = false;
+    /**
+     * Initializes a new instance of the {@link MessageResponder} class.
+     * @param request The request the response is associated with.
+     * @param proxy Proxy responsible for forwarding the response to the client.
+     */
+    constructor(request, proxy) {
+        this.request = request;
+        this.proxy = proxy;
+    }
+    /**
+     * Indicates whether a response can be sent.
+     * @returns `true` when a response has not yet been set.
+     */
+    get canRespond() {
+        return !this._responded;
+    }
+    /**
+     * Sends a failure response with a status code of `500`.
+     * @param body Optional response body.
+     * @returns Promise fulfilled once the response has been sent.
+     */
+    fail(body) {
+        return this.send(500, body);
+    }
+    /**
+     * Sends the {@link body} as a response with the {@link status}
+     * @param status Response status.
+     * @param body Optional response body.
+     * @returns Promise fulfilled once the response has been sent.
+     */
+    async send(status, body) {
+        if (this.canRespond) {
+            await this.proxy({
+                __type: "response",
+                id: this.request.id,
+                path: this.request.path,
+                body,
+                status,
+            });
+            this._responded = true;
+        }
+    }
+    /**
+     * Sends a success response with a status code of `200`.
+     * @param body Optional response body.
+     * @returns Promise fulfilled once the response has been sent.
+     */
+    success(body) {
+        return this.send(200, body);
+    }
+}
+
+/**
+ * Default request timeout.
+ */
+const DEFAULT_TIMEOUT = 5000;
+const PUBLIC_PATH_PREFIX = "public:";
+const INTERNAL_PATH_PREFIX = "internal:";
+/**
+ * Message gateway responsible for sending, routing, and receiving requests and responses.
+ */
+class MessageGateway extends EventEmitter {
+    proxy;
+    actionProvider;
+    /**
+     * Requests with pending responses.
+     */
+    requests = new Map();
+    /**
+     * Registered routes, and their respective handlers.
+     */
+    routes = new EventEmitter();
+    /**
+     * Initializes a new instance of the {@link MessageGateway} class.
+     * @param proxy Proxy capable of sending messages to the plugin / property inspector.
+     * @param actionProvider Action provider responsible for retrieving actions associated with source messages.
+     */
+    constructor(proxy, actionProvider) {
+        super();
+        this.proxy = proxy;
+        this.actionProvider = actionProvider;
+    }
+    /**
+     * Sends the {@link requestOrPath} to the server; the server should be listening on {@link MessageGateway.route}.
+     * @param requestOrPath The request, or the path of the request.
+     * @param bodyOrUndefined Request body, or moot when constructing the request with {@link MessageRequestOptions}.
+     * @returns The response.
+     */
+    async fetch(requestOrPath, bodyOrUndefined) {
+        const id = crypto.randomUUID();
+        const { body, path, timeout = DEFAULT_TIMEOUT, unidirectional = false, } = typeof requestOrPath === "string" ? { body: bodyOrUndefined, path: requestOrPath } : requestOrPath;
+        // Initialize the response handler.
+        const response = new Promise((resolve) => {
+            this.requests.set(id, (res) => {
+                if (res.status !== 408) {
+                    clearTimeout(timeoutMonitor);
+                }
+                resolve(res);
+            });
+        });
+        // Start the timeout, and send the request.
+        const timeoutMonitor = setTimeout(() => this.handleResponse({ __type: "response", id, path, status: 408 }), timeout);
+        const accepted = await this.proxy({
+            __type: "request",
+            body,
+            id,
+            path,
+            unidirectional,
+        });
+        // When the server did not accept the request, return a 406.
+        if (!accepted) {
+            this.handleResponse({ __type: "response", id, path, status: 406 });
+        }
+        return response;
+    }
+    /**
+     * Attempts to process the specified {@link message}.
+     * @param message Message to process.
+     * @returns `true` when the {@link message} was processed by this instance; otherwise `false`.
+     */
+    async process(message) {
+        if (isRequest(message.payload)) {
+            // Server-side handling.
+            const action = this.actionProvider(message);
+            if (await this.handleRequest(action, message.payload)) {
+                return;
+            }
+            this.emit("unhandledRequest", message);
+        }
+        else if (isResponse(message.payload) && this.handleResponse(message.payload)) {
+            // Response handled successfully.
+            return;
+        }
+        this.emit("unhandledMessage", message);
+    }
+    /**
+     * Maps the specified {@link path} to the {@link handler}, allowing for requests from the client.
+     * @param path Path used to identify the route.
+     * @param handler Handler to be invoked when the request is received.
+     * @param options Optional routing configuration.
+     * @returns Disposable capable of removing the route handler.
+     */
+    route(path, handler, options) {
+        options = { filter: () => true, ...options };
+        return this.routes.disposableOn(path, async (ev) => {
+            if (options?.filter && options.filter(ev.request.action)) {
+                await ev.routed();
+                try {
+                    // Invoke the handler; when data was returned, propagate it as part of the response (if there wasn't already a response).
+                    const result = await handler(ev.request, ev.responder);
+                    if (result !== undefined) {
+                        await ev.responder.send(200, result);
+                    }
+                }
+                catch (err) {
+                    // Respond with an error before throwing.
+                    await ev.responder.send(500);
+                    throw err;
+                }
+            }
+        });
+    }
+    /**
+     * Handles inbound requests.
+     * @param action Action associated with the request.
+     * @param source The request.
+     * @returns `true` when the request was handled; otherwise `false`.
+     */
+    async handleRequest(action, source) {
+        const responder = new MessageResponder(source, this.proxy);
+        const request = {
+            action,
+            path: source.path,
+            unidirectional: source.unidirectional,
+            body: source.body,
+        };
+        // Get handlers of the path, and invoke them; filtering is applied by the handlers themselves
+        let routed = false;
+        const routes = this.routes.listeners(source.path);
+        for (const route of routes) {
+            await route({
+                request,
+                responder,
+                routed: async () => {
+                    // Flags the path as handled, sending an immediate 202 if the request was unidirectional.
+                    if (request.unidirectional) {
+                        await responder.send(202);
+                    }
+                    routed = true;
+                },
+            });
+        }
+        // The request was successfully routed, so fallback to a 200.
+        if (routed) {
+            await responder.send(200);
+            return true;
+        }
+        // When there were no applicable routes, return not-handled.
+        await responder.send(501);
+        return false;
+    }
+    /**
+     * Handles inbound response.
+     * @param res The response.
+     * @returns `true` when the response was handled; otherwise `false`.
+     */
+    handleResponse(res) {
+        const handler = this.requests.get(res.id);
+        this.requests.delete(res.id);
+        // Determine if there is a request pending a response.
+        if (handler) {
+            handler(new MessageResponse(res));
+            return true;
+        }
+        return false;
+    }
+}
+/**
+ * Message response, received from the server.
+ */
+class MessageResponse {
+    /**
+     * Body of the response.
+     */
+    body;
+    /**
+     * Status of the response.
+     * - `200` the request was successful.
+     * - `202` the request was unidirectional, and does not have a response.
+     * - `406` the request could not be accepted by the server.
+     * - `408` the request timed-out.
+     * - `500` the request failed.
+     * - `501` the request is not implemented by the server, and could not be fulfilled.
+     */
+    status;
+    /**
+     * Initializes a new instance of the {@link MessageResponse} class.
+     * @param res The status code, or the response.
+     */
+    constructor(res) {
+        this.body = res.body;
+        this.status = res.status;
+    }
+    /**
+     * Indicates whether the request was successful.
+     * @returns `true` when the status indicates a success; otherwise `false`.
+     */
+    get ok() {
+        return this.status >= 200 && this.status < 300;
+    }
+}
+
+const LOGGER_WRITE_PATH = `${INTERNAL_PATH_PREFIX}logger.write`;
+/**
+ * Registers a route handler on the router, propagating any log entries to the specified logger for writing.
+ * @param router Router to receive inbound log entries on.
+ * @param logger Logger responsible for logging log entries.
+ */
+function registerCreateLogEntryRoute(router, logger) {
+    router.route(LOGGER_WRITE_PATH, (req, res) => {
+        if (req.body === undefined) {
+            return res.fail();
+        }
+        const { level, message, scope } = req.body;
+        if (level === undefined) {
+            return res.fail();
+        }
+        logger.write({ level, data: [message], scope });
+        return res.success();
+    });
+}
+
+/**
+ * Provides information for events received from Stream Deck.
+ */
+class Event {
+    /**
+     * Event that occurred.
+     */
+    type;
+    /**
+     * Initializes a new instance of the {@link Event} class.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     */
+    constructor(source) {
+        this.type = source.event;
+    }
+}
+
+/**
+ * Provides information for an event relating to an action.
+ */
+class ActionWithoutPayloadEvent extends Event {
+    action;
+    /**
+     * Initializes a new instance of the {@link ActionWithoutPayloadEvent} class.
+     * @param action Action that raised the event.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     */
+    constructor(action, source) {
+        super(source);
+        this.action = action;
+    }
+}
+/**
+ * Provides information for an event relating to an action.
+ */
+class ActionEvent extends ActionWithoutPayloadEvent {
+    /**
+     * Provides additional information about the event that occurred, e.g. how many `ticks` the dial was rotated, the current `state` of the action, etc.
+     */
+    payload;
+    /**
+     * Initializes a new instance of the {@link ActionEvent} class.
+     * @param action Action that raised the event.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     */
+    constructor(action, source) {
+        super(action, source);
+        this.payload = source.payload;
+    }
+}
+
+/**
+ * Provides event information for when the plugin received the global settings.
+ */
+class DidReceiveGlobalSettingsEvent extends Event {
+    /**
+     * Settings associated with the event.
+     */
+    settings;
+    /**
+     * Initializes a new instance of the {@link DidReceiveGlobalSettingsEvent} class.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     */
+    constructor(source) {
+        super(source);
+        this.settings = source.payload.settings;
+    }
+}
+
+/**
+ * Wraps an underlying Promise{T}, exposing the resolve and reject delegates as methods, allowing for it to be awaited, resolved, or rejected externally.
+ */
+class PromiseCompletionSource {
+    /**
+     * The underlying promise that this instance is managing.
+     */
+    _promise;
+    /**
+     * Delegate used to reject the promise.
+     */
+    _reject;
+    /**
+     * Delegate used to resolve the promise.
+     */
+    _resolve;
+    /**
+     * Wraps an underlying Promise{T}, exposing the resolve and reject delegates as methods, allowing for it to be awaited, resolved, or rejected externally.
+     */
+    constructor() {
+        this._promise = new Promise((resolve, reject) => {
+            this._resolve = resolve;
+            this._reject = reject;
+        });
+    }
+    /**
+     * Gets the underlying promise being managed by this instance.
+     * @returns The promise.
+     */
+    get promise() {
+        return this._promise;
+    }
+    /**
+     * Rejects the promise, causing any awaited calls to throw.
+     * @param reason The reason for rejecting the promise.
+     */
+    setException(reason) {
+        if (this._reject) {
+            this._reject(reason);
+        }
+    }
+    /**
+     * Sets the result of the underlying promise, allowing any awaited calls to continue invocation.
+     * @param value The value to resolve the promise with.
+     */
+    setResult(value) {
+        if (this._resolve) {
+            this._resolve(value);
+        }
+    }
+}
+
+/**
+ * Provides information for a version, as parsed from a string denoted as a collection of numbers separated by a period, for example `1.45.2`, `4.0.2.13098`. Parsing is opinionated
+ * and strings should strictly conform to the format `{major}[.{minor}[.{patch}[.{build}]]]`; version numbers that form the version are optional, and when `undefined` will default to
+ * 0, for example the `minor`, `patch`, or `build` number may be omitted.
+ *
+ * NB: This implementation should be considered fit-for-purpose, and should be used sparing.
+ */
+class Version {
+    /**
+     * Build version number.
+     */
+    build;
+    /**
+     * Major version number.
+     */
+    major;
+    /**
+     * Minor version number.
+     */
+    minor;
+    /**
+     * Patch version number.
+     */
+    patch;
+    /**
+     * Initializes a new instance of the {@link Version} class.
+     * @param value Value to parse the version from.
+     */
+    constructor(value) {
+        const result = value.match(/^(0|[1-9]\d*)(?:\.(0|[1-9]\d*))?(?:\.(0|[1-9]\d*))?(?:\.(0|[1-9]\d*))?$/);
+        if (result === null) {
+            throw new Error(`Invalid format; expected "{major}[.{minor}[.{patch}[.{build}]]]" but was "${value}"`);
+        }
+        [, this.major, this.minor, this.patch, this.build] = [...result.map((value) => parseInt(value) || 0)];
+    }
+    /**
+     * Compares this instance to the {@link other} {@link Version}.
+     * @param other The {@link Version} to compare to.
+     * @returns `-1` when this instance is less than the {@link other}, `1` when this instance is greater than {@link other}, otherwise `0`.
+     */
+    compareTo(other) {
+        const segments = ({ major, minor, build, patch }) => [major, minor, build, patch];
+        const thisSegments = segments(this);
+        const otherSegments = segments(other);
+        for (let i = 0; i < 4; i++) {
+            if (thisSegments[i] < otherSegments[i]) {
+                return -1;
+            }
+            else if (thisSegments[i] > otherSegments[i]) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+    /** @inheritdoc */
+    toString() {
+        return `${this.major}.${this.minor}`;
+    }
+}
+
+let __isDebugMode = undefined;
+/**
+ * Determines whether the current plugin is running in a debug environment; this is determined by the command-line arguments supplied to the plugin by Stream. Specifically, the result
+ * is `true` when  either `--inspect`, `--inspect-brk` or `--inspect-port` are present as part of the processes' arguments.
+ * @returns `true` when the plugin is running in debug mode; otherwise `false`.
+ */
+function isDebugMode() {
+    if (__isDebugMode === undefined) {
+        __isDebugMode = process.execArgv.some((arg) => {
+            const name = arg.split("=")[0];
+            return name === "--inspect" || name === "--inspect-brk" || name === "--inspect-port";
+        });
+    }
+    return __isDebugMode;
+}
+/**
+ * Gets the plugin's unique-identifier from the current working directory.
+ * @returns The plugin's unique-identifier.
+ */
+function getPluginUUID() {
+    const name = path.basename(process.cwd());
+    const suffixIndex = name.lastIndexOf(".sdPlugin");
+    return suffixIndex < 0 ? name : name.substring(0, suffixIndex);
+}
+
+/**
+ * Provides a {@link LogTarget} capable of logging to a local file system.
+ */
+class FileTarget {
+    options;
+    /**
+     * File path where logs will be written.
+     */
+    filePath;
+    /**
+     * Current size of the logs that have been written to the {@link FileTarget.filePath}.
+     */
+    size = 0;
+    /**
+     * Initializes a new instance of the {@link FileTarget} class.
+     * @param options Options that defines how logs should be written to the local file system.
+     */
+    constructor(options) {
+        this.options = options;
+        this.filePath = this.getLogFilePath();
+        this.reIndex();
+    }
+    /**
+     * @inheritdoc
+     */
+    write(entry) {
+        const fd = fs$1.openSync(this.filePath, "a");
+        try {
+            const msg = this.options.format(entry);
+            fs$1.writeSync(fd, msg + "\n");
+            this.size += msg.length;
+        }
+        finally {
+            fs$1.closeSync(fd);
+        }
+        if (this.size >= this.options.maxSize) {
+            this.reIndex();
+            this.size = 0;
+        }
+    }
+    /**
+     * Gets the file path to an indexed log file.
+     * @param index Optional index of the log file to be included as part of the file name.
+     * @returns File path that represents the indexed log file.
+     */
+    getLogFilePath(index = 0) {
+        return path.join(this.options.dest, `${this.options.fileName}.${index}.log`);
+    }
+    /**
+     * Gets the log files associated with this file target, including past and present.
+     * @returns Log file entries.
+     */
+    getLogFiles() {
+        const regex = /^\.(\d+)\.log$/;
+        return fs$1
+            .readdirSync(this.options.dest, { withFileTypes: true })
+            .reduce((prev, entry) => {
+            if (entry.isDirectory() || entry.name.indexOf(this.options.fileName) < 0) {
+                return prev;
+            }
+            const match = entry.name.substring(this.options.fileName.length).match(regex);
+            if (match?.length !== 2) {
+                return prev;
+            }
+            prev.push({
+                path: path.join(this.options.dest, entry.name),
+                index: parseInt(match[1]),
+            });
+            return prev;
+        }, [])
+            .sort(({ index: a }, { index: b }) => {
+            return a < b ? -1 : a > b ? 1 : 0;
+        });
+    }
+    /**
+     * Re-indexes the existing log files associated with this file target, removing old log files whose index exceeds the {@link FileTargetOptions.maxFileCount}, and renaming the
+     * remaining log files, leaving index "0" free for a new log file.
+     */
+    reIndex() {
+        // When the destination directory is new, create it, and return.
+        if (!fs$1.existsSync(this.options.dest)) {
+            fs$1.mkdirSync(this.options.dest);
+            return;
+        }
+        const logFiles = this.getLogFiles();
+        for (let i = logFiles.length - 1; i >= 0; i--) {
+            const log = logFiles[i];
+            if (i >= this.options.maxFileCount - 1) {
+                fs$1.rmSync(log.path);
+            }
+            else {
+                fs$1.renameSync(log.path, this.getLogFilePath(i + 1));
+            }
+        }
+    }
+}
+
+// Log all entires to a log file.
+const fileTarget = new FileTarget({
+    dest: path.join(cwd(), "logs"),
+    fileName: getPluginUUID(),
+    format: stringFormatter(),
+    maxFileCount: 10,
+    maxSize: 50 * 1024 * 1024,
+});
+// Construct the log targets.
+const targets = [fileTarget];
+if (isDebugMode()) {
+    targets.splice(0, 0, new ConsoleTarget());
+}
+/**
+ * Logger responsible for capturing log messages.
+ */
+const logger = new Logger({
+    level: isDebugMode() ? LogLevel.DEBUG : LogLevel.INFO,
+    minimumLevel: isDebugMode() ? LogLevel.TRACE : LogLevel.DEBUG,
+    targets,
+});
+process.once("uncaughtException", (err) => logger.error("Process encountered uncaught exception", err));
+
+/**
+ * Provides a connection between the plugin and the Stream Deck allowing for messages to be sent and received.
+ */
+class Connection extends EventEmitter {
+    /**
+     * Private backing field for {@link Connection.registrationParameters}.
+     */
+    _registrationParameters;
+    /**
+     * Private backing field for {@link Connection.version}.
+     */
+    _version;
+    /**
+     * Used to ensure {@link Connection.connect} is invoked as a singleton; `false` when a connection is occurring or established.
+     */
+    canConnect = true;
+    /**
+     * Underlying web socket connection.
+     */
+    connection = new PromiseCompletionSource();
+    /**
+     * Logger scoped to the connection.
+     */
+    logger = logger.createScope("Connection");
+    /**
+     * Underlying connection information provided to the plugin to establish a connection with Stream Deck.
+     * @returns The registration parameters.
+     */
+    get registrationParameters() {
+        return (this._registrationParameters ??= this.getRegistrationParameters());
+    }
+    /**
+     * Version of Stream Deck this instance is connected to.
+     * @returns The version.
+     */
+    get version() {
+        return (this._version ??= new Version(this.registrationParameters.info.application.version));
+    }
+    /**
+     * Establishes a connection with the Stream Deck, allowing for the plugin to send and receive messages.
+     * @returns A promise that is resolved when a connection has been established.
+     */
+    async connect() {
+        // Ensure we only establish a single connection.
+        if (this.canConnect) {
+            this.canConnect = false;
+            const webSocket = new WebSocket(`ws://127.0.0.1:${this.registrationParameters.port}`);
+            webSocket.onmessage = (ev) => this.tryEmit(ev);
+            webSocket.onopen = () => {
+                webSocket.send(JSON.stringify({
+                    event: this.registrationParameters.registerEvent,
+                    uuid: this.registrationParameters.pluginUUID,
+                }));
+                // Web socket established a connection with the Stream Deck and the plugin was registered.
+                this.connection.setResult(webSocket);
+                this.emit("connected", this.registrationParameters.info);
+            };
+        }
+        await this.connection.promise;
+    }
+    /**
+     * Sends the commands to the Stream Deck, once the connection has been established and registered.
+     * @param command Command being sent.
+     * @returns `Promise` resolved when the command is sent to Stream Deck.
+     */
+    async send(command) {
+        const connection = await this.connection.promise;
+        const message = JSON.stringify(command);
+        this.logger.trace(message);
+        connection.send(message);
+    }
+    /**
+     * Gets the registration parameters, provided by Stream Deck, that provide information to the plugin, including how to establish a connection.
+     * @returns Parsed registration parameters.
+     */
+    getRegistrationParameters() {
+        const params = {
+            port: undefined,
+            info: undefined,
+            pluginUUID: undefined,
+            registerEvent: undefined,
+        };
+        const scopedLogger = logger.createScope("RegistrationParameters");
+        for (let i = 0; i < process.argv.length - 1; i++) {
+            const param = process.argv[i];
+            const value = process.argv[++i];
+            switch (param) {
+                case RegistrationParameter.Port:
+                    scopedLogger.debug(`port=${value}`);
+                    params.port = value;
+                    break;
+                case RegistrationParameter.PluginUUID:
+                    scopedLogger.debug(`pluginUUID=${value}`);
+                    params.pluginUUID = value;
+                    break;
+                case RegistrationParameter.RegisterEvent:
+                    scopedLogger.debug(`registerEvent=${value}`);
+                    params.registerEvent = value;
+                    break;
+                case RegistrationParameter.Info:
+                    scopedLogger.debug(`info=${value}`);
+                    params.info = JSON.parse(value);
+                    break;
+                default:
+                    i--;
+                    break;
+            }
+        }
+        const invalidArgs = [];
+        const validate = (name, value) => {
+            if (value === undefined) {
+                invalidArgs.push(name);
+            }
+        };
+        validate(RegistrationParameter.Port, params.port);
+        validate(RegistrationParameter.PluginUUID, params.pluginUUID);
+        validate(RegistrationParameter.RegisterEvent, params.registerEvent);
+        validate(RegistrationParameter.Info, params.info);
+        if (invalidArgs.length > 0) {
+            throw new Error(`Unable to establish a connection with Stream Deck, missing command line arguments: ${invalidArgs.join(", ")}`);
+        }
+        return params;
+    }
+    /**
+     * Attempts to emit the {@link ev} that was received from the {@link Connection.connection}.
+     * @param ev Event message data received from Stream Deck.
+     */
+    tryEmit(ev) {
+        try {
+            const message = JSON.parse(ev.data.toString());
+            if (message.event) {
+                this.logger.trace(ev.data.toString());
+                this.emit(message.event, message);
+            }
+            else {
+                this.logger.warn(`Received unknown message: ${ev.data}`);
+            }
+        }
+        catch (err) {
+            this.logger.error(`Failed to parse message: ${ev.data}`, err);
+        }
+    }
+}
+const connection = new Connection();
+
+let manifest$1;
+let softwareMinimumVersion;
+/**
+ * Gets the minimum version that this plugin required, as defined within the manifest.
+ * @returns Minimum required version.
+ */
+function getSoftwareMinimumVersion() {
+    return (softwareMinimumVersion ??= new Version(getManifest().Software.MinimumVersion));
+}
+/**
+ * Gets the manifest associated with the plugin.
+ * @returns The manifest.
+ */
+function getManifest() {
+    return (manifest$1 ??= readManifest());
+}
+/**
+ * Reads the manifest associated with the plugin from the `manifest.json` file.
+ * @returns The manifest.
+ */
+function readManifest() {
+    const path = join(process.cwd(), "manifest.json");
+    if (!existsSync(path)) {
+        throw new Error("Failed to read manifest.json as the file does not exist.");
+    }
+    return JSON.parse(readFileSync(path, {
+        encoding: "utf-8",
+        flag: "r",
+    }).toString());
+}
+
+/**
+ * Provides a read-only iterable collection of items that also acts as a partial polyfill for iterator helpers.
+ */
+class Enumerable {
+    /**
+     * Backing function responsible for providing the iterator of items.
+     */
+    #items;
+    /**
+     * Backing function for {@link Enumerable.length}.
+     */
+    #length;
+    /**
+     * Captured iterator from the underlying iterable; used to fulfil {@link IterableIterator} methods.
+     */
+    #iterator;
+    /**
+     * Initializes a new instance of the {@link Enumerable} class.
+     * @param source Source that contains the items.
+     * @returns The enumerable.
+     */
+    constructor(source) {
+        if (source instanceof Enumerable) {
+            // Enumerable
+            this.#items = source.#items;
+            this.#length = source.#length;
+        }
+        else if (Array.isArray(source)) {
+            // Array
+            this.#items = () => source.values();
+            this.#length = () => source.length;
+        }
+        else if (source instanceof Map || source instanceof Set) {
+            // Map or Set
+            this.#items = () => source.values();
+            this.#length = () => source.size;
+        }
+        else {
+            // IterableIterator delegate
+            this.#items = source;
+            this.#length = () => {
+                let i = 0;
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                for (const _ of this) {
+                    i++;
+                }
+                return i;
+            };
+        }
+    }
+    /**
+     * Gets the number of items in the enumerable.
+     * @returns The number of items.
+     */
+    get length() {
+        return this.#length();
+    }
+    /**
+     * Gets the iterator for the enumerable.
+     * @yields The items.
+     */
+    *[Symbol.iterator]() {
+        for (const item of this.#items()) {
+            yield item;
+        }
+    }
+    /**
+     * Transforms each item within this iterator to an indexed pair, with each pair represented as an array.
+     * @returns An iterator of indexed pairs.
+     */
+    asIndexedPairs() {
+        return new Enumerable(function* () {
+            let i = 0;
+            for (const item of this) {
+                yield [i++, item];
+            }
+        }.bind(this));
+    }
+    /**
+     * Returns an iterator with the first items dropped, up to the specified limit.
+     * @param limit The number of elements to drop from the start of the iteration.
+     * @returns An iterator of items after the limit.
+     */
+    drop(limit) {
+        if (isNaN(limit) || limit < 0) {
+            throw new RangeError("limit must be 0, or a positive number");
+        }
+        return new Enumerable(function* () {
+            let i = 0;
+            for (const item of this) {
+                if (i++ >= limit) {
+                    yield item;
+                }
+            }
+        }.bind(this));
+    }
+    /**
+     * Determines whether all items satisfy the specified predicate.
+     * @param predicate Function that determines whether each item fulfils the predicate.
+     * @returns `true` when all items satisfy the predicate; otherwise `false`.
+     */
+    every(predicate) {
+        for (const item of this) {
+            if (!predicate(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Returns an iterator of items that meet the specified predicate..
+     * @param predicate Function that determines which items to filter.
+     * @returns An iterator of filtered items.
+     */
+    filter(predicate) {
+        return new Enumerable(function* () {
+            for (const item of this) {
+                if (predicate(item)) {
+                    yield item;
+                }
+            }
+        }.bind(this));
+    }
+    /**
+     * Finds the first item that satisfies the specified predicate.
+     * @param predicate Predicate to match items against.
+     * @returns The first item that satisfied the predicate; otherwise `undefined`.
+     */
+    find(predicate) {
+        for (const item of this) {
+            if (predicate(item)) {
+                return item;
+            }
+        }
+    }
+    /**
+     * Finds the last item that satisfies the specified predicate.
+     * @param predicate Predicate to match items against.
+     * @returns The first item that satisfied the predicate; otherwise `undefined`.
+     */
+    findLast(predicate) {
+        let result = undefined;
+        for (const item of this) {
+            if (predicate(item)) {
+                result = item;
+            }
+        }
+        return result;
+    }
+    /**
+     * Returns an iterator containing items transformed using the specified mapper function.
+     * @param mapper Function responsible for transforming each item.
+     * @returns An iterator of transformed items.
+     */
+    flatMap(mapper) {
+        return new Enumerable(function* () {
+            for (const item of this) {
+                for (const mapped of mapper(item)) {
+                    yield mapped;
+                }
+            }
+        }.bind(this));
+    }
+    /**
+     * Iterates over each item, and invokes the specified function.
+     * @param fn Function to invoke against each item.
+     */
+    forEach(fn) {
+        for (const item of this) {
+            fn(item);
+        }
+    }
+    /**
+     * Determines whether the search item exists in the collection exists.
+     * @param search Item to search for.
+     * @returns `true` when the item was found; otherwise `false`.
+     */
+    includes(search) {
+        return this.some((item) => item === search);
+    }
+    /**
+     * Returns an iterator of mapped items using the mapper function.
+     * @param mapper Function responsible for mapping the items.
+     * @returns An iterator of mapped items.
+     */
+    map(mapper) {
+        return new Enumerable(function* () {
+            for (const item of this) {
+                yield mapper(item);
+            }
+        }.bind(this));
+    }
+    /**
+     * Captures the underlying iterable, if it is not already captured, and gets the next item in the iterator.
+     * @param args Optional values to send to the generator.
+     * @returns An iterator result of the current iteration; when `done` is `false`, the current `value` is provided.
+     */
+    next(...args) {
+        this.#iterator ??= this.#items();
+        const result = this.#iterator.next(...args);
+        if (result.done) {
+            this.#iterator = undefined;
+        }
+        return result;
+    }
+    /**
+     * Applies the accumulator function to each item, and returns the result.
+     * @param accumulator Function responsible for accumulating all items within the collection.
+     * @param initial Initial value supplied to the accumulator.
+     * @returns Result of accumulating each value.
+     */
+    reduce(accumulator, initial) {
+        if (this.length === 0) {
+            if (initial === undefined) {
+                throw new TypeError("Reduce of empty enumerable with no initial value.");
+            }
+            return initial;
+        }
+        let result = initial;
+        for (const item of this) {
+            if (result === undefined) {
+                result = item;
+            }
+            else {
+                result = accumulator(result, item);
+            }
+        }
+        return result;
+    }
+    /**
+     * Acts as if a `return` statement is inserted in the generator's body at the current suspended position.
+     *
+     * Please note, in the context of an {@link Enumerable}, calling {@link Enumerable.return} will clear the captured iterator,
+     * if there is one. Subsequent calls to {@link Enumerable.next} will result in re-capturing the underlying iterable, and
+     * yielding items from the beginning.
+     * @param value Value to return.
+     * @returns The value as an iterator result.
+     */
+    return(value) {
+        this.#iterator = undefined;
+        return { done: true, value };
+    }
+    /**
+     * Determines whether an item in the collection exists that satisfies the specified predicate.
+     * @param predicate Function used to search for an item.
+     * @returns `true` when the item was found; otherwise `false`.
+     */
+    some(predicate) {
+        for (const item of this) {
+            if (predicate(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * Returns an iterator with the items, from 0, up to the specified limit.
+     * @param limit Limit of items to take.
+     * @returns An iterator of items from 0 to the limit.
+     */
+    take(limit) {
+        if (isNaN(limit) || limit < 0) {
+            throw new RangeError("limit must be 0, or a positive number");
+        }
+        return new Enumerable(function* () {
+            let i = 0;
+            for (const item of this) {
+                if (i++ < limit) {
+                    yield item;
+                }
+            }
+        }.bind(this));
+    }
+    /**
+     * Acts as if a `throw` statement is inserted in the generator's body at the current suspended position.
+     * @param e Error to throw.
+     */
+    throw(e) {
+        throw e;
+    }
+    /**
+     * Converts this iterator to an array.
+     * @returns The array of items from this iterator.
+     */
+    toArray() {
+        return Array.from(this);
+    }
+    /**
+     * Converts this iterator to serializable collection.
+     * @returns The serializable collection of items.
+     */
+    toJSON() {
+        return this.toArray();
+    }
+    /**
+     * Converts this iterator to a string.
+     * @returns The string.
+     */
+    toString() {
+        return `${this.toArray()}`;
+    }
+}
+
+const __items$1 = new Map();
+/**
+ * Provides a read-only store of Stream Deck devices.
+ */
+class ReadOnlyActionStore extends Enumerable {
+    /**
+     * Initializes a new instance of the {@link ReadOnlyActionStore}.
+     */
+    constructor() {
+        super(__items$1);
+    }
+    /**
+     * Gets the action with the specified identifier.
+     * @param id Identifier of action to search for.
+     * @returns The action, when present; otherwise `undefined`.
+     */
+    getActionById(id) {
+        return __items$1.get(id);
+    }
+}
+/**
+ * Provides a store of Stream Deck actions.
+ */
+class ActionStore extends ReadOnlyActionStore {
+    /**
+     * Deletes the action from the store.
+     * @param id The action's identifier.
+     */
+    delete(id) {
+        __items$1.delete(id);
+    }
+    /**
+     * Adds the action to the store.
+     * @param action The action.
+     */
+    set(action) {
+        __items$1.set(action.id, action);
+    }
+}
+/**
+ * Singleton instance of the action store.
+ */
+const actionStore = new ActionStore();
+
+/**
+ * Provides information for events relating to an application.
+ */
+class ApplicationEvent extends Event {
+    /**
+     * Monitored application that was launched/terminated.
+     */
+    application;
+    /**
+     * Initializes a new instance of the {@link ApplicationEvent} class.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     */
+    constructor(source) {
+        super(source);
+        this.application = source.payload.application;
+    }
+}
+
+/**
+ * Provides information for events relating to a device.
+ */
+class DeviceEvent extends Event {
+    device;
+    /**
+     * Initializes a new instance of the {@link DeviceEvent} class.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     * @param device Device that event is associated with.
+     */
+    constructor(source, device) {
+        super(source);
+        this.device = device;
+    }
+}
+
+/**
+ * Event information received from Stream Deck as part of a deep-link message being routed to the plugin.
+ */
+class DidReceiveDeepLinkEvent extends Event {
+    /**
+     * Deep-link URL routed from Stream Deck.
+     */
+    url;
+    /**
+     * Initializes a new instance of the {@link DidReceiveDeepLinkEvent} class.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     */
+    constructor(source) {
+        super(source);
+        this.url = new DeepLinkURL(source.payload.url);
+    }
+}
+const PREFIX = "streamdeck://";
+/**
+ * Provides information associated with a URL received as part of a deep-link message, conforming to the URI syntax defined within RFC-3986 (https://datatracker.ietf.org/doc/html/rfc3986#section-3).
+ */
+class DeepLinkURL {
+    /**
+     * Fragment of the URL, with the number sign (#) omitted. For example, a URL of "/test#heading" would result in a {@link DeepLinkURL.fragment} of "heading".
+     */
+    fragment;
+    /**
+     * Original URL. For example, a URL of "/test?one=two#heading" would result in a {@link DeepLinkURL.href} of "/test?one=two#heading".
+     */
+    href;
+    /**
+     * Path of the URL; the full URL with the query and fragment omitted. For example, a URL of "/test?one=two#heading" would result in a {@link DeepLinkURL.path} of "/test".
+     */
+    path;
+    /**
+     * Query of the URL, with the question mark (?) omitted. For example, a URL of "/test?name=elgato&key=123" would result in a {@link DeepLinkURL.query} of "name=elgato&key=123".
+     * See also {@link DeepLinkURL.queryParameters}.
+     */
+    query;
+    /**
+     * Query string parameters parsed from the URL. See also {@link DeepLinkURL.query}.
+     */
+    queryParameters;
+    /**
+     * Initializes a new instance of the {@link DeepLinkURL} class.
+     * @param url URL of the deep-link, with the schema and authority omitted.
+     */
+    constructor(url) {
+        const refUrl = new URL(`${PREFIX}${url}`);
+        this.fragment = refUrl.hash.substring(1);
+        this.href = refUrl.href.substring(PREFIX.length);
+        this.path = DeepLinkURL.parsePath(this.href);
+        this.query = refUrl.search.substring(1);
+        this.queryParameters = refUrl.searchParams;
+    }
+    /**
+     * Parses the {@link DeepLinkURL.path} from the specified {@link href}.
+     * @param href Partial URL that contains the path to parse.
+     * @returns The path of the URL.
+     */
+    static parsePath(href) {
+        const indexOf = (char) => {
+            const index = href.indexOf(char);
+            return index >= 0 ? index : href.length;
+        };
+        return href.substring(0, Math.min(indexOf("?"), indexOf("#")));
+    }
+}
+
+/**
+ * Provides information for an event triggered by a message being sent to the plugin, from the property inspector.
+ */
+class SendToPluginEvent extends Event {
+    action;
+    /**
+     * Payload sent from the property inspector.
+     */
+    payload;
+    /**
+     * Initializes a new instance of the {@link SendToPluginEvent} class.
+     * @param action Action that raised the event.
+     * @param source Source of the event, i.e. the original message from Stream Deck.
+     */
+    constructor(action, source) {
+        super(source);
+        this.action = action;
+        this.payload = source.payload;
+    }
+}
+
+/**
+ * Gets the global settings associated with the plugin. Use in conjunction with {@link setGlobalSettings}.
+ * @template T The type of global settings associated with the plugin.
+ * @returns Promise containing the plugin's global settings.
+ */
+function getGlobalSettings() {
+    return new Promise((resolve) => {
+        connection.once("didReceiveGlobalSettings", (ev) => resolve(ev.payload.settings));
+        connection.send({
+            event: "getGlobalSettings",
+            context: connection.registrationParameters.pluginUUID,
+        });
+    });
+}
+/**
+ * Occurs when the global settings are requested using {@link getGlobalSettings}, or when the the global settings were updated by the property inspector.
+ * @template T The type of settings associated with the action.
+ * @param listener Function to be invoked when the event occurs.
+ * @returns A disposable that, when disposed, removes the listener.
+ */
+function onDidReceiveGlobalSettings(listener) {
+    return connection.disposableOn("didReceiveGlobalSettings", (ev) => listener(new DidReceiveGlobalSettingsEvent(ev)));
+}
+/**
+ * Occurs when the settings associated with an action instance are requested using {@link Action.getSettings}, or when the the settings were updated by the property inspector.
+ * @template T The type of settings associated with the action.
+ * @param listener Function to be invoked when the event occurs.
+ * @returns A disposable that, when disposed, removes the listener.
+ */
+function onDidReceiveSettings(listener) {
+    return connection.disposableOn("didReceiveSettings", (ev) => {
+        const action = actionStore.getActionById(ev.context);
+        if (action) {
+            listener(new ActionEvent(action, ev));
+        }
+    });
+}
+/**
+ * Sets the global {@link settings} associated the plugin. **Note**, these settings are only available to this plugin, and should be used to persist information securely. Use in
+ * conjunction with {@link getGlobalSettings}.
+ * @param settings Settings to save.
+ * @returns `Promise` resolved when the global `settings` are sent to Stream Deck.
+ * @example
+ * streamDeck.settings.setGlobalSettings({
+ *   apiKey,
+ *   connectedDate: new Date()
+ * })
+ */
+function setGlobalSettings(settings) {
+    return connection.send({
+        event: "setGlobalSettings",
+        context: connection.registrationParameters.pluginUUID,
+        payload: settings,
+    });
+}
+
+var settings = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    getGlobalSettings: getGlobalSettings,
+    onDidReceiveGlobalSettings: onDidReceiveGlobalSettings,
+    onDidReceiveSettings: onDidReceiveSettings,
+    setGlobalSettings: setGlobalSettings
+});
+
+/**
+ * Property inspector providing information about its context, and functions for sending and fetching messages.
+ */
+class PropertyInspector {
+    router;
+    /**
+     * Action associated with the property inspector
+     */
+    action;
+    /**
+     * Initializes a new instance of the {@link PropertyInspector} class.
+     * @param router Router responsible for fetching requests.
+     * @param source Source the property inspector is associated with.
+     */
+    constructor(router, source) {
+        this.router = router;
+        this.action = actionStore.getActionById(source.context);
+    }
+    /**
+     * Sends a fetch request to the property inspector; the property inspector can listen for requests by registering routes.
+     * @template T The type of the response body.
+     * @param requestOrPath The request, or the path of the request.
+     * @param bodyOrUndefined Request body, or moot when constructing the request with {@link MessageRequestOptions}.
+     * @returns The response.
+     */
+    async fetch(requestOrPath, bodyOrUndefined) {
+        if (typeof requestOrPath === "string") {
+            return this.router.fetch(`${PUBLIC_PATH_PREFIX}${requestOrPath}`, bodyOrUndefined);
+        }
+        else {
+            return this.router.fetch({
+                ...requestOrPath,
+                path: `${PUBLIC_PATH_PREFIX}${requestOrPath.path}`,
+            });
+        }
+    }
+    /**
+     * Sends the {@link payload} to the property inspector. The plugin can also receive information from the property inspector via {@link streamDeck.ui.onSendToPlugin} and {@link SingletonAction.onSendToPlugin}
+     * allowing for bi-directional communication.
+     * @template T The type of the payload received from the property inspector.
+     * @param payload Payload to send to the property inspector.
+     * @returns `Promise` resolved when {@link payload} has been sent to the property inspector.
+     */
+    sendToPropertyInspector(payload) {
+        return connection.send({
+            event: "sendToPropertyInspector",
+            context: this.action.id,
+            payload,
+        });
+    }
+}
+
+let current;
+let debounceCount = 0;
+/**
+ * Gets the current property inspector.
+ * @returns The property inspector; otherwise `undefined`.
+ */
+function getCurrentUI() {
+    return current;
+}
+/**
+ * Router responsible for communicating with the property inspector.
+ */
+const router = new MessageGateway(async (payload) => {
+    const current = getCurrentUI();
+    if (current) {
+        await connection.send({
+            event: "sendToPropertyInspector",
+            context: current.action.id,
+            payload,
+        });
+        return true;
+    }
+    return false;
+}, (source) => actionStore.getActionById(source.context));
+/**
+ * Determines whether the specified event is related to the current tracked property inspector.
+ * @param ev The event.
+ * @returns `true` when the event is related to the current property inspector.
+ */
+function isCurrent(ev) {
+    return (current?.action?.id === ev.context &&
+        current?.action?.manifestId === ev.action &&
+        current?.action?.device?.id === ev.device);
+}
+/*
+ * To overcome event races, the debounce counter keeps track of appear vs disappear events, ensuring we only
+ * clear the current ui when an equal number of matching disappear events occur.
+ */
+connection.on("propertyInspectorDidAppear", (ev) => {
+    if (isCurrent(ev)) {
+        debounceCount++;
+    }
+    else {
+        debounceCount = 1;
+        current = new PropertyInspector(router, ev);
+    }
+});
+connection.on("propertyInspectorDidDisappear", (ev) => {
+    if (isCurrent(ev)) {
+        debounceCount--;
+        if (debounceCount <= 0) {
+            current = undefined;
+        }
+    }
+});
+connection.on("sendToPlugin", (ev) => router.process(ev));
+
+/**
+ * Controller responsible for interacting with the property inspector associated with the plugin.
+ */
+class UIController {
+    /**
+     * Gets the current property inspector.
+     * @returns The property inspector; otherwise `undefined`.
+     */
+    get current() {
+        return getCurrentUI();
+    }
+    /**
+     * Occurs when the property inspector associated with the action becomes visible, i.e. the user selected an action in the Stream Deck application. See also {@link UIController.onDidDisappear}.
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onDidAppear(listener) {
+        return connection.disposableOn("propertyInspectorDidAppear", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action) {
+                listener(new ActionWithoutPayloadEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when the property inspector associated with the action becomes destroyed, i.e. the user unselected the action in the Stream Deck application. See also {@link UIController.onDidAppear}.
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onDidDisappear(listener) {
+        return connection.disposableOn("propertyInspectorDidDisappear", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action) {
+                listener(new ActionWithoutPayloadEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when a message was sent to the plugin _from_ the property inspector. The plugin can also send messages _to_ the property inspector using {@link UIController.current.sendMessage}
+     * or {@link Action.sendToPropertyInspector}.
+     * @template TPayload The type of the payload received from the property inspector.
+     * @template TSettings The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onSendToPlugin(listener) {
+        return router.disposableOn("unhandledMessage", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action) {
+                listener(new SendToPluginEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Registers the function as a route, exposing it to the property inspector via `streamDeck.plugin.fetch(path)`.
+     * @template TBody The type of the request body.
+     * @template TSettings The type of the action's settings.
+     * @param path Path that identifies the route.
+     * @param handler Handler to be invoked when a matching request is received.
+     * @param options Optional routing configuration.
+     * @returns Disposable capable of removing the route handler.
+     * @example
+     * streamDeck.ui.registerRoute("/toggle-light", async (req, res) => {
+     *   await lightService.toggle(req.body.lightId);
+     *   res.success();
+     * });
+     */
+    registerRoute(path, handler, options) {
+        return router.route(`${PUBLIC_PATH_PREFIX}${path}`, handler, options);
+    }
+}
+const ui = new UIController();
+
+const __items = new Map();
+/**
+ * Provides a read-only store of Stream Deck devices.
+ */
+class ReadOnlyDeviceStore extends Enumerable {
+    /**
+     * Initializes a new instance of the {@link ReadOnlyDeviceStore}.
+     */
+    constructor() {
+        super(__items);
+    }
+    /**
+     * Gets the Stream Deck {@link Device} associated with the specified {@link deviceId}.
+     * @param deviceId Identifier of the Stream Deck device.
+     * @returns The Stream Deck device information; otherwise `undefined` if a device with the {@link deviceId} does not exist.
+     */
+    getDeviceById(deviceId) {
+        return __items.get(deviceId);
+    }
+}
+/**
+ * Provides a store of Stream Deck devices.
+ */
+class DeviceStore extends ReadOnlyDeviceStore {
+    /**
+     * Adds the device to the store.
+     * @param device The device.
+     */
+    set(device) {
+        __items.set(device.id, device);
+    }
+}
+/**
+ * Singleton instance of the device store.
+ */
+const deviceStore = new DeviceStore();
+
+/**
+ * Provides information about an instance of a Stream Deck action.
+ */
+class ActionContext {
+    /**
+     * Device the action is associated with.
+     */
+    #device;
+    /**
+     * Source of the action.
+     */
+    #source;
+    /**
+     * Initializes a new instance of the {@link ActionContext} class.
+     * @param source Source of the action.
+     */
+    constructor(source) {
+        this.#source = source;
+        const device = deviceStore.getDeviceById(source.device);
+        if (!device) {
+            throw new Error(`Failed to initialize action; device ${source.device} not found`);
+        }
+        this.#device = device;
+    }
+    /**
+     * Type of the action.
+     * - `Keypad` is a key.
+     * - `Encoder` is a dial and portion of the touch strip.
+     * @returns Controller type.
+     */
+    get controllerType() {
+        return this.#source.payload.controller;
+    }
+    /**
+     * Stream Deck device the action is positioned on.
+     * @returns Stream Deck device.
+     */
+    get device() {
+        return this.#device;
+    }
+    /**
+     * Action instance identifier.
+     * @returns Identifier.
+     */
+    get id() {
+        return this.#source.context;
+    }
+    /**
+     * Manifest identifier (UUID) for this action type.
+     * @returns Manifest identifier.
+     */
+    get manifestId() {
+        return this.#source.action;
+    }
+    /**
+     * Converts this instance to a serializable object.
+     * @returns The serializable object.
+     */
+    toJSON() {
+        return {
+            controllerType: this.controllerType,
+            device: this.device,
+            id: this.id,
+            manifestId: this.manifestId,
+        };
+    }
+}
+
+/**
+ * Provides a contextualized instance of an {@link Action}, allowing for direct communication with the Stream Deck.
+ * @template T The type of settings associated with the action.
+ */
+class Action extends ActionContext {
+    /**
+     * Gets the settings associated this action instance.
+     * @template U The type of settings associated with the action.
+     * @returns Promise containing the action instance's settings.
+     */
+    getSettings() {
+        return new Promise((resolve) => {
+            const callback = (ev) => {
+                if (ev.context == this.id) {
+                    resolve(ev.payload.settings);
+                    connection.removeListener("didReceiveSettings", callback);
+                }
+            };
+            connection.on("didReceiveSettings", callback);
+            connection.send({
+                event: "getSettings",
+                context: this.id,
+            });
+        });
+    }
+    /**
+     * Determines whether this instance is a dial.
+     * @returns `true` when this instance is a dial; otherwise `false`.
+     */
+    isDial() {
+        return this.controllerType === "Encoder";
+    }
+    /**
+     * Determines whether this instance is a key.
+     * @returns `true` when this instance is a key; otherwise `false`.
+     */
+    isKey() {
+        return this.controllerType === "Keypad";
+    }
+    /**
+     * Sets the {@link settings} associated with this action instance. Use in conjunction with {@link Action.getSettings}.
+     * @param settings Settings to persist.
+     * @returns `Promise` resolved when the {@link settings} are sent to Stream Deck.
+     */
+    setSettings(settings) {
+        return connection.send({
+            event: "setSettings",
+            context: this.id,
+            payload: settings,
+        });
+    }
+    /**
+     * Temporarily shows an alert (i.e. warning), in the form of an exclamation mark in a yellow triangle, on this action instance. Used to provide visual feedback when an action failed.
+     * @returns `Promise` resolved when the request to show an alert has been sent to Stream Deck.
+     */
+    showAlert() {
+        return connection.send({
+            event: "showAlert",
+            context: this.id,
+        });
+    }
+}
+
+/**
+ * Provides a contextualized instance of a dial action.
+ * @template T The type of settings associated with the action.
+ */
+class DialAction extends Action {
+    /**
+     * Private backing field for {@link DialAction.coordinates}.
+     */
+    #coordinates;
+    /**
+     * Initializes a new instance of the {@see DialAction} class.
+     * @param source Source of the action.
+     */
+    constructor(source) {
+        super(source);
+        if (source.payload.controller !== "Encoder") {
+            throw new Error("Unable to create DialAction; source event is not a Encoder");
+        }
+        this.#coordinates = Object.freeze(source.payload.coordinates);
+    }
+    /**
+     * Coordinates of the dial.
+     * @returns The coordinates.
+     */
+    get coordinates() {
+        return this.#coordinates;
+    }
+    /**
+     * Sets the feedback for the current layout associated with this action instance, allowing for the visual items to be updated. Layouts are a powerful way to provide dynamic information
+     * to users, and can be assigned in the manifest, or dynamically via {@link Action.setFeedbackLayout}.
+     *
+     * The {@link feedback} payload defines which items within the layout will be updated, and are identified by their property name (defined as the `key` in the layout's definition).
+     * The values can either by a complete new definition, a `string` for layout item types of `text` and `pixmap`, or a `number` for layout item types of `bar` and `gbar`.
+     * @param feedback Object containing information about the layout items to be updated.
+     * @returns `Promise` resolved when the request to set the {@link feedback} has been sent to Stream Deck.
+     */
+    setFeedback(feedback) {
+        return connection.send({
+            event: "setFeedback",
+            context: this.id,
+            payload: feedback,
+        });
+    }
+    /**
+     * Sets the layout associated with this action instance. The layout must be either a built-in layout identifier, or path to a local layout JSON file within the plugin's folder.
+     * Use in conjunction with {@link Action.setFeedback} to update the layout's current items' settings.
+     * @param layout Name of a pre-defined layout, or relative path to a custom one.
+     * @returns `Promise` resolved when the new layout has been sent to Stream Deck.
+     */
+    setFeedbackLayout(layout) {
+        return connection.send({
+            event: "setFeedbackLayout",
+            context: this.id,
+            payload: {
+                layout,
+            },
+        });
+    }
+    /**
+     * Sets the {@link image} to be display for this action instance within Stream Deck app.
+     *
+     * NB: The image can only be set by the plugin when the the user has not specified a custom image.
+     * @param image Image to display; this can be either a path to a local file within the plugin's folder, a base64 encoded `string` with the mime type declared (e.g. PNG, JPEG, etc.),
+     * or an SVG `string`. When `undefined`, the image from the manifest will be used.
+     * @returns `Promise` resolved when the request to set the {@link image} has been sent to Stream Deck.
+     */
+    setImage(image) {
+        return connection.send({
+            event: "setImage",
+            context: this.id,
+            payload: {
+                image,
+            },
+        });
+    }
+    /**
+     * Sets the {@link title} displayed for this action instance.
+     *
+     * NB: The title can only be set by the plugin when the the user has not specified a custom title.
+     * @param title Title to display.
+     * @returns `Promise` resolved when the request to set the {@link title} has been sent to Stream Deck.
+     */
+    setTitle(title) {
+        return this.setFeedback({ title });
+    }
+    /**
+     * Sets the trigger (interaction) {@link descriptions} associated with this action instance. Descriptions are shown within the Stream Deck application, and informs the user what
+     * will happen when they interact with the action, e.g. rotate, touch, etc. When {@link descriptions} is `undefined`, the descriptions will be reset to the values provided as part
+     * of the manifest.
+     *
+     * NB: Applies to encoders (dials / touchscreens) found on Stream Deck + devices.
+     * @param descriptions Descriptions that detail the action's interaction.
+     * @returns `Promise` resolved when the request to set the {@link descriptions} has been sent to Stream Deck.
+     */
+    setTriggerDescription(descriptions) {
+        return connection.send({
+            event: "setTriggerDescription",
+            context: this.id,
+            payload: descriptions || {},
+        });
+    }
+    /**
+     * @inheritdoc
+     */
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            coordinates: this.coordinates,
+        };
+    }
+}
+
+/**
+ * Provides a contextualized instance of a key action.
+ * @template T The type of settings associated with the action.
+ */
+class KeyAction extends Action {
+    /**
+     * Private backing field for {@link KeyAction.coordinates}.
+     */
+    #coordinates;
+    /**
+     * Source of the action.
+     */
+    #source;
+    /**
+     * Initializes a new instance of the {@see KeyAction} class.
+     * @param source Source of the action.
+     */
+    constructor(source) {
+        super(source);
+        if (source.payload.controller !== "Keypad") {
+            throw new Error("Unable to create KeyAction; source event is not a Keypad");
+        }
+        this.#coordinates = !source.payload.isInMultiAction ? Object.freeze(source.payload.coordinates) : undefined;
+        this.#source = source;
+    }
+    /**
+     * Coordinates of the key; otherwise `undefined` when the action is part of a multi-action.
+     * @returns The coordinates.
+     */
+    get coordinates() {
+        return this.#coordinates;
+    }
+    /**
+     * Determines whether the key is part of a multi-action.
+     * @returns `true` when in a multi-action; otherwise `false`.
+     */
+    isInMultiAction() {
+        return this.#source.payload.isInMultiAction;
+    }
+    /**
+     * Sets the {@link image} to be display for this action instance.
+     *
+     * NB: The image can only be set by the plugin when the the user has not specified a custom image.
+     * @param image Image to display; this can be either a path to a local file within the plugin's folder, a base64 encoded `string` with the mime type declared (e.g. PNG, JPEG, etc.),
+     * or an SVG `string`. When `undefined`, the image from the manifest will be used.
+     * @param options Additional options that define where and how the image should be rendered.
+     * @returns `Promise` resolved when the request to set the {@link image} has been sent to Stream Deck.
+     */
+    setImage(image, options) {
+        return connection.send({
+            event: "setImage",
+            context: this.id,
+            payload: {
+                image,
+                ...options,
+            },
+        });
+    }
+    /**
+     * Sets the current {@link state} of this action instance; only applies to actions that have multiple states defined within the manifest.
+     * @param state State to set; this be either 0, or 1.
+     * @returns `Promise` resolved when the request to set the state of an action instance has been sent to Stream Deck.
+     */
+    setState(state) {
+        return connection.send({
+            event: "setState",
+            context: this.id,
+            payload: {
+                state,
+            },
+        });
+    }
+    /**
+     * Sets the {@link title} displayed for this action instance.
+     *
+     * NB: The title can only be set by the plugin when the the user has not specified a custom title.
+     * @param title Title to display; when `undefined` the title within the manifest will be used.
+     * @param options Additional options that define where and how the title should be rendered.
+     * @returns `Promise` resolved when the request to set the {@link title} has been sent to Stream Deck.
+     */
+    setTitle(title, options) {
+        return connection.send({
+            event: "setTitle",
+            context: this.id,
+            payload: {
+                title,
+                ...options,
+            },
+        });
+    }
+    /**
+     * Temporarily shows an "OK" (i.e. success), in the form of a check-mark in a green circle, on this action instance. Used to provide visual feedback when an action successfully
+     * executed.
+     * @returns `Promise` resolved when the request to show an "OK" has been sent to Stream Deck.
+     */
+    showOk() {
+        return connection.send({
+            event: "showOk",
+            context: this.id,
+        });
+    }
+    /**
+     * @inheritdoc
+     */
+    toJSON() {
+        return {
+            ...super.toJSON(),
+            coordinates: this.coordinates,
+            isInMultiAction: this.isInMultiAction(),
+        };
+    }
+}
+
+const manifest = getManifest();
+/**
+ * Provides functions, and information, for interacting with Stream Deck actions.
+ */
+class ActionService extends ReadOnlyActionStore {
+    /**
+     * Initializes a new instance of the {@link ActionService} class.
+     */
+    constructor() {
+        super();
+        // Adds the action to the store.
+        connection.prependListener("willAppear", (ev) => {
+            const action = ev.payload.controller === "Encoder" ? new DialAction(ev) : new KeyAction(ev);
+            actionStore.set(action);
+        });
+        // Remove the action from the store.
+        connection.prependListener("willDisappear", (ev) => actionStore.delete(ev.context));
+    }
+    /**
+     * Occurs when the user presses a dial (Stream Deck +).
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onDialDown(listener) {
+        return connection.disposableOn("dialDown", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action?.isDial()) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when the user rotates a dial (Stream Deck +).
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onDialRotate(listener) {
+        return connection.disposableOn("dialRotate", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action?.isDial()) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when the user releases a pressed dial (Stream Deck +).
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onDialUp(listener) {
+        return connection.disposableOn("dialUp", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action?.isDial()) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when the user presses a action down.
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onKeyDown(listener) {
+        return connection.disposableOn("keyDown", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action?.isKey()) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when the user releases a pressed action.
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onKeyUp(listener) {
+        return connection.disposableOn("keyUp", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action?.isKey()) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when the user updates an action's title settings in the Stream Deck application. See also {@link Action.setTitle}.
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onTitleParametersDidChange(listener) {
+        return connection.disposableOn("titleParametersDidChange", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when the user taps the touchscreen (Stream Deck +).
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onTouchTap(listener) {
+        return connection.disposableOn("touchTap", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action?.isDial()) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when an action appears on the Stream Deck due to the user navigating to another page, profile, folder, etc. This also occurs during startup if the action is on the "front
+     * page". An action refers to _all_ types of actions, e.g. keys, dials,
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onWillAppear(listener) {
+        return connection.disposableOn("willAppear", (ev) => {
+            const action = actionStore.getActionById(ev.context);
+            if (action) {
+                listener(new ActionEvent(action, ev));
+            }
+        });
+    }
+    /**
+     * Occurs when an action disappears from the Stream Deck due to the user navigating to another page, profile, folder, etc. An action refers to _all_ types of actions, e.g. keys,
+     * dials, touchscreens, pedals, etc.
+     * @template T The type of settings associated with the action.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onWillDisappear(listener) {
+        return connection.disposableOn("willDisappear", (ev) => listener(new ActionEvent(new ActionContext(ev), ev)));
+    }
+    /**
+     * Registers the action with the Stream Deck, routing all events associated with the {@link SingletonAction.manifestId} to the specified {@link action}.
+     * @param action The action to register.
+     * @example
+     * ＠action({ UUID: "com.elgato.test.action" })
+     * class MyCustomAction extends SingletonAction {
+     *     export function onKeyDown(ev: KeyDownEvent) {
+     *         // Do some awesome thing.
+     *     }
+     * }
+     *
+     * streamDeck.actions.registerAction(new MyCustomAction());
+     */
+    registerAction(action) {
+        if (action.manifestId === undefined) {
+            throw new Error("The action's manifestId cannot be undefined.");
+        }
+        if (!manifest.Actions.some((a) => a.UUID === action.manifestId)) {
+            throw new Error(`The action's manifestId was not found within the manifest: ${action.manifestId}`);
+        }
+        // Routes an event to the action, when the applicable listener is defined on the action.
+        const { manifestId } = action;
+        const route = (fn, listener) => {
+            const boundedListener = listener?.bind(action);
+            if (boundedListener === undefined) {
+                return;
+            }
+            fn.bind(action)(async (ev) => {
+                if (ev.action.manifestId == manifestId) {
+                    await boundedListener(ev);
+                }
+            });
+        };
+        // Route each of the action events.
+        route(this.onDialDown, action.onDialDown);
+        route(this.onDialUp, action.onDialUp);
+        route(this.onDialRotate, action.onDialRotate);
+        route(ui.onSendToPlugin, action.onSendToPlugin);
+        route(onDidReceiveSettings, action.onDidReceiveSettings);
+        route(this.onKeyDown, action.onKeyDown);
+        route(this.onKeyUp, action.onKeyUp);
+        route(ui.onDidAppear, action.onPropertyInspectorDidAppear);
+        route(ui.onDidDisappear, action.onPropertyInspectorDidDisappear);
+        route(this.onTitleParametersDidChange, action.onTitleParametersDidChange);
+        route(this.onTouchTap, action.onTouchTap);
+        route(this.onWillAppear, action.onWillAppear);
+        route(this.onWillDisappear, action.onWillDisappear);
+    }
+}
+/**
+ * Service for interacting with Stream Deck actions.
+ */
+const actionService = new ActionService();
+
+/**
+ * Provides information about a device.
+ */
+class Device {
+    /**
+     * Private backing field for {@link Device.isConnected}.
+     */
+    #isConnected = false;
+    /**
+     * Private backing field for the device's information.
+     */
+    #info;
+    /**
+     * Unique identifier of the device.
+     */
+    id;
+    /**
+     * Initializes a new instance of the {@link Device} class.
+     * @param id Device identifier.
+     * @param info Information about the device.
+     * @param isConnected Determines whether the device is connected.
+     */
+    constructor(id, info, isConnected) {
+        this.id = id;
+        this.#info = info;
+        this.#isConnected = isConnected;
+        // Set connected.
+        connection.prependListener("deviceDidConnect", (ev) => {
+            if (ev.device === this.id) {
+                this.#info = ev.deviceInfo;
+                this.#isConnected = true;
+            }
+        });
+        // Set disconnected.
+        connection.prependListener("deviceDidDisconnect", (ev) => {
+            if (ev.device === this.id) {
+                this.#isConnected = false;
+            }
+        });
+    }
+    /**
+     * Actions currently visible on the device.
+     * @returns Collection of visible actions.
+     */
+    get actions() {
+        return actionStore.filter((a) => a.device.id === this.id);
+    }
+    /**
+     * Determines whether the device is currently connected.
+     * @returns `true` when the device is connected; otherwise `false`.
+     */
+    get isConnected() {
+        return this.#isConnected;
+    }
+    /**
+     * Name of the device, as specified by the user in the Stream Deck application.
+     * @returns Name of the device.
+     */
+    get name() {
+        return this.#info.name;
+    }
+    /**
+     * Number of action slots, excluding dials / touchscreens, available to the device.
+     * @returns Size of the device.
+     */
+    get size() {
+        return this.#info.size;
+    }
+    /**
+     * Type of the device that was connected, e.g. Stream Deck +, Stream Deck Pedal, etc. See {@link DeviceType}.
+     * @returns Type of the device.
+     */
+    get type() {
+        return this.#info.type;
+    }
+}
+
+/**
+ * Provides functions, and information, for interacting with Stream Deck actions.
+ */
+class DeviceService extends ReadOnlyDeviceStore {
+    /**
+     * Initializes a new instance of the {@link DeviceService}.
+     */
+    constructor() {
+        super();
+        // Add the devices from registration parameters.
+        connection.once("connected", (info) => {
+            info.devices.forEach((dev) => deviceStore.set(new Device(dev.id, dev, false)));
+        });
+        // Add new devices.
+        connection.on("deviceDidConnect", ({ device: id, deviceInfo }) => {
+            if (!deviceStore.getDeviceById(id)) {
+                deviceStore.set(new Device(id, deviceInfo, true));
+            }
+        });
+    }
+    /**
+     * Occurs when a Stream Deck device is connected. See also {@link DeviceService.onDeviceDidConnect}.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onDeviceDidConnect(listener) {
+        return connection.disposableOn("deviceDidConnect", (ev) => listener(new DeviceEvent(ev, this.getDeviceById(ev.device))));
+    }
+    /**
+     * Occurs when a Stream Deck device is disconnected. See also {@link DeviceService.onDeviceDidDisconnect}.
+     * @param listener Function to be invoked when the event occurs.
+     * @returns A disposable that, when disposed, removes the listener.
+     */
+    onDeviceDidDisconnect(listener) {
+        return connection.disposableOn("deviceDidDisconnect", (ev) => listener(new DeviceEvent(ev, this.getDeviceById(ev.device))));
+    }
+}
+/**
+ * Provides functions, and information, for interacting with Stream Deck actions.
+ */
+const deviceService = new DeviceService();
+
+/**
+ * Loads a locale from the file system.
+ * @param language Language to load.
+ * @returns Contents of the locale.
+ */
+function fileSystemLocaleProvider(language) {
+    const filePath = path.join(process.cwd(), `${language}.json`);
+    if (!fs$1.existsSync(filePath)) {
+        return null;
+    }
+    try {
+        // Parse the translations from the file.
+        const contents = fs$1.readFileSync(filePath, { flag: "r" })?.toString();
+        return parseLocalizations(contents);
+    }
+    catch (err) {
+        logger.error(`Failed to load translations from ${filePath}`, err);
+        return null;
+    }
+}
+
+/**
+ * Validates the {@link streamDeckVersion} and manifest's `Software.MinimumVersion` are at least the {@link minimumVersion}; when the version is not fulfilled, an error is thrown with the
+ * {@link feature} formatted into the message.
+ * @param minimumVersion Minimum required version.
+ * @param streamDeckVersion Actual application version.
+ * @param feature Feature that requires the version.
+ */
+function requiresVersion(minimumVersion, streamDeckVersion, feature) {
+    const required = {
+        major: Math.floor(minimumVersion),
+        minor: (minimumVersion % 1) * 10,
+        patch: 0,
+        build: 0,
+    };
+    if (streamDeckVersion.compareTo(required) === -1) {
+        throw new Error(`[ERR_NOT_SUPPORTED]: ${feature} requires Stream Deck version ${required.major}.${required.minor} or higher, but current version is ${streamDeckVersion.major}.${streamDeckVersion.minor}; please update Stream Deck and the "Software.MinimumVersion" in the plugin's manifest to "${required.major}.${required.minor}" or higher.`);
+    }
+    else if (getSoftwareMinimumVersion().compareTo(required) === -1) {
+        throw new Error(`[ERR_NOT_SUPPORTED]: ${feature} requires Stream Deck version ${required.major}.${required.minor} or higher; please update the "Software.MinimumVersion" in the plugin's manifest to "${required.major}.${required.minor}" or higher.`);
+    }
+}
+
+/**
+ * Requests the Stream Deck switches the current profile of the specified {@link deviceId} to the {@link profile}; when no {@link profile} is provided the previously active profile
+ * is activated.
+ *
+ * NB: Plugins may only switch to profiles distributed with the plugin, as defined within the manifest, and cannot access user-defined profiles.
+ * @param deviceId Unique identifier of the device where the profile should be set.
+ * @param profile Optional name of the profile to switch to; when `undefined` the previous profile will be activated. Name must be identical to the one provided in the manifest.
+ * @param page Optional page to show when switching to the {@link profile}, indexed from 0. When `undefined`, the page that was previously visible (when switching away from the
+ * profile) will be made visible.
+ * @returns `Promise` resolved when the request to switch the `profile` has been sent to Stream Deck.
+ */
+function switchToProfile(deviceId, profile, page) {
+    if (page !== undefined) {
+        requiresVersion(6.5, connection.version, "Switching to a profile page");
+    }
+    return connection.send({
+        event: "switchToProfile",
+        context: connection.registrationParameters.pluginUUID,
+        device: deviceId,
+        payload: {
+            page,
+            profile,
+        },
+    });
+}
+
+var profiles = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    switchToProfile: switchToProfile
+});
+
+/**
+ * Occurs when a monitored application is launched. Monitored applications can be defined in the manifest via the {@link Manifest.ApplicationsToMonitor} property.
+ * See also {@link onApplicationDidTerminate}.
+ * @param listener Function to be invoked when the event occurs.
+ * @returns A disposable that, when disposed, removes the listener.
+ */
+function onApplicationDidLaunch(listener) {
+    return connection.disposableOn("applicationDidLaunch", (ev) => listener(new ApplicationEvent(ev)));
+}
+/**
+ * Occurs when a monitored application terminates. Monitored applications can be defined in the manifest via the {@link Manifest.ApplicationsToMonitor} property.
+ * See also {@link onApplicationDidLaunch}.
+ * @param listener Function to be invoked when the event occurs.
+ * @returns A disposable that, when disposed, removes the listener.
+ */
+function onApplicationDidTerminate(listener) {
+    return connection.disposableOn("applicationDidTerminate", (ev) => listener(new ApplicationEvent(ev)));
+}
+/**
+ * Occurs when a deep-link message is routed to the plugin from Stream Deck. One-way deep-link messages can be sent to plugins from external applications using the URL format
+ * `streamdeck://plugins/message/<PLUGIN_UUID>/{MESSAGE}`.
+ * @param listener Function to be invoked when the event occurs.
+ * @returns A disposable that, when disposed, removes the listener.
+ */
+function onDidReceiveDeepLink(listener) {
+    requiresVersion(6.5, connection.version, "Receiving deep-link messages");
+    return connection.disposableOn("didReceiveDeepLink", (ev) => listener(new DidReceiveDeepLinkEvent(ev)));
+}
+/**
+ * Occurs when the computer wakes up.
+ * @param listener Function to be invoked when the event occurs.
+ * @returns A disposable that, when disposed, removes the listener.
+ */
+function onSystemDidWakeUp(listener) {
+    return connection.disposableOn("systemDidWakeUp", (ev) => listener(new Event(ev)));
+}
+/**
+ * Opens the specified `url` in the user's default browser.
+ * @param url URL to open.
+ * @returns `Promise` resolved when the request to open the `url` has been sent to Stream Deck.
+ */
+function openUrl(url) {
+    return connection.send({
+        event: "openUrl",
+        payload: {
+            url,
+        },
+    });
+}
+
+var system = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    onApplicationDidLaunch: onApplicationDidLaunch,
+    onApplicationDidTerminate: onApplicationDidTerminate,
+    onDidReceiveDeepLink: onDidReceiveDeepLink,
+    onSystemDidWakeUp: onSystemDidWakeUp,
+    openUrl: openUrl
+});
+
+/**
+ * Defines a Stream Deck action associated with the plugin.
+ * @param definition The definition of the action, e.g. it's identifier, name, etc.
+ * @returns The definition decorator.
+ */
+function action(definition) {
+    const manifestId = definition.UUID;
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unused-vars
+    return function (target, context) {
+        return class extends target {
+            /**
+             * The universally-unique value that identifies the action within the manifest.
+             */
+            manifestId = manifestId;
+        };
+    };
+}
+
+/**
+ * Provides the main bridge between the plugin and the Stream Deck allowing the plugin to send requests and receive events, e.g. when the user presses an action.
+ * @template T The type of settings associated with the action.
+ */
+class SingletonAction {
+    /**
+     * The universally-unique value that identifies the action within the manifest.
+     */
+    manifestId;
+    /**
+     * Gets the visible actions with the `manifestId` that match this instance's.
+     * @returns The visible actions.
+     */
+    get actions() {
+        return actionStore.filter((a) => a.manifestId === this.manifestId);
+    }
+}
+
+let i18n;
+const streamDeck = {
+    /**
+     * Namespace for event listeners and functionality relating to Stream Deck actions.
+     * @returns Actions namespace.
+     */
+    get actions() {
+        return actionService;
+    },
+    /**
+     * Namespace for interacting with Stream Deck devices.
+     * @returns Devices namespace.
+     */
+    get devices() {
+        return deviceService;
+    },
+    /**
+     * Internalization provider, responsible for managing localizations and translating resources.
+     * @returns Internalization provider.
+     */
+    get i18n() {
+        return (i18n ??= new I18nProvider(this.info.application.language, fileSystemLocaleProvider));
+    },
+    /**
+     * Registration and application information provided by Stream Deck during initialization.
+     * @returns Registration information.
+     */
+    get info() {
+        return connection.registrationParameters.info;
+    },
+    /**
+     * Logger responsible for capturing log messages.
+     * @returns The logger.
+     */
+    get logger() {
+        return logger;
+    },
+    /**
+     * Manifest associated with the plugin, as defined within the `manifest.json` file.
+     * @returns The manifest.
+     */
+    get manifest() {
+        return getManifest();
+    },
+    /**
+     * Namespace for Stream Deck profiles.
+     * @returns Profiles namespace.
+     */
+    get profiles() {
+        return profiles;
+    },
+    /**
+     * Namespace for persisting settings within Stream Deck.
+     * @returns Settings namespace.
+     */
+    get settings() {
+        return settings;
+    },
+    /**
+     * Namespace for interacting with, and receiving events from, the system the plugin is running on.
+     * @returns System namespace.
+     */
+    get system() {
+        return system;
+    },
+    /**
+     * Namespace for interacting with UI (property inspector) associated with the plugin.
+     * @returns UI namespace.
+     */
+    get ui() {
+        return ui;
+    },
+    /**
+     * Connects the plugin to the Stream Deck.
+     * @returns A promise resolved when a connection has been established.
+     */
+    connect() {
+        return connection.connect();
+    },
+};
+registerCreateLogEntryRoute(router, logger);
+
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+/* global Reflect, Promise, SuppressedError, Symbol, Iterator */
+
+
+function __esDecorate(ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
+    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
+    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
+    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
+    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
+    var _, done = false;
+    for (var i = decorators.length - 1; i >= 0; i--) {
+        var context = {};
+        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
+        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
+        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
+        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
+        if (kind === "accessor") {
+            if (result === void 0) continue;
+            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
+            if (_ = accept(result.get)) descriptor.get = _;
+            if (_ = accept(result.set)) descriptor.set = _;
+            if (_ = accept(result.init)) initializers.unshift(_);
+        }
+        else if (_ = accept(result)) {
+            if (kind === "field") initializers.unshift(_);
+            else descriptor[key] = _;
+        }
+    }
+    if (target) Object.defineProperty(target, contextIn.name, descriptor);
+    done = true;
+}
+function __runInitializers(thisArg, initializers, value) {
+    var useValue = arguments.length > 2;
+    for (var i = 0; i < initializers.length; i++) {
+        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
+    }
+    return useValue ? value : void 0;
+}
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
 /*! js-yaml 4.1.0 https://github.com/nodeca/js-yaml @license MIT */
-function wt(e){return null==e}!function(e,t){e.route("internal:logger.write",((e,n)=>{if(void 0===e.body)return n.fail();const{level:i,message:r,scope:o}=e.body;return void 0===i?n.fail():(t.write({level:i,data:[r],scope:o}),n.success())}))}(Ze,Te),"function"==typeof SuppressedError&&SuppressedError;var St={isNothing:wt,isObject:function(e){return"object"==typeof e&&null!==e},toArray:function(e){return Array.isArray(e)?e:wt(e)?[]:[e]},repeat:function(e,t){var n,i="";for(n=0;n<t;n+=1)i+=e;return i},isNegativeZero:function(e){return 0===e&&Number.NEGATIVE_INFINITY===1/e},extend:function(e,t){var n,i,r,o;if(t)for(n=0,i=(o=Object.keys(t)).length;n<i;n+=1)e[r=o[n]]=t[r];return e}};function kt(e,t){var n="",i=e.reason||"(unknown reason)";return e.mark?(e.mark.name&&(n+='in "'+e.mark.name+'" '),n+="("+(e.mark.line+1)+":"+(e.mark.column+1)+")",!t&&e.mark.snippet&&(n+="\n\n"+e.mark.snippet),i+" "+n):i}function xt(e,t){Error.call(this),this.name="YAMLException",this.reason=e,this.mark=t,this.message=kt(this,!1),Error.captureStackTrace?Error.captureStackTrace(this,this.constructor):this.stack=(new Error).stack||""}xt.prototype=Object.create(Error.prototype),xt.prototype.constructor=xt,xt.prototype.toString=function(e){return this.name+": "+kt(this,e)};var Et=xt;function Ct(e,t,n,i,r){var o="",s="",a=Math.floor(r/2)-1;return i-t>a&&(t=i-a+(o=" ... ").length),n-i>a&&(n=i+a-(s=" ...").length),{str:o+e.slice(t,n).replace(/\t/g,"→")+s,pos:i-t+o.length}}function Ot(e,t){return St.repeat(" ",t-e.length)+e}var At=function(e,t){if(t=Object.create(t||null),!e.buffer)return null;t.maxLength||(t.maxLength=79),"number"!=typeof t.indent&&(t.indent=1),"number"!=typeof t.linesBefore&&(t.linesBefore=3),"number"!=typeof t.linesAfter&&(t.linesAfter=2);for(var n,i=/\r?\n|\r|\0/g,r=[0],o=[],s=-1;n=i.exec(e.buffer);)o.push(n.index),r.push(n.index+n[0].length),e.position<=n.index&&s<0&&(s=r.length-2);s<0&&(s=r.length-1);var a,c,l="",u=Math.min(e.line+t.linesAfter,o.length).toString().length,h=t.maxLength-(t.indent+u+3);for(a=1;a<=t.linesBefore&&!(s-a<0);a++)c=Ct(e.buffer,r[s-a],o[s-a],e.position-(r[s]-r[s-a]),h),l=St.repeat(" ",t.indent)+Ot((e.line-a+1).toString(),u)+" | "+c.str+"\n"+l;for(c=Ct(e.buffer,r[s],o[s],e.position,h),l+=St.repeat(" ",t.indent)+Ot((e.line+1).toString(),u)+" | "+c.str+"\n",l+=St.repeat("-",t.indent+u+3+c.pos)+"^\n",a=1;a<=t.linesAfter&&!(s+a>=o.length);a++)c=Ct(e.buffer,r[s+a],o[s+a],e.position-(r[s]-r[s+a]),h),l+=St.repeat(" ",t.indent)+Ot((e.line+a+1).toString(),u)+" | "+c.str+"\n";return l.replace(/\n$/,"")},It=["kind","multi","resolve","construct","instanceOf","predicate","represent","representName","defaultStyle","styleAliases"],Tt=["scalar","sequence","mapping"];var Nt=function(e,t){if(t=t||{},Object.keys(t).forEach((function(t){if(-1===It.indexOf(t))throw new Et('Unknown option "'+t+'" is met in definition of "'+e+'" YAML type.')})),this.options=t,this.tag=e,this.kind=t.kind||null,this.resolve=t.resolve||function(){return!0},this.construct=t.construct||function(e){return e},this.instanceOf=t.instanceOf||null,this.predicate=t.predicate||null,this.represent=t.represent||null,this.representName=t.representName||null,this.defaultStyle=t.defaultStyle||null,this.multi=t.multi||!1,this.styleAliases=function(e){var t={};return null!==e&&Object.keys(e).forEach((function(n){e[n].forEach((function(e){t[String(e)]=n}))})),t}(t.styleAliases||null),-1===Tt.indexOf(this.kind))throw new Et('Unknown kind "'+this.kind+'" is specified for "'+e+'" YAML type.')};function Dt(e,t){var n=[];return e[t].forEach((function(e){var t=n.length;n.forEach((function(n,i){n.tag===e.tag&&n.kind===e.kind&&n.multi===e.multi&&(t=i)})),n[t]=e})),n}function Pt(e){return this.extend(e)}Pt.prototype.extend=function(e){var t=[],n=[];if(e instanceof Nt)n.push(e);else if(Array.isArray(e))n=n.concat(e);else{if(!e||!Array.isArray(e.implicit)&&!Array.isArray(e.explicit))throw new Et("Schema.extend argument should be a Type, [ Type ], or a schema definition ({ implicit: [...], explicit: [...] })");e.implicit&&(t=t.concat(e.implicit)),e.explicit&&(n=n.concat(e.explicit))}t.forEach((function(e){if(!(e instanceof Nt))throw new Et("Specified list of YAML types (or a single Type object) contains a non-Type object.");if(e.loadKind&&"scalar"!==e.loadKind)throw new Et("There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.");if(e.multi)throw new Et("There is a multi type in the implicit list of a schema. Multi tags can only be listed as explicit.")})),n.forEach((function(e){if(!(e instanceof Nt))throw new Et("Specified list of YAML types (or a single Type object) contains a non-Type object.")}));var i=Object.create(Pt.prototype);return i.implicit=(this.implicit||[]).concat(t),i.explicit=(this.explicit||[]).concat(n),i.compiledImplicit=Dt(i,"implicit"),i.compiledExplicit=Dt(i,"explicit"),i.compiledTypeMap=function(){var e,t,n={scalar:{},sequence:{},mapping:{},fallback:{},multi:{scalar:[],sequence:[],mapping:[],fallback:[]}};function i(e){e.multi?(n.multi[e.kind].push(e),n.multi.fallback.push(e)):n[e.kind][e.tag]=n.fallback[e.tag]=e}for(e=0,t=arguments.length;e<t;e+=1)arguments[e].forEach(i);return n}(i.compiledImplicit,i.compiledExplicit),i};var Lt=new Pt({explicit:[new Nt("tag:yaml.org,2002:str",{kind:"scalar",construct:function(e){return null!==e?e:""}}),new Nt("tag:yaml.org,2002:seq",{kind:"sequence",construct:function(e){return null!==e?e:[]}}),new Nt("tag:yaml.org,2002:map",{kind:"mapping",construct:function(e){return null!==e?e:{}}})]});var Rt=new Nt("tag:yaml.org,2002:null",{kind:"scalar",resolve:function(e){if(null===e)return!0;var t=e.length;return 1===t&&"~"===e||4===t&&("null"===e||"Null"===e||"NULL"===e)},construct:function(){return null},predicate:function(e){return null===e},represent:{canonical:function(){return"~"},lowercase:function(){return"null"},uppercase:function(){return"NULL"},camelcase:function(){return"Null"},empty:function(){return""}},defaultStyle:"lowercase"});var Ut=new Nt("tag:yaml.org,2002:bool",{kind:"scalar",resolve:function(e){if(null===e)return!1;var t=e.length;return 4===t&&("true"===e||"True"===e||"TRUE"===e)||5===t&&("false"===e||"False"===e||"FALSE"===e)},construct:function(e){return"true"===e||"True"===e||"TRUE"===e},predicate:function(e){return"[object Boolean]"===Object.prototype.toString.call(e)},represent:{lowercase:function(e){return e?"true":"false"},uppercase:function(e){return e?"TRUE":"FALSE"},camelcase:function(e){return e?"True":"False"}},defaultStyle:"lowercase"});function Mt(e){return 48<=e&&e<=55}function jt(e){return 48<=e&&e<=57}var Bt=new Nt("tag:yaml.org,2002:int",{kind:"scalar",resolve:function(e){if(null===e)return!1;var t,n,i=e.length,r=0,o=!1;if(!i)return!1;if("-"!==(t=e[r])&&"+"!==t||(t=e[++r]),"0"===t){if(r+1===i)return!0;if("b"===(t=e[++r])){for(r++;r<i;r++)if("_"!==(t=e[r])){if("0"!==t&&"1"!==t)return!1;o=!0}return o&&"_"!==t}if("x"===t){for(r++;r<i;r++)if("_"!==(t=e[r])){if(!(48<=(n=e.charCodeAt(r))&&n<=57||65<=n&&n<=70||97<=n&&n<=102))return!1;o=!0}return o&&"_"!==t}if("o"===t){for(r++;r<i;r++)if("_"!==(t=e[r])){if(!Mt(e.charCodeAt(r)))return!1;o=!0}return o&&"_"!==t}}if("_"===t)return!1;for(;r<i;r++)if("_"!==(t=e[r])){if(!jt(e.charCodeAt(r)))return!1;o=!0}return!(!o||"_"===t)},construct:function(e){var t,n=e,i=1;if(-1!==n.indexOf("_")&&(n=n.replace(/_/g,"")),"-"!==(t=n[0])&&"+"!==t||("-"===t&&(i=-1),t=(n=n.slice(1))[0]),"0"===n)return 0;if("0"===t){if("b"===n[1])return i*parseInt(n.slice(2),2);if("x"===n[1])return i*parseInt(n.slice(2),16);if("o"===n[1])return i*parseInt(n.slice(2),8)}return i*parseInt(n,10)},predicate:function(e){return"[object Number]"===Object.prototype.toString.call(e)&&e%1==0&&!St.isNegativeZero(e)},represent:{binary:function(e){return e>=0?"0b"+e.toString(2):"-0b"+e.toString(2).slice(1)},octal:function(e){return e>=0?"0o"+e.toString(8):"-0o"+e.toString(8).slice(1)},decimal:function(e){return e.toString(10)},hexadecimal:function(e){return e>=0?"0x"+e.toString(16).toUpperCase():"-0x"+e.toString(16).toUpperCase().slice(1)}},defaultStyle:"decimal",styleAliases:{binary:[2,"bin"],octal:[8,"oct"],decimal:[10,"dec"],hexadecimal:[16,"hex"]}}),Ft=new RegExp("^(?:[-+]?(?:[0-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?|[-+]?\\.(?:inf|Inf|INF)|\\.(?:nan|NaN|NAN))$");var $t=/^[-+]?[0-9]+e/;var Wt=new Nt("tag:yaml.org,2002:float",{kind:"scalar",resolve:function(e){return null!==e&&!(!Ft.test(e)||"_"===e[e.length-1])},construct:function(e){var t,n;return n="-"===(t=e.replace(/_/g,"").toLowerCase())[0]?-1:1,"+-".indexOf(t[0])>=0&&(t=t.slice(1)),".inf"===t?1===n?Number.POSITIVE_INFINITY:Number.NEGATIVE_INFINITY:".nan"===t?NaN:n*parseFloat(t,10)},predicate:function(e){return"[object Number]"===Object.prototype.toString.call(e)&&(e%1!=0||St.isNegativeZero(e))},represent:function(e,t){var n;if(isNaN(e))switch(t){case"lowercase":return".nan";case"uppercase":return".NAN";case"camelcase":return".NaN"}else if(Number.POSITIVE_INFINITY===e)switch(t){case"lowercase":return".inf";case"uppercase":return".INF";case"camelcase":return".Inf"}else if(Number.NEGATIVE_INFINITY===e)switch(t){case"lowercase":return"-.inf";case"uppercase":return"-.INF";case"camelcase":return"-.Inf"}else if(St.isNegativeZero(e))return"-0.0";return n=e.toString(10),$t.test(n)?n.replace("e",".e"):n},defaultStyle:"lowercase"}),Gt=Lt.extend({implicit:[Rt,Ut,Bt,Wt]}),qt=new RegExp("^([0-9][0-9][0-9][0-9])-([0-9][0-9])-([0-9][0-9])$"),Vt=new RegExp("^([0-9][0-9][0-9][0-9])-([0-9][0-9]?)-([0-9][0-9]?)(?:[Tt]|[ \\t]+)([0-9][0-9]?):([0-9][0-9]):([0-9][0-9])(?:\\.([0-9]*))?(?:[ \\t]*(Z|([-+])([0-9][0-9]?)(?::([0-9][0-9]))?))?$");var zt=new Nt("tag:yaml.org,2002:timestamp",{kind:"scalar",resolve:function(e){return null!==e&&(null!==qt.exec(e)||null!==Vt.exec(e))},construct:function(e){var t,n,i,r,o,s,a,c,l=0,u=null;if(null===(t=qt.exec(e))&&(t=Vt.exec(e)),null===t)throw new Error("Date resolve error");if(n=+t[1],i=+t[2]-1,r=+t[3],!t[4])return new Date(Date.UTC(n,i,r));if(o=+t[4],s=+t[5],a=+t[6],t[7]){for(l=t[7].slice(0,3);l.length<3;)l+="0";l=+l}return t[9]&&(u=6e4*(60*+t[10]+ +(t[11]||0)),"-"===t[9]&&(u=-u)),c=new Date(Date.UTC(n,i,r,o,s,a,l)),u&&c.setTime(c.getTime()-u),c},instanceOf:Date,represent:function(e){return e.toISOString()}});var Jt=new Nt("tag:yaml.org,2002:merge",{kind:"scalar",resolve:function(e){return"<<"===e||null===e}}),Yt="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\n\r";var Kt=new Nt("tag:yaml.org,2002:binary",{kind:"scalar",resolve:function(e){if(null===e)return!1;var t,n,i=0,r=e.length,o=Yt;for(n=0;n<r;n++)if(!((t=o.indexOf(e.charAt(n)))>64)){if(t<0)return!1;i+=6}return i%8==0},construct:function(e){var t,n,i=e.replace(/[\r\n=]/g,""),r=i.length,o=Yt,s=0,a=[];for(t=0;t<r;t++)t%4==0&&t&&(a.push(s>>16&255),a.push(s>>8&255),a.push(255&s)),s=s<<6|o.indexOf(i.charAt(t));return 0===(n=r%4*6)?(a.push(s>>16&255),a.push(s>>8&255),a.push(255&s)):18===n?(a.push(s>>10&255),a.push(s>>2&255)):12===n&&a.push(s>>4&255),new Uint8Array(a)},predicate:function(e){return"[object Uint8Array]"===Object.prototype.toString.call(e)},represent:function(e){var t,n,i="",r=0,o=e.length,s=Yt;for(t=0;t<o;t++)t%3==0&&t&&(i+=s[r>>18&63],i+=s[r>>12&63],i+=s[r>>6&63],i+=s[63&r]),r=(r<<8)+e[t];return 0===(n=o%3)?(i+=s[r>>18&63],i+=s[r>>12&63],i+=s[r>>6&63],i+=s[63&r]):2===n?(i+=s[r>>10&63],i+=s[r>>4&63],i+=s[r<<2&63],i+=s[64]):1===n&&(i+=s[r>>2&63],i+=s[r<<4&63],i+=s[64],i+=s[64]),i}}),Ht=Object.prototype.hasOwnProperty,Zt=Object.prototype.toString;var Xt=new Nt("tag:yaml.org,2002:omap",{kind:"sequence",resolve:function(e){if(null===e)return!0;var t,n,i,r,o,s=[],a=e;for(t=0,n=a.length;t<n;t+=1){if(i=a[t],o=!1,"[object Object]"!==Zt.call(i))return!1;for(r in i)if(Ht.call(i,r)){if(o)return!1;o=!0}if(!o)return!1;if(-1!==s.indexOf(r))return!1;s.push(r)}return!0},construct:function(e){return null!==e?e:[]}}),Qt=Object.prototype.toString;var en=new Nt("tag:yaml.org,2002:pairs",{kind:"sequence",resolve:function(e){if(null===e)return!0;var t,n,i,r,o,s=e;for(o=new Array(s.length),t=0,n=s.length;t<n;t+=1){if(i=s[t],"[object Object]"!==Qt.call(i))return!1;if(1!==(r=Object.keys(i)).length)return!1;o[t]=[r[0],i[r[0]]]}return!0},construct:function(e){if(null===e)return[];var t,n,i,r,o,s=e;for(o=new Array(s.length),t=0,n=s.length;t<n;t+=1)i=s[t],r=Object.keys(i),o[t]=[r[0],i[r[0]]];return o}}),tn=Object.prototype.hasOwnProperty;var nn=new Nt("tag:yaml.org,2002:set",{kind:"mapping",resolve:function(e){if(null===e)return!0;var t,n=e;for(t in n)if(tn.call(n,t)&&null!==n[t])return!1;return!0},construct:function(e){return null!==e?e:{}}}),rn=Gt.extend({implicit:[zt,Jt],explicit:[Kt,Xt,en,nn]}),on=Object.prototype.hasOwnProperty,sn=/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/,an=/[\x85\u2028\u2029]/,cn=/[,\[\]\{\}]/,ln=/^(?:!|!!|![a-z\-]+!)$/i,un=/^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;function hn(e){return Object.prototype.toString.call(e)}function dn(e){return 10===e||13===e}function pn(e){return 9===e||32===e}function fn(e){return 9===e||32===e||10===e||13===e}function gn(e){return 44===e||91===e||93===e||123===e||125===e}function mn(e){var t;return 48<=e&&e<=57?e-48:97<=(t=32|e)&&t<=102?t-97+10:-1}function yn(e){return 48===e?"\0":97===e?"":98===e?"\b":116===e||9===e?"\t":110===e?"\n":118===e?"\v":102===e?"\f":114===e?"\r":101===e?"":32===e?" ":34===e?'"':47===e?"/":92===e?"\\":78===e?"":95===e?" ":76===e?"\u2028":80===e?"\u2029":""}function _n(e){return e<=65535?String.fromCharCode(e):String.fromCharCode(55296+(e-65536>>10),56320+(e-65536&1023))}for(var vn=new Array(256),bn=new Array(256),wn=0;wn<256;wn++)vn[wn]=yn(wn)?1:0,bn[wn]=yn(wn);function Sn(e,t){this.input=e,this.filename=t.filename||null,this.schema=t.schema||rn,this.onWarning=t.onWarning||null,this.legacy=t.legacy||!1,this.json=t.json||!1,this.listener=t.listener||null,this.implicitTypes=this.schema.compiledImplicit,this.typeMap=this.schema.compiledTypeMap,this.length=e.length,this.position=0,this.line=0,this.lineStart=0,this.lineIndent=0,this.firstTabInLine=-1,this.documents=[]}function kn(e,t){var n={name:e.filename,buffer:e.input.slice(0,-1),position:e.position,line:e.line,column:e.position-e.lineStart};return n.snippet=At(n),new Et(t,n)}function xn(e,t){throw kn(e,t)}function En(e,t){e.onWarning&&e.onWarning.call(null,kn(e,t))}var Cn={YAML:function(e,t,n){var i,r,o;null!==e.version&&xn(e,"duplication of %YAML directive"),1!==n.length&&xn(e,"YAML directive accepts exactly one argument"),null===(i=/^([0-9]+)\.([0-9]+)$/.exec(n[0]))&&xn(e,"ill-formed argument of the YAML directive"),r=parseInt(i[1],10),o=parseInt(i[2],10),1!==r&&xn(e,"unacceptable YAML version of the document"),e.version=n[0],e.checkLineBreaks=o<2,1!==o&&2!==o&&En(e,"unsupported YAML version of the document")},TAG:function(e,t,n){var i,r;2!==n.length&&xn(e,"TAG directive accepts exactly two arguments"),i=n[0],r=n[1],ln.test(i)||xn(e,"ill-formed tag handle (first argument) of the TAG directive"),on.call(e.tagMap,i)&&xn(e,'there is a previously declared suffix for "'+i+'" tag handle'),un.test(r)||xn(e,"ill-formed tag prefix (second argument) of the TAG directive");try{r=decodeURIComponent(r)}catch(t){xn(e,"tag prefix is malformed: "+r)}e.tagMap[i]=r}};function On(e,t,n,i){var r,o,s,a;if(t<n){if(a=e.input.slice(t,n),i)for(r=0,o=a.length;r<o;r+=1)9===(s=a.charCodeAt(r))||32<=s&&s<=1114111||xn(e,"expected valid JSON character");else sn.test(a)&&xn(e,"the stream contains non-printable characters");e.result+=a}}function An(e,t,n,i){var r,o,s,a;for(St.isObject(n)||xn(e,"cannot merge mappings; the provided source object is unacceptable"),s=0,a=(r=Object.keys(n)).length;s<a;s+=1)o=r[s],on.call(t,o)||(t[o]=n[o],i[o]=!0)}function In(e,t,n,i,r,o,s,a,c){var l,u;if(Array.isArray(r))for(l=0,u=(r=Array.prototype.slice.call(r)).length;l<u;l+=1)Array.isArray(r[l])&&xn(e,"nested arrays are not supported inside keys"),"object"==typeof r&&"[object Object]"===hn(r[l])&&(r[l]="[object Object]");if("object"==typeof r&&"[object Object]"===hn(r)&&(r="[object Object]"),r=String(r),null===t&&(t={}),"tag:yaml.org,2002:merge"===i)if(Array.isArray(o))for(l=0,u=o.length;l<u;l+=1)An(e,t,o[l],n);else An(e,t,o,n);else e.json||on.call(n,r)||!on.call(t,r)||(e.line=s||e.line,e.lineStart=a||e.lineStart,e.position=c||e.position,xn(e,"duplicated mapping key")),"__proto__"===r?Object.defineProperty(t,r,{configurable:!0,enumerable:!0,writable:!0,value:o}):t[r]=o,delete n[r];return t}function Tn(e){var t;10===(t=e.input.charCodeAt(e.position))?e.position++:13===t?(e.position++,10===e.input.charCodeAt(e.position)&&e.position++):xn(e,"a line break is expected"),e.line+=1,e.lineStart=e.position,e.firstTabInLine=-1}function Nn(e,t,n){for(var i=0,r=e.input.charCodeAt(e.position);0!==r;){for(;pn(r);)9===r&&-1===e.firstTabInLine&&(e.firstTabInLine=e.position),r=e.input.charCodeAt(++e.position);if(t&&35===r)do{r=e.input.charCodeAt(++e.position)}while(10!==r&&13!==r&&0!==r);if(!dn(r))break;for(Tn(e),r=e.input.charCodeAt(e.position),i++,e.lineIndent=0;32===r;)e.lineIndent++,r=e.input.charCodeAt(++e.position)}return-1!==n&&0!==i&&e.lineIndent<n&&En(e,"deficient indentation"),i}function Dn(e){var t,n=e.position;return!(45!==(t=e.input.charCodeAt(n))&&46!==t||t!==e.input.charCodeAt(n+1)||t!==e.input.charCodeAt(n+2)||(n+=3,0!==(t=e.input.charCodeAt(n))&&!fn(t)))}function Pn(e,t){1===t?e.result+=" ":t>1&&(e.result+=St.repeat("\n",t-1))}function Ln(e,t){var n,i,r=e.tag,o=e.anchor,s=[],a=!1;if(-1!==e.firstTabInLine)return!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=s),i=e.input.charCodeAt(e.position);0!==i&&(-1!==e.firstTabInLine&&(e.position=e.firstTabInLine,xn(e,"tab characters must not be used in indentation")),45===i)&&fn(e.input.charCodeAt(e.position+1));)if(a=!0,e.position++,Nn(e,!0,-1)&&e.lineIndent<=t)s.push(null),i=e.input.charCodeAt(e.position);else if(n=e.line,Mn(e,t,3,!1,!0),s.push(e.result),Nn(e,!0,-1),i=e.input.charCodeAt(e.position),(e.line===n||e.lineIndent>t)&&0!==i)xn(e,"bad indentation of a sequence entry");else if(e.lineIndent<t)break;return!!a&&(e.tag=r,e.anchor=o,e.kind="sequence",e.result=s,!0)}function Rn(e){var t,n,i,r,o=!1,s=!1;if(33!==(r=e.input.charCodeAt(e.position)))return!1;if(null!==e.tag&&xn(e,"duplication of a tag property"),60===(r=e.input.charCodeAt(++e.position))?(o=!0,r=e.input.charCodeAt(++e.position)):33===r?(s=!0,n="!!",r=e.input.charCodeAt(++e.position)):n="!",t=e.position,o){do{r=e.input.charCodeAt(++e.position)}while(0!==r&&62!==r);e.position<e.length?(i=e.input.slice(t,e.position),r=e.input.charCodeAt(++e.position)):xn(e,"unexpected end of the stream within a verbatim tag")}else{for(;0!==r&&!fn(r);)33===r&&(s?xn(e,"tag suffix cannot contain exclamation marks"):(n=e.input.slice(t-1,e.position+1),ln.test(n)||xn(e,"named tag handle cannot contain such characters"),s=!0,t=e.position+1)),r=e.input.charCodeAt(++e.position);i=e.input.slice(t,e.position),cn.test(i)&&xn(e,"tag suffix cannot contain flow indicator characters")}i&&!un.test(i)&&xn(e,"tag name cannot contain such characters: "+i);try{i=decodeURIComponent(i)}catch(t){xn(e,"tag name is malformed: "+i)}return o?e.tag=i:on.call(e.tagMap,n)?e.tag=e.tagMap[n]+i:"!"===n?e.tag="!"+i:"!!"===n?e.tag="tag:yaml.org,2002:"+i:xn(e,'undeclared tag handle "'+n+'"'),!0}function Un(e){var t,n;if(38!==(n=e.input.charCodeAt(e.position)))return!1;for(null!==e.anchor&&xn(e,"duplication of an anchor property"),n=e.input.charCodeAt(++e.position),t=e.position;0!==n&&!fn(n)&&!gn(n);)n=e.input.charCodeAt(++e.position);return e.position===t&&xn(e,"name of an anchor node must contain at least one character"),e.anchor=e.input.slice(t,e.position),!0}function Mn(e,t,n,i,r){var o,s,a,c,l,u,h,d,p,f=1,g=!1,m=!1;if(null!==e.listener&&e.listener("open",e),e.tag=null,e.anchor=null,e.kind=null,e.result=null,o=s=a=4===n||3===n,i&&Nn(e,!0,-1)&&(g=!0,e.lineIndent>t?f=1:e.lineIndent===t?f=0:e.lineIndent<t&&(f=-1)),1===f)for(;Rn(e)||Un(e);)Nn(e,!0,-1)?(g=!0,a=o,e.lineIndent>t?f=1:e.lineIndent===t?f=0:e.lineIndent<t&&(f=-1)):a=!1;if(a&&(a=g||r),1!==f&&4!==n||(d=1===n||2===n?t:t+1,p=e.position-e.lineStart,1===f?a&&(Ln(e,p)||function(e,t,n){var i,r,o,s,a,c,l,u=e.tag,h=e.anchor,d={},p=Object.create(null),f=null,g=null,m=null,y=!1,_=!1;if(-1!==e.firstTabInLine)return!1;for(null!==e.anchor&&(e.anchorMap[e.anchor]=d),l=e.input.charCodeAt(e.position);0!==l;){if(y||-1===e.firstTabInLine||(e.position=e.firstTabInLine,xn(e,"tab characters must not be used in indentation")),i=e.input.charCodeAt(e.position+1),o=e.line,63!==l&&58!==l||!fn(i)){if(s=e.line,a=e.lineStart,c=e.position,!Mn(e,n,2,!1,!0))break;if(e.line===o){for(l=e.input.charCodeAt(e.position);pn(l);)l=e.input.charCodeAt(++e.position);if(58===l)fn(l=e.input.charCodeAt(++e.position))||xn(e,"a whitespace character is expected after the key-value separator within a block mapping"),y&&(In(e,d,p,f,g,null,s,a,c),f=g=m=null),_=!0,y=!1,r=!1,f=e.tag,g=e.result;else{if(!_)return e.tag=u,e.anchor=h,!0;xn(e,"can not read an implicit mapping pair; a colon is missed")}}else{if(!_)return e.tag=u,e.anchor=h,!0;xn(e,"can not read a block mapping entry; a multiline key may not be an implicit key")}}else 63===l?(y&&(In(e,d,p,f,g,null,s,a,c),f=g=m=null),_=!0,y=!0,r=!0):y?(y=!1,r=!0):xn(e,"incomplete explicit mapping pair; a key node is missed; or followed by a non-tabulated empty line"),e.position+=1,l=i;if((e.line===o||e.lineIndent>t)&&(y&&(s=e.line,a=e.lineStart,c=e.position),Mn(e,t,4,!0,r)&&(y?g=e.result:m=e.result),y||(In(e,d,p,f,g,m,s,a,c),f=g=m=null),Nn(e,!0,-1),l=e.input.charCodeAt(e.position)),(e.line===o||e.lineIndent>t)&&0!==l)xn(e,"bad indentation of a mapping entry");else if(e.lineIndent<t)break}return y&&In(e,d,p,f,g,null,s,a,c),_&&(e.tag=u,e.anchor=h,e.kind="mapping",e.result=d),_}(e,p,d))||function(e,t){var n,i,r,o,s,a,c,l,u,h,d,p,f=!0,g=e.tag,m=e.anchor,y=Object.create(null);if(91===(p=e.input.charCodeAt(e.position)))s=93,l=!1,o=[];else{if(123!==p)return!1;s=125,l=!0,o={}}for(null!==e.anchor&&(e.anchorMap[e.anchor]=o),p=e.input.charCodeAt(++e.position);0!==p;){if(Nn(e,!0,t),(p=e.input.charCodeAt(e.position))===s)return e.position++,e.tag=g,e.anchor=m,e.kind=l?"mapping":"sequence",e.result=o,!0;f?44===p&&xn(e,"expected the node content, but found ','"):xn(e,"missed comma between flow collection entries"),d=null,a=c=!1,63===p&&fn(e.input.charCodeAt(e.position+1))&&(a=c=!0,e.position++,Nn(e,!0,t)),n=e.line,i=e.lineStart,r=e.position,Mn(e,t,1,!1,!0),h=e.tag,u=e.result,Nn(e,!0,t),p=e.input.charCodeAt(e.position),!c&&e.line!==n||58!==p||(a=!0,p=e.input.charCodeAt(++e.position),Nn(e,!0,t),Mn(e,t,1,!1,!0),d=e.result),l?In(e,o,y,h,u,d,n,i,r):a?o.push(In(e,null,y,h,u,d,n,i,r)):o.push(u),Nn(e,!0,t),44===(p=e.input.charCodeAt(e.position))?(f=!0,p=e.input.charCodeAt(++e.position)):f=!1}xn(e,"unexpected end of the stream within a flow collection")}(e,d)?m=!0:(s&&function(e,t){var n,i,r,o,s,a=1,c=!1,l=!1,u=t,h=0,d=!1;if(124===(o=e.input.charCodeAt(e.position)))i=!1;else{if(62!==o)return!1;i=!0}for(e.kind="scalar",e.result="";0!==o;)if(43===(o=e.input.charCodeAt(++e.position))||45===o)1===a?a=43===o?3:2:xn(e,"repeat of a chomping mode identifier");else{if(!((r=48<=(s=o)&&s<=57?s-48:-1)>=0))break;0===r?xn(e,"bad explicit indentation width of a block scalar; it cannot be less than one"):l?xn(e,"repeat of an indentation width identifier"):(u=t+r-1,l=!0)}if(pn(o)){do{o=e.input.charCodeAt(++e.position)}while(pn(o));if(35===o)do{o=e.input.charCodeAt(++e.position)}while(!dn(o)&&0!==o)}for(;0!==o;){for(Tn(e),e.lineIndent=0,o=e.input.charCodeAt(e.position);(!l||e.lineIndent<u)&&32===o;)e.lineIndent++,o=e.input.charCodeAt(++e.position);if(!l&&e.lineIndent>u&&(u=e.lineIndent),dn(o))h++;else{if(e.lineIndent<u){3===a?e.result+=St.repeat("\n",c?1+h:h):1===a&&c&&(e.result+="\n");break}for(i?pn(o)?(d=!0,e.result+=St.repeat("\n",c?1+h:h)):d?(d=!1,e.result+=St.repeat("\n",h+1)):0===h?c&&(e.result+=" "):e.result+=St.repeat("\n",h):e.result+=St.repeat("\n",c?1+h:h),c=!0,l=!0,h=0,n=e.position;!dn(o)&&0!==o;)o=e.input.charCodeAt(++e.position);On(e,n,e.position,!1)}}return!0}(e,d)||function(e,t){var n,i,r;if(39!==(n=e.input.charCodeAt(e.position)))return!1;for(e.kind="scalar",e.result="",e.position++,i=r=e.position;0!==(n=e.input.charCodeAt(e.position));)if(39===n){if(On(e,i,e.position,!0),39!==(n=e.input.charCodeAt(++e.position)))return!0;i=e.position,e.position++,r=e.position}else dn(n)?(On(e,i,r,!0),Pn(e,Nn(e,!1,t)),i=r=e.position):e.position===e.lineStart&&Dn(e)?xn(e,"unexpected end of the document within a single quoted scalar"):(e.position++,r=e.position);xn(e,"unexpected end of the stream within a single quoted scalar")}(e,d)||function(e,t){var n,i,r,o,s,a,c;if(34!==(a=e.input.charCodeAt(e.position)))return!1;for(e.kind="scalar",e.result="",e.position++,n=i=e.position;0!==(a=e.input.charCodeAt(e.position));){if(34===a)return On(e,n,e.position,!0),e.position++,!0;if(92===a){if(On(e,n,e.position,!0),dn(a=e.input.charCodeAt(++e.position)))Nn(e,!1,t);else if(a<256&&vn[a])e.result+=bn[a],e.position++;else if((s=120===(c=a)?2:117===c?4:85===c?8:0)>0){for(r=s,o=0;r>0;r--)(s=mn(a=e.input.charCodeAt(++e.position)))>=0?o=(o<<4)+s:xn(e,"expected hexadecimal character");e.result+=_n(o),e.position++}else xn(e,"unknown escape sequence");n=i=e.position}else dn(a)?(On(e,n,i,!0),Pn(e,Nn(e,!1,t)),n=i=e.position):e.position===e.lineStart&&Dn(e)?xn(e,"unexpected end of the document within a double quoted scalar"):(e.position++,i=e.position)}xn(e,"unexpected end of the stream within a double quoted scalar")}(e,d)?m=!0:!function(e){var t,n,i;if(42!==(i=e.input.charCodeAt(e.position)))return!1;for(i=e.input.charCodeAt(++e.position),t=e.position;0!==i&&!fn(i)&&!gn(i);)i=e.input.charCodeAt(++e.position);return e.position===t&&xn(e,"name of an alias node must contain at least one character"),n=e.input.slice(t,e.position),on.call(e.anchorMap,n)||xn(e,'unidentified alias "'+n+'"'),e.result=e.anchorMap[n],Nn(e,!0,-1),!0}(e)?function(e,t,n){var i,r,o,s,a,c,l,u,h=e.kind,d=e.result;if(fn(u=e.input.charCodeAt(e.position))||gn(u)||35===u||38===u||42===u||33===u||124===u||62===u||39===u||34===u||37===u||64===u||96===u)return!1;if((63===u||45===u)&&(fn(i=e.input.charCodeAt(e.position+1))||n&&gn(i)))return!1;for(e.kind="scalar",e.result="",r=o=e.position,s=!1;0!==u;){if(58===u){if(fn(i=e.input.charCodeAt(e.position+1))||n&&gn(i))break}else if(35===u){if(fn(e.input.charCodeAt(e.position-1)))break}else{if(e.position===e.lineStart&&Dn(e)||n&&gn(u))break;if(dn(u)){if(a=e.line,c=e.lineStart,l=e.lineIndent,Nn(e,!1,-1),e.lineIndent>=t){s=!0,u=e.input.charCodeAt(e.position);continue}e.position=o,e.line=a,e.lineStart=c,e.lineIndent=l;break}}s&&(On(e,r,o,!1),Pn(e,e.line-a),r=o=e.position,s=!1),pn(u)||(o=e.position+1),u=e.input.charCodeAt(++e.position)}return On(e,r,o,!1),!!e.result||(e.kind=h,e.result=d,!1)}(e,d,1===n)&&(m=!0,null===e.tag&&(e.tag="?")):(m=!0,null===e.tag&&null===e.anchor||xn(e,"alias node should not have any properties")),null!==e.anchor&&(e.anchorMap[e.anchor]=e.result)):0===f&&(m=a&&Ln(e,p))),null===e.tag)null!==e.anchor&&(e.anchorMap[e.anchor]=e.result);else if("?"===e.tag){for(null!==e.result&&"scalar"!==e.kind&&xn(e,'unacceptable node kind for !<?> tag; it should be "scalar", not "'+e.kind+'"'),c=0,l=e.implicitTypes.length;c<l;c+=1)if((h=e.implicitTypes[c]).resolve(e.result)){e.result=h.construct(e.result),e.tag=h.tag,null!==e.anchor&&(e.anchorMap[e.anchor]=e.result);break}}else if("!"!==e.tag){if(on.call(e.typeMap[e.kind||"fallback"],e.tag))h=e.typeMap[e.kind||"fallback"][e.tag];else for(h=null,c=0,l=(u=e.typeMap.multi[e.kind||"fallback"]).length;c<l;c+=1)if(e.tag.slice(0,u[c].tag.length)===u[c].tag){h=u[c];break}h||xn(e,"unknown tag !<"+e.tag+">"),null!==e.result&&h.kind!==e.kind&&xn(e,"unacceptable node kind for !<"+e.tag+'> tag; it should be "'+h.kind+'", not "'+e.kind+'"'),h.resolve(e.result,e.tag)?(e.result=h.construct(e.result,e.tag),null!==e.anchor&&(e.anchorMap[e.anchor]=e.result)):xn(e,"cannot resolve a node with !<"+e.tag+"> explicit tag")}return null!==e.listener&&e.listener("close",e),null!==e.tag||null!==e.anchor||m}function jn(e){var t,n,i,r,o=e.position,s=!1;for(e.version=null,e.checkLineBreaks=e.legacy,e.tagMap=Object.create(null),e.anchorMap=Object.create(null);0!==(r=e.input.charCodeAt(e.position))&&(Nn(e,!0,-1),r=e.input.charCodeAt(e.position),!(e.lineIndent>0||37!==r));){for(s=!0,r=e.input.charCodeAt(++e.position),t=e.position;0!==r&&!fn(r);)r=e.input.charCodeAt(++e.position);for(i=[],(n=e.input.slice(t,e.position)).length<1&&xn(e,"directive name must not be less than one character in length");0!==r;){for(;pn(r);)r=e.input.charCodeAt(++e.position);if(35===r){do{r=e.input.charCodeAt(++e.position)}while(0!==r&&!dn(r));break}if(dn(r))break;for(t=e.position;0!==r&&!fn(r);)r=e.input.charCodeAt(++e.position);i.push(e.input.slice(t,e.position))}0!==r&&Tn(e),on.call(Cn,n)?Cn[n](e,n,i):En(e,'unknown document directive "'+n+'"')}Nn(e,!0,-1),0===e.lineIndent&&45===e.input.charCodeAt(e.position)&&45===e.input.charCodeAt(e.position+1)&&45===e.input.charCodeAt(e.position+2)?(e.position+=3,Nn(e,!0,-1)):s&&xn(e,"directives end mark is expected"),Mn(e,e.lineIndent-1,4,!1,!0),Nn(e,!0,-1),e.checkLineBreaks&&an.test(e.input.slice(o,e.position))&&En(e,"non-ASCII line breaks are interpreted as content"),e.documents.push(e.result),e.position===e.lineStart&&Dn(e)?46===e.input.charCodeAt(e.position)&&(e.position+=3,Nn(e,!0,-1)):e.position<e.length-1&&xn(e,"end of the stream or a document separator is expected")}var Bn={load:function(e,t){var n=function(e,t){t=t||{},0!==(e=String(e)).length&&(10!==e.charCodeAt(e.length-1)&&13!==e.charCodeAt(e.length-1)&&(e+="\n"),65279===e.charCodeAt(0)&&(e=e.slice(1)));var n=new Sn(e,t),i=e.indexOf("\0");for(-1!==i&&(n.position=i,xn(n,"null byte is not allowed in input")),n.input+="\0";32===n.input.charCodeAt(n.position);)n.lineIndent+=1,n.position+=1;for(;n.position<n.length-1;)jn(n);return n.documents}(e,t);if(0!==n.length){if(1===n.length)return n[0];throw new Et("expected a single document in the stream, but found more")}}}.load;_t.logger.setLevel(se.TRACE);let Fn=null,$n=null;async function Wn(e){_t.logger.info("Received global settings:",JSON.stringify(e,null,2)),e.camillaIP?(Fn=e.camillaIP,_t.logger.info(`Camilla IP: ${Fn}`)):_t.logger.warn("Missing Camilla IP configuration"),e.camillaPort?($n=parseInt(e.camillaPort),_t.logger.info(`Camilla Port: ${$n}`)):_t.logger.warn("Missing Camilla Port configuration")}_t.settings.getGlobalSettings().then(Wn).catch((e=>{_t.logger.error("Failed to get global settings:",e)})),_t.settings.onDidReceiveGlobalSettings((e=>{_t.logger.info("Received settings update event"),Wn(e.settings).catch((e=>{_t.logger.error("Failed to handle global settings update:",e)}))}));let Gn=(()=>{let e,t,n=[gt({UUID:"com.alexander-vyverman.sdcamilladsp.change-config"})],i=[],r=mt;return class extends r{static{t=this}static{const o="function"==typeof Symbol&&Symbol.metadata?Object.create(r[Symbol.metadata]??null):void 0;vt(null,e={value:t},n,{kind:"class",name:t.name,metadata:o},null,i),t=e.value,o&&Object.defineProperty(t,Symbol.metadata,{enumerable:!0,configurable:!0,writable:!0,value:o}),bt(t,i)}onWillAppear(e){const{settings:t}=e.payload,n=y.basename(t.yamlpath,y.extname(t.yamlpath));e.action.setTitle(n)}async onKeyDown(e){const{settings:t}=e.payload;if(_t.logger.info("onKeyDown triggered with yamlpath: ",t.yamlpath),Fn&&$n)if(t.yamlpath)try{const e=m.readFileSync(t.yamlpath,"utf8");_t.logger.info(`Successfully read YAML file: ${t.yamlpath}`),_t.logger.debug(`YAML content length: ${e.length} characters`),_t.logger.debug(`YAML content preview (first 200 chars): ${e.substring(0,200)}`);const n=Bn(e);_t.logger.info("Successfully parsed YAML to JavaScript object"),_t.logger.debug("Parsed YAML object keys:",Object.keys(n));const i=JSON.stringify(n);_t.logger.info(`Converted YAML to JSON string (length: ${i.length} characters)`),_t.logger.debug(`JSON string preview (first 200 chars): ${i.substring(0,200)}`);const r={SetConfigJson:i};_t.logger.info(`Sending SetConfigJson message to ${Fn}:${$n}`),_t.logger.info("Complete message being sent over WebSocket:"),_t.logger.info(JSON.stringify(r,null,2)),_t.logger.debug(`Raw message string length: ${JSON.stringify(r).length} characters`),_t.logger.debug(`Raw message string: ${JSON.stringify(r)}`);const o=await async function(e,t,n){return new Promise((i=>{try{const r=new te(`ws://${e}:${t}`),o=setTimeout((()=>{r.close(),i({success:!1,error:"Connection timeout after 5 seconds"})}),5e3);r.onopen=()=>{const e="string"==typeof n?n:JSON.stringify(n);r.send(e)},r.onmessage=e=>{clearTimeout(o);try{const t=JSON.parse(e.data.toString());i({success:!0,data:t})}catch(e){i({success:!1,error:"Failed to parse response data"})}r.close()},r.onerror=e=>{clearTimeout(o),i({success:!1,error:`WebSocket error: ${e}`}),r.close()}}catch(e){i({success:!1,error:`Failed to create WebSocket connection: ${e}`})}}))}(Fn,$n,r);o.success?(_t.logger.info("WebSocket communication successful"),_t.logger.info("Full response:",JSON.stringify(o.data,null,2)),o.data&&o.data.SetConfigJson?"Error"===o.data.SetConfigJson.result?(_t.logger.error("CamillaDSP returned an error result for SetConfigJson"),_t.logger.error("SetConfigJson response:",JSON.stringify(o.data.SetConfigJson,null,2)),o.data.SetConfigJson.message&&_t.logger.error("Error message:",o.data.SetConfigJson.message),o.data.SetConfigJson.details&&_t.logger.error("Error details:",o.data.SetConfigJson.details)):(_t.logger.info("CamillaDSP accepted the JSON configuration successfully"),_t.logger.info("SetConfigJson result:",o.data.SetConfigJson.result)):(_t.logger.warn("Unexpected response structure - no SetConfigJson field found"),_t.logger.warn("Response keys:",Object.keys(o.data||{})))):_t.logger.error("WebSocket communication failed:",o.error)}catch(e){e instanceof Error?e.message.includes("ENOENT")?_t.logger.error(`YAML file not found: ${t.yamlpath}`):e.message.includes("EACCES")?_t.logger.error(`Permission denied reading file: ${t.yamlpath}`):e.message.includes("YAMLException")?(_t.logger.error(`YAML parsing error: ${e.message}`),_t.logger.error("Please check the YAML file syntax")):(_t.logger.error(`Error processing YAML file: ${e.message}`),_t.logger.error(`Error stack: ${e.stack}`)):_t.logger.error("Unknown error occurred while processing YAML file:",e)}else _t.logger.error("No YAML path configured");else _t.logger.error("Missing Camilla IP or Port configuration")}async onDidReceiveSettings(e){const{settings:t}=e.payload,n=y.basename(t.yamlpath,y.extname(t.yamlpath));e.action.setTitle(n),_t.logger.info("these are the current settings for the change config action: ",t.yamlpath)}},t})(),qn=null,Vn=null,zn=null,Jn=!1,Yn=!1,Kn={};async function Hn(e){_t.logger.info("Received global settings:",JSON.stringify(e,null,2)),Kn=e;const t=qn,n=Vn;if(e.camillaIP?(qn=e.camillaIP,console.info(`Camilla IP: ${qn}`)):console.warn("Missing Camilla IP configuration"),e.camillaPort?(Vn=e.camillaPort,console.info(`Camilla Port: ${Vn}`)):console.warn("Missing Camilla Port configuration"),_t.logger.info(`IP: ${t} -> ${qn}`),_t.logger.info(`Port: ${n} -> ${Vn}`),qn&&Vn)try{_t.logger.info(`Attempting to connect to WebSocket at ws://${qn}:${Vn}`);const e=await Zn(qn,Vn,'"GetVolume"');if(e.success&&e.data){if(Yn=!0,Kn.camSocketOpen=Yn,_t.logger.info("Successfully connected to WebSocket"),await _t.settings.setGlobalSettings(Kn),_t.logger.info("Updated global settings with connection status"),!("GetVolume"in e.data)||void 0===e.data.GetVolume?.value)throw console.warn("Invalid GetVolume response structure:",JSON.stringify(e.data,null,2)),new Error("Invalid response structure from CamillaDSP");{const t=zn;zn=Math.round(e.data.GetVolume.value),_t.logger.info(`Volume updated: ${t} -> ${zn}`)}}else console.error(`Failed to get initial volume: ${e.error}`),console.debug("Full response:",JSON.stringify(e,null,2))}catch(e){console.error("Failed to initialize connection:",e),console.debug("Stack trace:",e instanceof Error?e.stack:"No stack trace available")}else console.warn("Missing IP or Port configuration:",{camIp:qn,camPort:Vn})}async function Zn(e,t,n){return new Promise((i=>{try{const r=new te(`ws://${e}:${t}`),o=setTimeout((()=>{r.close(),i({success:!1,error:"Connection timeout after 5 seconds"})}),5e3);r.onopen=()=>{const e="string"==typeof n?n:JSON.stringify(n);r.send(e)},r.onmessage=e=>{clearTimeout(o);try{const t=JSON.parse(e.data.toString());i({success:!0,data:t})}catch(e){i({success:!1,error:"Failed to parse response data"})}r.close()},r.onerror=e=>{clearTimeout(o),i({success:!1,error:`WebSocket error: ${e}`}),r.close()}}catch(e){i({success:!1,error:`Failed to create WebSocket connection: ${e}`})}}))}_t.logger.info("Loading initial global settings..."),_t.settings.getGlobalSettings().then(Hn).catch((e=>{console.error("Failed to get global settings:",e),console.debug("Stack trace:",e instanceof Error?e.stack:"No stack trace available")})),_t.settings.onDidReceiveGlobalSettings((e=>{_t.logger.info("Received settings update event"),Hn(e.settings).catch((e=>{console.error("Failed to handle global settings update:",e),console.debug("Stack trace:",e instanceof Error?e.stack:"No stack trace available")}))}));let Xn=(()=>{let e,t,n=[gt({UUID:"com.alexander-vyverman.sdcamilladsp.volume"})],i=[],r=mt;return class extends r{static{t=this}static{const o="function"==typeof Symbol&&Symbol.metadata?Object.create(r[Symbol.metadata]??null):void 0;vt(null,e={value:t},n,{kind:"class",name:t.name,metadata:o},null,i),t=e.value,o&&Object.defineProperty(t,Symbol.metadata,{enumerable:!0,configurable:!0,writable:!0,value:o}),bt(t,i)}constructor(){super()}async onWillAppear(e){}async onDialRotate(e){if(!qn||!Vn)return void console.error("Missing IP or Port configuration");const t=zn+e.payload.ticks;if(t<=0&&t>=-80){const t=await Zn(qn,Vn,{AdjustVolume:e.payload.ticks});if(t.success){const n=t.data;n&&n.AdjustVolume&&(zn=Math.round(n.AdjustVolume.value),e.action.setFeedback({value:zn,indicator:{value:(zn+80)/80*100,enabled:!0}}))}else console.error(t.error)}}async onDialDown(e){if(!qn||!Vn)return;Jn=!Jn,_t.logger.info("dial down pressed");const t=Jn?zn-20:zn+20;zn=Math.min(Math.max(t,-80),100);const n=await Zn(qn,Vn,{SetVolume:zn});n.success?e.action.setFeedback({title:Jn?"DIM ON":"Volume",value:zn,indicator:{value:(zn+80)/80*100,enabled:!0}}):console.error("Failed to set volume:",n.error)}},t})();_t.logger.setLevel(se.TRACE),_t.actions.registerAction(new Gn),_t.actions.registerAction(new Xn),_t.connect(),_t.logger.info("Plugin connected to Stream Deck software");
+function isNothing(subject) {
+  return (typeof subject === 'undefined') || (subject === null);
+}
+
+
+function isObject(subject) {
+  return (typeof subject === 'object') && (subject !== null);
+}
+
+
+function toArray(sequence) {
+  if (Array.isArray(sequence)) return sequence;
+  else if (isNothing(sequence)) return [];
+
+  return [ sequence ];
+}
+
+
+function extend(target, source) {
+  var index, length, key, sourceKeys;
+
+  if (source) {
+    sourceKeys = Object.keys(source);
+
+    for (index = 0, length = sourceKeys.length; index < length; index += 1) {
+      key = sourceKeys[index];
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+
+function repeat(string, count) {
+  var result = '', cycle;
+
+  for (cycle = 0; cycle < count; cycle += 1) {
+    result += string;
+  }
+
+  return result;
+}
+
+
+function isNegativeZero(number) {
+  return (number === 0) && (Number.NEGATIVE_INFINITY === 1 / number);
+}
+
+
+var isNothing_1      = isNothing;
+var isObject_1       = isObject;
+var toArray_1        = toArray;
+var repeat_1         = repeat;
+var isNegativeZero_1 = isNegativeZero;
+var extend_1         = extend;
+
+var common = {
+	isNothing: isNothing_1,
+	isObject: isObject_1,
+	toArray: toArray_1,
+	repeat: repeat_1,
+	isNegativeZero: isNegativeZero_1,
+	extend: extend_1
+};
+
+// YAML error class. http://stackoverflow.com/questions/8458984
+
+
+function formatError(exception, compact) {
+  var where = '', message = exception.reason || '(unknown reason)';
+
+  if (!exception.mark) return message;
+
+  if (exception.mark.name) {
+    where += 'in "' + exception.mark.name + '" ';
+  }
+
+  where += '(' + (exception.mark.line + 1) + ':' + (exception.mark.column + 1) + ')';
+
+  if (!compact && exception.mark.snippet) {
+    where += '\n\n' + exception.mark.snippet;
+  }
+
+  return message + ' ' + where;
+}
+
+
+function YAMLException$1(reason, mark) {
+  // Super constructor
+  Error.call(this);
+
+  this.name = 'YAMLException';
+  this.reason = reason;
+  this.mark = mark;
+  this.message = formatError(this, false);
+
+  // Include stack trace in error object
+  if (Error.captureStackTrace) {
+    // Chrome and NodeJS
+    Error.captureStackTrace(this, this.constructor);
+  } else {
+    // FF, IE 10+ and Safari 6+. Fallback for others
+    this.stack = (new Error()).stack || '';
+  }
+}
+
+
+// Inherit from Error
+YAMLException$1.prototype = Object.create(Error.prototype);
+YAMLException$1.prototype.constructor = YAMLException$1;
+
+
+YAMLException$1.prototype.toString = function toString(compact) {
+  return this.name + ': ' + formatError(this, compact);
+};
+
+
+var exception = YAMLException$1;
+
+// get snippet for a single line, respecting maxLength
+function getLine(buffer, lineStart, lineEnd, position, maxLineLength) {
+  var head = '';
+  var tail = '';
+  var maxHalfLength = Math.floor(maxLineLength / 2) - 1;
+
+  if (position - lineStart > maxHalfLength) {
+    head = ' ... ';
+    lineStart = position - maxHalfLength + head.length;
+  }
+
+  if (lineEnd - position > maxHalfLength) {
+    tail = ' ...';
+    lineEnd = position + maxHalfLength - tail.length;
+  }
+
+  return {
+    str: head + buffer.slice(lineStart, lineEnd).replace(/\t/g, '→') + tail,
+    pos: position - lineStart + head.length // relative position
+  };
+}
+
+
+function padStart(string, max) {
+  return common.repeat(' ', max - string.length) + string;
+}
+
+
+function makeSnippet(mark, options) {
+  options = Object.create(options || null);
+
+  if (!mark.buffer) return null;
+
+  if (!options.maxLength) options.maxLength = 79;
+  if (typeof options.indent      !== 'number') options.indent      = 1;
+  if (typeof options.linesBefore !== 'number') options.linesBefore = 3;
+  if (typeof options.linesAfter  !== 'number') options.linesAfter  = 2;
+
+  var re = /\r?\n|\r|\0/g;
+  var lineStarts = [ 0 ];
+  var lineEnds = [];
+  var match;
+  var foundLineNo = -1;
+
+  while ((match = re.exec(mark.buffer))) {
+    lineEnds.push(match.index);
+    lineStarts.push(match.index + match[0].length);
+
+    if (mark.position <= match.index && foundLineNo < 0) {
+      foundLineNo = lineStarts.length - 2;
+    }
+  }
+
+  if (foundLineNo < 0) foundLineNo = lineStarts.length - 1;
+
+  var result = '', i, line;
+  var lineNoLength = Math.min(mark.line + options.linesAfter, lineEnds.length).toString().length;
+  var maxLineLength = options.maxLength - (options.indent + lineNoLength + 3);
+
+  for (i = 1; i <= options.linesBefore; i++) {
+    if (foundLineNo - i < 0) break;
+    line = getLine(
+      mark.buffer,
+      lineStarts[foundLineNo - i],
+      lineEnds[foundLineNo - i],
+      mark.position - (lineStarts[foundLineNo] - lineStarts[foundLineNo - i]),
+      maxLineLength
+    );
+    result = common.repeat(' ', options.indent) + padStart((mark.line - i + 1).toString(), lineNoLength) +
+      ' | ' + line.str + '\n' + result;
+  }
+
+  line = getLine(mark.buffer, lineStarts[foundLineNo], lineEnds[foundLineNo], mark.position, maxLineLength);
+  result += common.repeat(' ', options.indent) + padStart((mark.line + 1).toString(), lineNoLength) +
+    ' | ' + line.str + '\n';
+  result += common.repeat('-', options.indent + lineNoLength + 3 + line.pos) + '^' + '\n';
+
+  for (i = 1; i <= options.linesAfter; i++) {
+    if (foundLineNo + i >= lineEnds.length) break;
+    line = getLine(
+      mark.buffer,
+      lineStarts[foundLineNo + i],
+      lineEnds[foundLineNo + i],
+      mark.position - (lineStarts[foundLineNo] - lineStarts[foundLineNo + i]),
+      maxLineLength
+    );
+    result += common.repeat(' ', options.indent) + padStart((mark.line + i + 1).toString(), lineNoLength) +
+      ' | ' + line.str + '\n';
+  }
+
+  return result.replace(/\n$/, '');
+}
+
+
+var snippet = makeSnippet;
+
+var TYPE_CONSTRUCTOR_OPTIONS = [
+  'kind',
+  'multi',
+  'resolve',
+  'construct',
+  'instanceOf',
+  'predicate',
+  'represent',
+  'representName',
+  'defaultStyle',
+  'styleAliases'
+];
+
+var YAML_NODE_KINDS = [
+  'scalar',
+  'sequence',
+  'mapping'
+];
+
+function compileStyleAliases(map) {
+  var result = {};
+
+  if (map !== null) {
+    Object.keys(map).forEach(function (style) {
+      map[style].forEach(function (alias) {
+        result[String(alias)] = style;
+      });
+    });
+  }
+
+  return result;
+}
+
+function Type$1(tag, options) {
+  options = options || {};
+
+  Object.keys(options).forEach(function (name) {
+    if (TYPE_CONSTRUCTOR_OPTIONS.indexOf(name) === -1) {
+      throw new exception('Unknown option "' + name + '" is met in definition of "' + tag + '" YAML type.');
+    }
+  });
+
+  // TODO: Add tag format check.
+  this.options       = options; // keep original options in case user wants to extend this type later
+  this.tag           = tag;
+  this.kind          = options['kind']          || null;
+  this.resolve       = options['resolve']       || function () { return true; };
+  this.construct     = options['construct']     || function (data) { return data; };
+  this.instanceOf    = options['instanceOf']    || null;
+  this.predicate     = options['predicate']     || null;
+  this.represent     = options['represent']     || null;
+  this.representName = options['representName'] || null;
+  this.defaultStyle  = options['defaultStyle']  || null;
+  this.multi         = options['multi']         || false;
+  this.styleAliases  = compileStyleAliases(options['styleAliases'] || null);
+
+  if (YAML_NODE_KINDS.indexOf(this.kind) === -1) {
+    throw new exception('Unknown kind "' + this.kind + '" is specified for "' + tag + '" YAML type.');
+  }
+}
+
+var type = Type$1;
+
+/*eslint-disable max-len*/
+
+
+
+
+
+function compileList(schema, name) {
+  var result = [];
+
+  schema[name].forEach(function (currentType) {
+    var newIndex = result.length;
+
+    result.forEach(function (previousType, previousIndex) {
+      if (previousType.tag === currentType.tag &&
+          previousType.kind === currentType.kind &&
+          previousType.multi === currentType.multi) {
+
+        newIndex = previousIndex;
+      }
+    });
+
+    result[newIndex] = currentType;
+  });
+
+  return result;
+}
+
+
+function compileMap(/* lists... */) {
+  var result = {
+        scalar: {},
+        sequence: {},
+        mapping: {},
+        fallback: {},
+        multi: {
+          scalar: [],
+          sequence: [],
+          mapping: [],
+          fallback: []
+        }
+      }, index, length;
+
+  function collectType(type) {
+    if (type.multi) {
+      result.multi[type.kind].push(type);
+      result.multi['fallback'].push(type);
+    } else {
+      result[type.kind][type.tag] = result['fallback'][type.tag] = type;
+    }
+  }
+
+  for (index = 0, length = arguments.length; index < length; index += 1) {
+    arguments[index].forEach(collectType);
+  }
+  return result;
+}
+
+
+function Schema$1(definition) {
+  return this.extend(definition);
+}
+
+
+Schema$1.prototype.extend = function extend(definition) {
+  var implicit = [];
+  var explicit = [];
+
+  if (definition instanceof type) {
+    // Schema.extend(type)
+    explicit.push(definition);
+
+  } else if (Array.isArray(definition)) {
+    // Schema.extend([ type1, type2, ... ])
+    explicit = explicit.concat(definition);
+
+  } else if (definition && (Array.isArray(definition.implicit) || Array.isArray(definition.explicit))) {
+    // Schema.extend({ explicit: [ type1, type2, ... ], implicit: [ type1, type2, ... ] })
+    if (definition.implicit) implicit = implicit.concat(definition.implicit);
+    if (definition.explicit) explicit = explicit.concat(definition.explicit);
+
+  } else {
+    throw new exception('Schema.extend argument should be a Type, [ Type ], ' +
+      'or a schema definition ({ implicit: [...], explicit: [...] })');
+  }
+
+  implicit.forEach(function (type$1) {
+    if (!(type$1 instanceof type)) {
+      throw new exception('Specified list of YAML types (or a single Type object) contains a non-Type object.');
+    }
+
+    if (type$1.loadKind && type$1.loadKind !== 'scalar') {
+      throw new exception('There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.');
+    }
+
+    if (type$1.multi) {
+      throw new exception('There is a multi type in the implicit list of a schema. Multi tags can only be listed as explicit.');
+    }
+  });
+
+  explicit.forEach(function (type$1) {
+    if (!(type$1 instanceof type)) {
+      throw new exception('Specified list of YAML types (or a single Type object) contains a non-Type object.');
+    }
+  });
+
+  var result = Object.create(Schema$1.prototype);
+
+  result.implicit = (this.implicit || []).concat(implicit);
+  result.explicit = (this.explicit || []).concat(explicit);
+
+  result.compiledImplicit = compileList(result, 'implicit');
+  result.compiledExplicit = compileList(result, 'explicit');
+  result.compiledTypeMap  = compileMap(result.compiledImplicit, result.compiledExplicit);
+
+  return result;
+};
+
+
+var schema = Schema$1;
+
+var str = new type('tag:yaml.org,2002:str', {
+  kind: 'scalar',
+  construct: function (data) { return data !== null ? data : ''; }
+});
+
+var seq = new type('tag:yaml.org,2002:seq', {
+  kind: 'sequence',
+  construct: function (data) { return data !== null ? data : []; }
+});
+
+var map = new type('tag:yaml.org,2002:map', {
+  kind: 'mapping',
+  construct: function (data) { return data !== null ? data : {}; }
+});
+
+var failsafe = new schema({
+  explicit: [
+    str,
+    seq,
+    map
+  ]
+});
+
+function resolveYamlNull(data) {
+  if (data === null) return true;
+
+  var max = data.length;
+
+  return (max === 1 && data === '~') ||
+         (max === 4 && (data === 'null' || data === 'Null' || data === 'NULL'));
+}
+
+function constructYamlNull() {
+  return null;
+}
+
+function isNull(object) {
+  return object === null;
+}
+
+var _null = new type('tag:yaml.org,2002:null', {
+  kind: 'scalar',
+  resolve: resolveYamlNull,
+  construct: constructYamlNull,
+  predicate: isNull,
+  represent: {
+    canonical: function () { return '~';    },
+    lowercase: function () { return 'null'; },
+    uppercase: function () { return 'NULL'; },
+    camelcase: function () { return 'Null'; },
+    empty:     function () { return '';     }
+  },
+  defaultStyle: 'lowercase'
+});
+
+function resolveYamlBoolean(data) {
+  if (data === null) return false;
+
+  var max = data.length;
+
+  return (max === 4 && (data === 'true' || data === 'True' || data === 'TRUE')) ||
+         (max === 5 && (data === 'false' || data === 'False' || data === 'FALSE'));
+}
+
+function constructYamlBoolean(data) {
+  return data === 'true' ||
+         data === 'True' ||
+         data === 'TRUE';
+}
+
+function isBoolean(object) {
+  return Object.prototype.toString.call(object) === '[object Boolean]';
+}
+
+var bool = new type('tag:yaml.org,2002:bool', {
+  kind: 'scalar',
+  resolve: resolveYamlBoolean,
+  construct: constructYamlBoolean,
+  predicate: isBoolean,
+  represent: {
+    lowercase: function (object) { return object ? 'true' : 'false'; },
+    uppercase: function (object) { return object ? 'TRUE' : 'FALSE'; },
+    camelcase: function (object) { return object ? 'True' : 'False'; }
+  },
+  defaultStyle: 'lowercase'
+});
+
+function isHexCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
+         ((0x41/* A */ <= c) && (c <= 0x46/* F */)) ||
+         ((0x61/* a */ <= c) && (c <= 0x66/* f */));
+}
+
+function isOctCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x37/* 7 */));
+}
+
+function isDecCode(c) {
+  return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */));
+}
+
+function resolveYamlInteger(data) {
+  if (data === null) return false;
+
+  var max = data.length,
+      index = 0,
+      hasDigits = false,
+      ch;
+
+  if (!max) return false;
+
+  ch = data[index];
+
+  // sign
+  if (ch === '-' || ch === '+') {
+    ch = data[++index];
+  }
+
+  if (ch === '0') {
+    // 0
+    if (index + 1 === max) return true;
+    ch = data[++index];
+
+    // base 2, base 8, base 16
+
+    if (ch === 'b') {
+      // base 2
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (ch !== '0' && ch !== '1') return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
+    }
+
+
+    if (ch === 'x') {
+      // base 16
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (!isHexCode(data.charCodeAt(index))) return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
+    }
+
+
+    if (ch === 'o') {
+      // base 8
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (!isOctCode(data.charCodeAt(index))) return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
+    }
+  }
+
+  // base 10 (except 0)
+
+  // value should not start with `_`;
+  if (ch === '_') return false;
+
+  for (; index < max; index++) {
+    ch = data[index];
+    if (ch === '_') continue;
+    if (!isDecCode(data.charCodeAt(index))) {
+      return false;
+    }
+    hasDigits = true;
+  }
+
+  // Should have digits and should not end with `_`
+  if (!hasDigits || ch === '_') return false;
+
+  return true;
+}
+
+function constructYamlInteger(data) {
+  var value = data, sign = 1, ch;
+
+  if (value.indexOf('_') !== -1) {
+    value = value.replace(/_/g, '');
+  }
+
+  ch = value[0];
+
+  if (ch === '-' || ch === '+') {
+    if (ch === '-') sign = -1;
+    value = value.slice(1);
+    ch = value[0];
+  }
+
+  if (value === '0') return 0;
+
+  if (ch === '0') {
+    if (value[1] === 'b') return sign * parseInt(value.slice(2), 2);
+    if (value[1] === 'x') return sign * parseInt(value.slice(2), 16);
+    if (value[1] === 'o') return sign * parseInt(value.slice(2), 8);
+  }
+
+  return sign * parseInt(value, 10);
+}
+
+function isInteger(object) {
+  return (Object.prototype.toString.call(object)) === '[object Number]' &&
+         (object % 1 === 0 && !common.isNegativeZero(object));
+}
+
+var int = new type('tag:yaml.org,2002:int', {
+  kind: 'scalar',
+  resolve: resolveYamlInteger,
+  construct: constructYamlInteger,
+  predicate: isInteger,
+  represent: {
+    binary:      function (obj) { return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1); },
+    octal:       function (obj) { return obj >= 0 ? '0o'  + obj.toString(8) : '-0o'  + obj.toString(8).slice(1); },
+    decimal:     function (obj) { return obj.toString(10); },
+    /* eslint-disable max-len */
+    hexadecimal: function (obj) { return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() :  '-0x' + obj.toString(16).toUpperCase().slice(1); }
+  },
+  defaultStyle: 'decimal',
+  styleAliases: {
+    binary:      [ 2,  'bin' ],
+    octal:       [ 8,  'oct' ],
+    decimal:     [ 10, 'dec' ],
+    hexadecimal: [ 16, 'hex' ]
+  }
+});
+
+var YAML_FLOAT_PATTERN = new RegExp(
+  // 2.5e4, 2.5 and integers
+  '^(?:[-+]?(?:[0-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
+  // .2e4, .2
+  // special case, seems not from spec
+  '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' +
+  // .inf
+  '|[-+]?\\.(?:inf|Inf|INF)' +
+  // .nan
+  '|\\.(?:nan|NaN|NAN))$');
+
+function resolveYamlFloat(data) {
+  if (data === null) return false;
+
+  if (!YAML_FLOAT_PATTERN.test(data) ||
+      // Quick hack to not allow integers end with `_`
+      // Probably should update regexp & check speed
+      data[data.length - 1] === '_') {
+    return false;
+  }
+
+  return true;
+}
+
+function constructYamlFloat(data) {
+  var value, sign;
+
+  value  = data.replace(/_/g, '').toLowerCase();
+  sign   = value[0] === '-' ? -1 : 1;
+
+  if ('+-'.indexOf(value[0]) >= 0) {
+    value = value.slice(1);
+  }
+
+  if (value === '.inf') {
+    return (sign === 1) ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
+
+  } else if (value === '.nan') {
+    return NaN;
+  }
+  return sign * parseFloat(value, 10);
+}
+
+
+var SCIENTIFIC_WITHOUT_DOT = /^[-+]?[0-9]+e/;
+
+function representYamlFloat(object, style) {
+  var res;
+
+  if (isNaN(object)) {
+    switch (style) {
+      case 'lowercase': return '.nan';
+      case 'uppercase': return '.NAN';
+      case 'camelcase': return '.NaN';
+    }
+  } else if (Number.POSITIVE_INFINITY === object) {
+    switch (style) {
+      case 'lowercase': return '.inf';
+      case 'uppercase': return '.INF';
+      case 'camelcase': return '.Inf';
+    }
+  } else if (Number.NEGATIVE_INFINITY === object) {
+    switch (style) {
+      case 'lowercase': return '-.inf';
+      case 'uppercase': return '-.INF';
+      case 'camelcase': return '-.Inf';
+    }
+  } else if (common.isNegativeZero(object)) {
+    return '-0.0';
+  }
+
+  res = object.toString(10);
+
+  // JS stringifier can build scientific format without dots: 5e-100,
+  // while YAML requres dot: 5.e-100. Fix it with simple hack
+
+  return SCIENTIFIC_WITHOUT_DOT.test(res) ? res.replace('e', '.e') : res;
+}
+
+function isFloat(object) {
+  return (Object.prototype.toString.call(object) === '[object Number]') &&
+         (object % 1 !== 0 || common.isNegativeZero(object));
+}
+
+var float = new type('tag:yaml.org,2002:float', {
+  kind: 'scalar',
+  resolve: resolveYamlFloat,
+  construct: constructYamlFloat,
+  predicate: isFloat,
+  represent: representYamlFloat,
+  defaultStyle: 'lowercase'
+});
+
+var json = failsafe.extend({
+  implicit: [
+    _null,
+    bool,
+    int,
+    float
+  ]
+});
+
+var core = json;
+
+var YAML_DATE_REGEXP = new RegExp(
+  '^([0-9][0-9][0-9][0-9])'          + // [1] year
+  '-([0-9][0-9])'                    + // [2] month
+  '-([0-9][0-9])$');                   // [3] day
+
+var YAML_TIMESTAMP_REGEXP = new RegExp(
+  '^([0-9][0-9][0-9][0-9])'          + // [1] year
+  '-([0-9][0-9]?)'                   + // [2] month
+  '-([0-9][0-9]?)'                   + // [3] day
+  '(?:[Tt]|[ \\t]+)'                 + // ...
+  '([0-9][0-9]?)'                    + // [4] hour
+  ':([0-9][0-9])'                    + // [5] minute
+  ':([0-9][0-9])'                    + // [6] second
+  '(?:\\.([0-9]*))?'                 + // [7] fraction
+  '(?:[ \\t]*(Z|([-+])([0-9][0-9]?)' + // [8] tz [9] tz_sign [10] tz_hour
+  '(?::([0-9][0-9]))?))?$');           // [11] tz_minute
+
+function resolveYamlTimestamp(data) {
+  if (data === null) return false;
+  if (YAML_DATE_REGEXP.exec(data) !== null) return true;
+  if (YAML_TIMESTAMP_REGEXP.exec(data) !== null) return true;
+  return false;
+}
+
+function constructYamlTimestamp(data) {
+  var match, year, month, day, hour, minute, second, fraction = 0,
+      delta = null, tz_hour, tz_minute, date;
+
+  match = YAML_DATE_REGEXP.exec(data);
+  if (match === null) match = YAML_TIMESTAMP_REGEXP.exec(data);
+
+  if (match === null) throw new Error('Date resolve error');
+
+  // match: [1] year [2] month [3] day
+
+  year = +(match[1]);
+  month = +(match[2]) - 1; // JS month starts with 0
+  day = +(match[3]);
+
+  if (!match[4]) { // no hour
+    return new Date(Date.UTC(year, month, day));
+  }
+
+  // match: [4] hour [5] minute [6] second [7] fraction
+
+  hour = +(match[4]);
+  minute = +(match[5]);
+  second = +(match[6]);
+
+  if (match[7]) {
+    fraction = match[7].slice(0, 3);
+    while (fraction.length < 3) { // milli-seconds
+      fraction += '0';
+    }
+    fraction = +fraction;
+  }
+
+  // match: [8] tz [9] tz_sign [10] tz_hour [11] tz_minute
+
+  if (match[9]) {
+    tz_hour = +(match[10]);
+    tz_minute = +(match[11] || 0);
+    delta = (tz_hour * 60 + tz_minute) * 60000; // delta in mili-seconds
+    if (match[9] === '-') delta = -delta;
+  }
+
+  date = new Date(Date.UTC(year, month, day, hour, minute, second, fraction));
+
+  if (delta) date.setTime(date.getTime() - delta);
+
+  return date;
+}
+
+function representYamlTimestamp(object /*, style*/) {
+  return object.toISOString();
+}
+
+var timestamp = new type('tag:yaml.org,2002:timestamp', {
+  kind: 'scalar',
+  resolve: resolveYamlTimestamp,
+  construct: constructYamlTimestamp,
+  instanceOf: Date,
+  represent: representYamlTimestamp
+});
+
+function resolveYamlMerge(data) {
+  return data === '<<' || data === null;
+}
+
+var merge = new type('tag:yaml.org,2002:merge', {
+  kind: 'scalar',
+  resolve: resolveYamlMerge
+});
+
+/*eslint-disable no-bitwise*/
+
+
+
+
+
+// [ 64, 65, 66 ] -> [ padding, CR, LF ]
+var BASE64_MAP = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\n\r';
+
+
+function resolveYamlBinary(data) {
+  if (data === null) return false;
+
+  var code, idx, bitlen = 0, max = data.length, map = BASE64_MAP;
+
+  // Convert one by one.
+  for (idx = 0; idx < max; idx++) {
+    code = map.indexOf(data.charAt(idx));
+
+    // Skip CR/LF
+    if (code > 64) continue;
+
+    // Fail on illegal characters
+    if (code < 0) return false;
+
+    bitlen += 6;
+  }
+
+  // If there are any bits left, source was corrupted
+  return (bitlen % 8) === 0;
+}
+
+function constructYamlBinary(data) {
+  var idx, tailbits,
+      input = data.replace(/[\r\n=]/g, ''), // remove CR/LF & padding to simplify scan
+      max = input.length,
+      map = BASE64_MAP,
+      bits = 0,
+      result = [];
+
+  // Collect by 6*4 bits (3 bytes)
+
+  for (idx = 0; idx < max; idx++) {
+    if ((idx % 4 === 0) && idx) {
+      result.push((bits >> 16) & 0xFF);
+      result.push((bits >> 8) & 0xFF);
+      result.push(bits & 0xFF);
+    }
+
+    bits = (bits << 6) | map.indexOf(input.charAt(idx));
+  }
+
+  // Dump tail
+
+  tailbits = (max % 4) * 6;
+
+  if (tailbits === 0) {
+    result.push((bits >> 16) & 0xFF);
+    result.push((bits >> 8) & 0xFF);
+    result.push(bits & 0xFF);
+  } else if (tailbits === 18) {
+    result.push((bits >> 10) & 0xFF);
+    result.push((bits >> 2) & 0xFF);
+  } else if (tailbits === 12) {
+    result.push((bits >> 4) & 0xFF);
+  }
+
+  return new Uint8Array(result);
+}
+
+function representYamlBinary(object /*, style*/) {
+  var result = '', bits = 0, idx, tail,
+      max = object.length,
+      map = BASE64_MAP;
+
+  // Convert every three bytes to 4 ASCII characters.
+
+  for (idx = 0; idx < max; idx++) {
+    if ((idx % 3 === 0) && idx) {
+      result += map[(bits >> 18) & 0x3F];
+      result += map[(bits >> 12) & 0x3F];
+      result += map[(bits >> 6) & 0x3F];
+      result += map[bits & 0x3F];
+    }
+
+    bits = (bits << 8) + object[idx];
+  }
+
+  // Dump tail
+
+  tail = max % 3;
+
+  if (tail === 0) {
+    result += map[(bits >> 18) & 0x3F];
+    result += map[(bits >> 12) & 0x3F];
+    result += map[(bits >> 6) & 0x3F];
+    result += map[bits & 0x3F];
+  } else if (tail === 2) {
+    result += map[(bits >> 10) & 0x3F];
+    result += map[(bits >> 4) & 0x3F];
+    result += map[(bits << 2) & 0x3F];
+    result += map[64];
+  } else if (tail === 1) {
+    result += map[(bits >> 2) & 0x3F];
+    result += map[(bits << 4) & 0x3F];
+    result += map[64];
+    result += map[64];
+  }
+
+  return result;
+}
+
+function isBinary(obj) {
+  return Object.prototype.toString.call(obj) ===  '[object Uint8Array]';
+}
+
+var binary = new type('tag:yaml.org,2002:binary', {
+  kind: 'scalar',
+  resolve: resolveYamlBinary,
+  construct: constructYamlBinary,
+  predicate: isBinary,
+  represent: representYamlBinary
+});
+
+var _hasOwnProperty$3 = Object.prototype.hasOwnProperty;
+var _toString$2       = Object.prototype.toString;
+
+function resolveYamlOmap(data) {
+  if (data === null) return true;
+
+  var objectKeys = [], index, length, pair, pairKey, pairHasKey,
+      object = data;
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    pair = object[index];
+    pairHasKey = false;
+
+    if (_toString$2.call(pair) !== '[object Object]') return false;
+
+    for (pairKey in pair) {
+      if (_hasOwnProperty$3.call(pair, pairKey)) {
+        if (!pairHasKey) pairHasKey = true;
+        else return false;
+      }
+    }
+
+    if (!pairHasKey) return false;
+
+    if (objectKeys.indexOf(pairKey) === -1) objectKeys.push(pairKey);
+    else return false;
+  }
+
+  return true;
+}
+
+function constructYamlOmap(data) {
+  return data !== null ? data : [];
+}
+
+var omap = new type('tag:yaml.org,2002:omap', {
+  kind: 'sequence',
+  resolve: resolveYamlOmap,
+  construct: constructYamlOmap
+});
+
+var _toString$1 = Object.prototype.toString;
+
+function resolveYamlPairs(data) {
+  if (data === null) return true;
+
+  var index, length, pair, keys, result,
+      object = data;
+
+  result = new Array(object.length);
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    pair = object[index];
+
+    if (_toString$1.call(pair) !== '[object Object]') return false;
+
+    keys = Object.keys(pair);
+
+    if (keys.length !== 1) return false;
+
+    result[index] = [ keys[0], pair[keys[0]] ];
+  }
+
+  return true;
+}
+
+function constructYamlPairs(data) {
+  if (data === null) return [];
+
+  var index, length, pair, keys, result,
+      object = data;
+
+  result = new Array(object.length);
+
+  for (index = 0, length = object.length; index < length; index += 1) {
+    pair = object[index];
+
+    keys = Object.keys(pair);
+
+    result[index] = [ keys[0], pair[keys[0]] ];
+  }
+
+  return result;
+}
+
+var pairs = new type('tag:yaml.org,2002:pairs', {
+  kind: 'sequence',
+  resolve: resolveYamlPairs,
+  construct: constructYamlPairs
+});
+
+var _hasOwnProperty$2 = Object.prototype.hasOwnProperty;
+
+function resolveYamlSet(data) {
+  if (data === null) return true;
+
+  var key, object = data;
+
+  for (key in object) {
+    if (_hasOwnProperty$2.call(object, key)) {
+      if (object[key] !== null) return false;
+    }
+  }
+
+  return true;
+}
+
+function constructYamlSet(data) {
+  return data !== null ? data : {};
+}
+
+var set = new type('tag:yaml.org,2002:set', {
+  kind: 'mapping',
+  resolve: resolveYamlSet,
+  construct: constructYamlSet
+});
+
+var _default = core.extend({
+  implicit: [
+    timestamp,
+    merge
+  ],
+  explicit: [
+    binary,
+    omap,
+    pairs,
+    set
+  ]
+});
+
+/*eslint-disable max-len,no-use-before-define*/
+
+
+
+
+
+
+
+var _hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+
+
+var CONTEXT_FLOW_IN   = 1;
+var CONTEXT_FLOW_OUT  = 2;
+var CONTEXT_BLOCK_IN  = 3;
+var CONTEXT_BLOCK_OUT = 4;
+
+
+var CHOMPING_CLIP  = 1;
+var CHOMPING_STRIP = 2;
+var CHOMPING_KEEP  = 3;
+
+
+var PATTERN_NON_PRINTABLE         = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/;
+var PATTERN_NON_ASCII_LINE_BREAKS = /[\x85\u2028\u2029]/;
+var PATTERN_FLOW_INDICATORS       = /[,\[\]\{\}]/;
+var PATTERN_TAG_HANDLE            = /^(?:!|!!|![a-z\-]+!)$/i;
+var PATTERN_TAG_URI               = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i;
+
+
+function _class(obj) { return Object.prototype.toString.call(obj); }
+
+function is_EOL(c) {
+  return (c === 0x0A/* LF */) || (c === 0x0D/* CR */);
+}
+
+function is_WHITE_SPACE(c) {
+  return (c === 0x09/* Tab */) || (c === 0x20/* Space */);
+}
+
+function is_WS_OR_EOL(c) {
+  return (c === 0x09/* Tab */) ||
+         (c === 0x20/* Space */) ||
+         (c === 0x0A/* LF */) ||
+         (c === 0x0D/* CR */);
+}
+
+function is_FLOW_INDICATOR(c) {
+  return c === 0x2C/* , */ ||
+         c === 0x5B/* [ */ ||
+         c === 0x5D/* ] */ ||
+         c === 0x7B/* { */ ||
+         c === 0x7D/* } */;
+}
+
+function fromHexCode(c) {
+  var lc;
+
+  if ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) {
+    return c - 0x30;
+  }
+
+  /*eslint-disable no-bitwise*/
+  lc = c | 0x20;
+
+  if ((0x61/* a */ <= lc) && (lc <= 0x66/* f */)) {
+    return lc - 0x61 + 10;
+  }
+
+  return -1;
+}
+
+function escapedHexLen(c) {
+  if (c === 0x78/* x */) { return 2; }
+  if (c === 0x75/* u */) { return 4; }
+  if (c === 0x55/* U */) { return 8; }
+  return 0;
+}
+
+function fromDecimalCode(c) {
+  if ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) {
+    return c - 0x30;
+  }
+
+  return -1;
+}
+
+function simpleEscapeSequence(c) {
+  /* eslint-disable indent */
+  return (c === 0x30/* 0 */) ? '\x00' :
+        (c === 0x61/* a */) ? '\x07' :
+        (c === 0x62/* b */) ? '\x08' :
+        (c === 0x74/* t */) ? '\x09' :
+        (c === 0x09/* Tab */) ? '\x09' :
+        (c === 0x6E/* n */) ? '\x0A' :
+        (c === 0x76/* v */) ? '\x0B' :
+        (c === 0x66/* f */) ? '\x0C' :
+        (c === 0x72/* r */) ? '\x0D' :
+        (c === 0x65/* e */) ? '\x1B' :
+        (c === 0x20/* Space */) ? ' ' :
+        (c === 0x22/* " */) ? '\x22' :
+        (c === 0x2F/* / */) ? '/' :
+        (c === 0x5C/* \ */) ? '\x5C' :
+        (c === 0x4E/* N */) ? '\x85' :
+        (c === 0x5F/* _ */) ? '\xA0' :
+        (c === 0x4C/* L */) ? '\u2028' :
+        (c === 0x50/* P */) ? '\u2029' : '';
+}
+
+function charFromCodepoint(c) {
+  if (c <= 0xFFFF) {
+    return String.fromCharCode(c);
+  }
+  // Encode UTF-16 surrogate pair
+  // https://en.wikipedia.org/wiki/UTF-16#Code_points_U.2B010000_to_U.2B10FFFF
+  return String.fromCharCode(
+    ((c - 0x010000) >> 10) + 0xD800,
+    ((c - 0x010000) & 0x03FF) + 0xDC00
+  );
+}
+
+var simpleEscapeCheck = new Array(256); // integer, for fast access
+var simpleEscapeMap = new Array(256);
+for (var i = 0; i < 256; i++) {
+  simpleEscapeCheck[i] = simpleEscapeSequence(i) ? 1 : 0;
+  simpleEscapeMap[i] = simpleEscapeSequence(i);
+}
+
+
+function State$1(input, options) {
+  this.input = input;
+
+  this.filename  = options['filename']  || null;
+  this.schema    = options['schema']    || _default;
+  this.onWarning = options['onWarning'] || null;
+  // (Hidden) Remove? makes the loader to expect YAML 1.1 documents
+  // if such documents have no explicit %YAML directive
+  this.legacy    = options['legacy']    || false;
+
+  this.json      = options['json']      || false;
+  this.listener  = options['listener']  || null;
+
+  this.implicitTypes = this.schema.compiledImplicit;
+  this.typeMap       = this.schema.compiledTypeMap;
+
+  this.length     = input.length;
+  this.position   = 0;
+  this.line       = 0;
+  this.lineStart  = 0;
+  this.lineIndent = 0;
+
+  // position of first leading tab in the current line,
+  // used to make sure there are no tabs in the indentation
+  this.firstTabInLine = -1;
+
+  this.documents = [];
+
+  /*
+  this.version;
+  this.checkLineBreaks;
+  this.tagMap;
+  this.anchorMap;
+  this.tag;
+  this.anchor;
+  this.kind;
+  this.result;*/
+
+}
+
+
+function generateError(state, message) {
+  var mark = {
+    name:     state.filename,
+    buffer:   state.input.slice(0, -1), // omit trailing \0
+    position: state.position,
+    line:     state.line,
+    column:   state.position - state.lineStart
+  };
+
+  mark.snippet = snippet(mark);
+
+  return new exception(message, mark);
+}
+
+function throwError(state, message) {
+  throw generateError(state, message);
+}
+
+function throwWarning(state, message) {
+  if (state.onWarning) {
+    state.onWarning.call(null, generateError(state, message));
+  }
+}
+
+
+var directiveHandlers = {
+
+  YAML: function handleYamlDirective(state, name, args) {
+
+    var match, major, minor;
+
+    if (state.version !== null) {
+      throwError(state, 'duplication of %YAML directive');
+    }
+
+    if (args.length !== 1) {
+      throwError(state, 'YAML directive accepts exactly one argument');
+    }
+
+    match = /^([0-9]+)\.([0-9]+)$/.exec(args[0]);
+
+    if (match === null) {
+      throwError(state, 'ill-formed argument of the YAML directive');
+    }
+
+    major = parseInt(match[1], 10);
+    minor = parseInt(match[2], 10);
+
+    if (major !== 1) {
+      throwError(state, 'unacceptable YAML version of the document');
+    }
+
+    state.version = args[0];
+    state.checkLineBreaks = (minor < 2);
+
+    if (minor !== 1 && minor !== 2) {
+      throwWarning(state, 'unsupported YAML version of the document');
+    }
+  },
+
+  TAG: function handleTagDirective(state, name, args) {
+
+    var handle, prefix;
+
+    if (args.length !== 2) {
+      throwError(state, 'TAG directive accepts exactly two arguments');
+    }
+
+    handle = args[0];
+    prefix = args[1];
+
+    if (!PATTERN_TAG_HANDLE.test(handle)) {
+      throwError(state, 'ill-formed tag handle (first argument) of the TAG directive');
+    }
+
+    if (_hasOwnProperty$1.call(state.tagMap, handle)) {
+      throwError(state, 'there is a previously declared suffix for "' + handle + '" tag handle');
+    }
+
+    if (!PATTERN_TAG_URI.test(prefix)) {
+      throwError(state, 'ill-formed tag prefix (second argument) of the TAG directive');
+    }
+
+    try {
+      prefix = decodeURIComponent(prefix);
+    } catch (err) {
+      throwError(state, 'tag prefix is malformed: ' + prefix);
+    }
+
+    state.tagMap[handle] = prefix;
+  }
+};
+
+
+function captureSegment(state, start, end, checkJson) {
+  var _position, _length, _character, _result;
+
+  if (start < end) {
+    _result = state.input.slice(start, end);
+
+    if (checkJson) {
+      for (_position = 0, _length = _result.length; _position < _length; _position += 1) {
+        _character = _result.charCodeAt(_position);
+        if (!(_character === 0x09 ||
+              (0x20 <= _character && _character <= 0x10FFFF))) {
+          throwError(state, 'expected valid JSON character');
+        }
+      }
+    } else if (PATTERN_NON_PRINTABLE.test(_result)) {
+      throwError(state, 'the stream contains non-printable characters');
+    }
+
+    state.result += _result;
+  }
+}
+
+function mergeMappings(state, destination, source, overridableKeys) {
+  var sourceKeys, key, index, quantity;
+
+  if (!common.isObject(source)) {
+    throwError(state, 'cannot merge mappings; the provided source object is unacceptable');
+  }
+
+  sourceKeys = Object.keys(source);
+
+  for (index = 0, quantity = sourceKeys.length; index < quantity; index += 1) {
+    key = sourceKeys[index];
+
+    if (!_hasOwnProperty$1.call(destination, key)) {
+      destination[key] = source[key];
+      overridableKeys[key] = true;
+    }
+  }
+}
+
+function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode,
+  startLine, startLineStart, startPos) {
+
+  var index, quantity;
+
+  // The output is a plain object here, so keys can only be strings.
+  // We need to convert keyNode to a string, but doing so can hang the process
+  // (deeply nested arrays that explode exponentially using aliases).
+  if (Array.isArray(keyNode)) {
+    keyNode = Array.prototype.slice.call(keyNode);
+
+    for (index = 0, quantity = keyNode.length; index < quantity; index += 1) {
+      if (Array.isArray(keyNode[index])) {
+        throwError(state, 'nested arrays are not supported inside keys');
+      }
+
+      if (typeof keyNode === 'object' && _class(keyNode[index]) === '[object Object]') {
+        keyNode[index] = '[object Object]';
+      }
+    }
+  }
+
+  // Avoid code execution in load() via toString property
+  // (still use its own toString for arrays, timestamps,
+  // and whatever user schema extensions happen to have @@toStringTag)
+  if (typeof keyNode === 'object' && _class(keyNode) === '[object Object]') {
+    keyNode = '[object Object]';
+  }
+
+
+  keyNode = String(keyNode);
+
+  if (_result === null) {
+    _result = {};
+  }
+
+  if (keyTag === 'tag:yaml.org,2002:merge') {
+    if (Array.isArray(valueNode)) {
+      for (index = 0, quantity = valueNode.length; index < quantity; index += 1) {
+        mergeMappings(state, _result, valueNode[index], overridableKeys);
+      }
+    } else {
+      mergeMappings(state, _result, valueNode, overridableKeys);
+    }
+  } else {
+    if (!state.json &&
+        !_hasOwnProperty$1.call(overridableKeys, keyNode) &&
+        _hasOwnProperty$1.call(_result, keyNode)) {
+      state.line = startLine || state.line;
+      state.lineStart = startLineStart || state.lineStart;
+      state.position = startPos || state.position;
+      throwError(state, 'duplicated mapping key');
+    }
+
+    // used for this specific key only because Object.defineProperty is slow
+    if (keyNode === '__proto__') {
+      Object.defineProperty(_result, keyNode, {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: valueNode
+      });
+    } else {
+      _result[keyNode] = valueNode;
+    }
+    delete overridableKeys[keyNode];
+  }
+
+  return _result;
+}
+
+function readLineBreak(state) {
+  var ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch === 0x0A/* LF */) {
+    state.position++;
+  } else if (ch === 0x0D/* CR */) {
+    state.position++;
+    if (state.input.charCodeAt(state.position) === 0x0A/* LF */) {
+      state.position++;
+    }
+  } else {
+    throwError(state, 'a line break is expected');
+  }
+
+  state.line += 1;
+  state.lineStart = state.position;
+  state.firstTabInLine = -1;
+}
+
+function skipSeparationSpace(state, allowComments, checkIndent) {
+  var lineBreaks = 0,
+      ch = state.input.charCodeAt(state.position);
+
+  while (ch !== 0) {
+    while (is_WHITE_SPACE(ch)) {
+      if (ch === 0x09/* Tab */ && state.firstTabInLine === -1) {
+        state.firstTabInLine = state.position;
+      }
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    if (allowComments && ch === 0x23/* # */) {
+      do {
+        ch = state.input.charCodeAt(++state.position);
+      } while (ch !== 0x0A/* LF */ && ch !== 0x0D/* CR */ && ch !== 0);
+    }
+
+    if (is_EOL(ch)) {
+      readLineBreak(state);
+
+      ch = state.input.charCodeAt(state.position);
+      lineBreaks++;
+      state.lineIndent = 0;
+
+      while (ch === 0x20/* Space */) {
+        state.lineIndent++;
+        ch = state.input.charCodeAt(++state.position);
+      }
+    } else {
+      break;
+    }
+  }
+
+  if (checkIndent !== -1 && lineBreaks !== 0 && state.lineIndent < checkIndent) {
+    throwWarning(state, 'deficient indentation');
+  }
+
+  return lineBreaks;
+}
+
+function testDocumentSeparator(state) {
+  var _position = state.position,
+      ch;
+
+  ch = state.input.charCodeAt(_position);
+
+  // Condition state.position === state.lineStart is tested
+  // in parent on each call, for efficiency. No needs to test here again.
+  if ((ch === 0x2D/* - */ || ch === 0x2E/* . */) &&
+      ch === state.input.charCodeAt(_position + 1) &&
+      ch === state.input.charCodeAt(_position + 2)) {
+
+    _position += 3;
+
+    ch = state.input.charCodeAt(_position);
+
+    if (ch === 0 || is_WS_OR_EOL(ch)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function writeFoldedLines(state, count) {
+  if (count === 1) {
+    state.result += ' ';
+  } else if (count > 1) {
+    state.result += common.repeat('\n', count - 1);
+  }
+}
+
+
+function readPlainScalar(state, nodeIndent, withinFlowCollection) {
+  var preceding,
+      following,
+      captureStart,
+      captureEnd,
+      hasPendingContent,
+      _line,
+      _lineStart,
+      _lineIndent,
+      _kind = state.kind,
+      _result = state.result,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (is_WS_OR_EOL(ch)      ||
+      is_FLOW_INDICATOR(ch) ||
+      ch === 0x23/* # */    ||
+      ch === 0x26/* & */    ||
+      ch === 0x2A/* * */    ||
+      ch === 0x21/* ! */    ||
+      ch === 0x7C/* | */    ||
+      ch === 0x3E/* > */    ||
+      ch === 0x27/* ' */    ||
+      ch === 0x22/* " */    ||
+      ch === 0x25/* % */    ||
+      ch === 0x40/* @ */    ||
+      ch === 0x60/* ` */) {
+    return false;
+  }
+
+  if (ch === 0x3F/* ? */ || ch === 0x2D/* - */) {
+    following = state.input.charCodeAt(state.position + 1);
+
+    if (is_WS_OR_EOL(following) ||
+        withinFlowCollection && is_FLOW_INDICATOR(following)) {
+      return false;
+    }
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+  captureStart = captureEnd = state.position;
+  hasPendingContent = false;
+
+  while (ch !== 0) {
+    if (ch === 0x3A/* : */) {
+      following = state.input.charCodeAt(state.position + 1);
+
+      if (is_WS_OR_EOL(following) ||
+          withinFlowCollection && is_FLOW_INDICATOR(following)) {
+        break;
+      }
+
+    } else if (ch === 0x23/* # */) {
+      preceding = state.input.charCodeAt(state.position - 1);
+
+      if (is_WS_OR_EOL(preceding)) {
+        break;
+      }
+
+    } else if ((state.position === state.lineStart && testDocumentSeparator(state)) ||
+               withinFlowCollection && is_FLOW_INDICATOR(ch)) {
+      break;
+
+    } else if (is_EOL(ch)) {
+      _line = state.line;
+      _lineStart = state.lineStart;
+      _lineIndent = state.lineIndent;
+      skipSeparationSpace(state, false, -1);
+
+      if (state.lineIndent >= nodeIndent) {
+        hasPendingContent = true;
+        ch = state.input.charCodeAt(state.position);
+        continue;
+      } else {
+        state.position = captureEnd;
+        state.line = _line;
+        state.lineStart = _lineStart;
+        state.lineIndent = _lineIndent;
+        break;
+      }
+    }
+
+    if (hasPendingContent) {
+      captureSegment(state, captureStart, captureEnd, false);
+      writeFoldedLines(state, state.line - _line);
+      captureStart = captureEnd = state.position;
+      hasPendingContent = false;
+    }
+
+    if (!is_WHITE_SPACE(ch)) {
+      captureEnd = state.position + 1;
+    }
+
+    ch = state.input.charCodeAt(++state.position);
+  }
+
+  captureSegment(state, captureStart, captureEnd, false);
+
+  if (state.result) {
+    return true;
+  }
+
+  state.kind = _kind;
+  state.result = _result;
+  return false;
+}
+
+function readSingleQuotedScalar(state, nodeIndent) {
+  var ch,
+      captureStart, captureEnd;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x27/* ' */) {
+    return false;
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+  state.position++;
+  captureStart = captureEnd = state.position;
+
+  while ((ch = state.input.charCodeAt(state.position)) !== 0) {
+    if (ch === 0x27/* ' */) {
+      captureSegment(state, captureStart, state.position, true);
+      ch = state.input.charCodeAt(++state.position);
+
+      if (ch === 0x27/* ' */) {
+        captureStart = state.position;
+        state.position++;
+        captureEnd = state.position;
+      } else {
+        return true;
+      }
+
+    } else if (is_EOL(ch)) {
+      captureSegment(state, captureStart, captureEnd, true);
+      writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
+      captureStart = captureEnd = state.position;
+
+    } else if (state.position === state.lineStart && testDocumentSeparator(state)) {
+      throwError(state, 'unexpected end of the document within a single quoted scalar');
+
+    } else {
+      state.position++;
+      captureEnd = state.position;
+    }
+  }
+
+  throwError(state, 'unexpected end of the stream within a single quoted scalar');
+}
+
+function readDoubleQuotedScalar(state, nodeIndent) {
+  var captureStart,
+      captureEnd,
+      hexLength,
+      hexResult,
+      tmp,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x22/* " */) {
+    return false;
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+  state.position++;
+  captureStart = captureEnd = state.position;
+
+  while ((ch = state.input.charCodeAt(state.position)) !== 0) {
+    if (ch === 0x22/* " */) {
+      captureSegment(state, captureStart, state.position, true);
+      state.position++;
+      return true;
+
+    } else if (ch === 0x5C/* \ */) {
+      captureSegment(state, captureStart, state.position, true);
+      ch = state.input.charCodeAt(++state.position);
+
+      if (is_EOL(ch)) {
+        skipSeparationSpace(state, false, nodeIndent);
+
+        // TODO: rework to inline fn with no type cast?
+      } else if (ch < 256 && simpleEscapeCheck[ch]) {
+        state.result += simpleEscapeMap[ch];
+        state.position++;
+
+      } else if ((tmp = escapedHexLen(ch)) > 0) {
+        hexLength = tmp;
+        hexResult = 0;
+
+        for (; hexLength > 0; hexLength--) {
+          ch = state.input.charCodeAt(++state.position);
+
+          if ((tmp = fromHexCode(ch)) >= 0) {
+            hexResult = (hexResult << 4) + tmp;
+
+          } else {
+            throwError(state, 'expected hexadecimal character');
+          }
+        }
+
+        state.result += charFromCodepoint(hexResult);
+
+        state.position++;
+
+      } else {
+        throwError(state, 'unknown escape sequence');
+      }
+
+      captureStart = captureEnd = state.position;
+
+    } else if (is_EOL(ch)) {
+      captureSegment(state, captureStart, captureEnd, true);
+      writeFoldedLines(state, skipSeparationSpace(state, false, nodeIndent));
+      captureStart = captureEnd = state.position;
+
+    } else if (state.position === state.lineStart && testDocumentSeparator(state)) {
+      throwError(state, 'unexpected end of the document within a double quoted scalar');
+
+    } else {
+      state.position++;
+      captureEnd = state.position;
+    }
+  }
+
+  throwError(state, 'unexpected end of the stream within a double quoted scalar');
+}
+
+function readFlowCollection(state, nodeIndent) {
+  var readNext = true,
+      _line,
+      _lineStart,
+      _pos,
+      _tag     = state.tag,
+      _result,
+      _anchor  = state.anchor,
+      following,
+      terminator,
+      isPair,
+      isExplicitPair,
+      isMapping,
+      overridableKeys = Object.create(null),
+      keyNode,
+      keyTag,
+      valueNode,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch === 0x5B/* [ */) {
+    terminator = 0x5D;/* ] */
+    isMapping = false;
+    _result = [];
+  } else if (ch === 0x7B/* { */) {
+    terminator = 0x7D;/* } */
+    isMapping = true;
+    _result = {};
+  } else {
+    return false;
+  }
+
+  if (state.anchor !== null) {
+    state.anchorMap[state.anchor] = _result;
+  }
+
+  ch = state.input.charCodeAt(++state.position);
+
+  while (ch !== 0) {
+    skipSeparationSpace(state, true, nodeIndent);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if (ch === terminator) {
+      state.position++;
+      state.tag = _tag;
+      state.anchor = _anchor;
+      state.kind = isMapping ? 'mapping' : 'sequence';
+      state.result = _result;
+      return true;
+    } else if (!readNext) {
+      throwError(state, 'missed comma between flow collection entries');
+    } else if (ch === 0x2C/* , */) {
+      // "flow collection entries can never be completely empty", as per YAML 1.2, section 7.4
+      throwError(state, "expected the node content, but found ','");
+    }
+
+    keyTag = keyNode = valueNode = null;
+    isPair = isExplicitPair = false;
+
+    if (ch === 0x3F/* ? */) {
+      following = state.input.charCodeAt(state.position + 1);
+
+      if (is_WS_OR_EOL(following)) {
+        isPair = isExplicitPair = true;
+        state.position++;
+        skipSeparationSpace(state, true, nodeIndent);
+      }
+    }
+
+    _line = state.line; // Save the current line.
+    _lineStart = state.lineStart;
+    _pos = state.position;
+    composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
+    keyTag = state.tag;
+    keyNode = state.result;
+    skipSeparationSpace(state, true, nodeIndent);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if ((isExplicitPair || state.line === _line) && ch === 0x3A/* : */) {
+      isPair = true;
+      ch = state.input.charCodeAt(++state.position);
+      skipSeparationSpace(state, true, nodeIndent);
+      composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
+      valueNode = state.result;
+    }
+
+    if (isMapping) {
+      storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, _line, _lineStart, _pos);
+    } else if (isPair) {
+      _result.push(storeMappingPair(state, null, overridableKeys, keyTag, keyNode, valueNode, _line, _lineStart, _pos));
+    } else {
+      _result.push(keyNode);
+    }
+
+    skipSeparationSpace(state, true, nodeIndent);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if (ch === 0x2C/* , */) {
+      readNext = true;
+      ch = state.input.charCodeAt(++state.position);
+    } else {
+      readNext = false;
+    }
+  }
+
+  throwError(state, 'unexpected end of the stream within a flow collection');
+}
+
+function readBlockScalar(state, nodeIndent) {
+  var captureStart,
+      folding,
+      chomping       = CHOMPING_CLIP,
+      didReadContent = false,
+      detectedIndent = false,
+      textIndent     = nodeIndent,
+      emptyLines     = 0,
+      atMoreIndented = false,
+      tmp,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch === 0x7C/* | */) {
+    folding = false;
+  } else if (ch === 0x3E/* > */) {
+    folding = true;
+  } else {
+    return false;
+  }
+
+  state.kind = 'scalar';
+  state.result = '';
+
+  while (ch !== 0) {
+    ch = state.input.charCodeAt(++state.position);
+
+    if (ch === 0x2B/* + */ || ch === 0x2D/* - */) {
+      if (CHOMPING_CLIP === chomping) {
+        chomping = (ch === 0x2B/* + */) ? CHOMPING_KEEP : CHOMPING_STRIP;
+      } else {
+        throwError(state, 'repeat of a chomping mode identifier');
+      }
+
+    } else if ((tmp = fromDecimalCode(ch)) >= 0) {
+      if (tmp === 0) {
+        throwError(state, 'bad explicit indentation width of a block scalar; it cannot be less than one');
+      } else if (!detectedIndent) {
+        textIndent = nodeIndent + tmp - 1;
+        detectedIndent = true;
+      } else {
+        throwError(state, 'repeat of an indentation width identifier');
+      }
+
+    } else {
+      break;
+    }
+  }
+
+  if (is_WHITE_SPACE(ch)) {
+    do { ch = state.input.charCodeAt(++state.position); }
+    while (is_WHITE_SPACE(ch));
+
+    if (ch === 0x23/* # */) {
+      do { ch = state.input.charCodeAt(++state.position); }
+      while (!is_EOL(ch) && (ch !== 0));
+    }
+  }
+
+  while (ch !== 0) {
+    readLineBreak(state);
+    state.lineIndent = 0;
+
+    ch = state.input.charCodeAt(state.position);
+
+    while ((!detectedIndent || state.lineIndent < textIndent) &&
+           (ch === 0x20/* Space */)) {
+      state.lineIndent++;
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    if (!detectedIndent && state.lineIndent > textIndent) {
+      textIndent = state.lineIndent;
+    }
+
+    if (is_EOL(ch)) {
+      emptyLines++;
+      continue;
+    }
+
+    // End of the scalar.
+    if (state.lineIndent < textIndent) {
+
+      // Perform the chomping.
+      if (chomping === CHOMPING_KEEP) {
+        state.result += common.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+      } else if (chomping === CHOMPING_CLIP) {
+        if (didReadContent) { // i.e. only if the scalar is not empty.
+          state.result += '\n';
+        }
+      }
+
+      // Break this `while` cycle and go to the funciton's epilogue.
+      break;
+    }
+
+    // Folded style: use fancy rules to handle line breaks.
+    if (folding) {
+
+      // Lines starting with white space characters (more-indented lines) are not folded.
+      if (is_WHITE_SPACE(ch)) {
+        atMoreIndented = true;
+        // except for the first content line (cf. Example 8.1)
+        state.result += common.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+
+      // End of more-indented block.
+      } else if (atMoreIndented) {
+        atMoreIndented = false;
+        state.result += common.repeat('\n', emptyLines + 1);
+
+      // Just one line break - perceive as the same line.
+      } else if (emptyLines === 0) {
+        if (didReadContent) { // i.e. only if we have already read some scalar content.
+          state.result += ' ';
+        }
+
+      // Several line breaks - perceive as different lines.
+      } else {
+        state.result += common.repeat('\n', emptyLines);
+      }
+
+    // Literal style: just add exact number of line breaks between content lines.
+    } else {
+      // Keep all line breaks except the header line break.
+      state.result += common.repeat('\n', didReadContent ? 1 + emptyLines : emptyLines);
+    }
+
+    didReadContent = true;
+    detectedIndent = true;
+    emptyLines = 0;
+    captureStart = state.position;
+
+    while (!is_EOL(ch) && (ch !== 0)) {
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    captureSegment(state, captureStart, state.position, false);
+  }
+
+  return true;
+}
+
+function readBlockSequence(state, nodeIndent) {
+  var _line,
+      _tag      = state.tag,
+      _anchor   = state.anchor,
+      _result   = [],
+      following,
+      detected  = false,
+      ch;
+
+  // there is a leading tab before this token, so it can't be a block sequence/mapping;
+  // it can still be flow sequence/mapping or a scalar
+  if (state.firstTabInLine !== -1) return false;
+
+  if (state.anchor !== null) {
+    state.anchorMap[state.anchor] = _result;
+  }
+
+  ch = state.input.charCodeAt(state.position);
+
+  while (ch !== 0) {
+    if (state.firstTabInLine !== -1) {
+      state.position = state.firstTabInLine;
+      throwError(state, 'tab characters must not be used in indentation');
+    }
+
+    if (ch !== 0x2D/* - */) {
+      break;
+    }
+
+    following = state.input.charCodeAt(state.position + 1);
+
+    if (!is_WS_OR_EOL(following)) {
+      break;
+    }
+
+    detected = true;
+    state.position++;
+
+    if (skipSeparationSpace(state, true, -1)) {
+      if (state.lineIndent <= nodeIndent) {
+        _result.push(null);
+        ch = state.input.charCodeAt(state.position);
+        continue;
+      }
+    }
+
+    _line = state.line;
+    composeNode(state, nodeIndent, CONTEXT_BLOCK_IN, false, true);
+    _result.push(state.result);
+    skipSeparationSpace(state, true, -1);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if ((state.line === _line || state.lineIndent > nodeIndent) && (ch !== 0)) {
+      throwError(state, 'bad indentation of a sequence entry');
+    } else if (state.lineIndent < nodeIndent) {
+      break;
+    }
+  }
+
+  if (detected) {
+    state.tag = _tag;
+    state.anchor = _anchor;
+    state.kind = 'sequence';
+    state.result = _result;
+    return true;
+  }
+  return false;
+}
+
+function readBlockMapping(state, nodeIndent, flowIndent) {
+  var following,
+      allowCompact,
+      _line,
+      _keyLine,
+      _keyLineStart,
+      _keyPos,
+      _tag          = state.tag,
+      _anchor       = state.anchor,
+      _result       = {},
+      overridableKeys = Object.create(null),
+      keyTag        = null,
+      keyNode       = null,
+      valueNode     = null,
+      atExplicitKey = false,
+      detected      = false,
+      ch;
+
+  // there is a leading tab before this token, so it can't be a block sequence/mapping;
+  // it can still be flow sequence/mapping or a scalar
+  if (state.firstTabInLine !== -1) return false;
+
+  if (state.anchor !== null) {
+    state.anchorMap[state.anchor] = _result;
+  }
+
+  ch = state.input.charCodeAt(state.position);
+
+  while (ch !== 0) {
+    if (!atExplicitKey && state.firstTabInLine !== -1) {
+      state.position = state.firstTabInLine;
+      throwError(state, 'tab characters must not be used in indentation');
+    }
+
+    following = state.input.charCodeAt(state.position + 1);
+    _line = state.line; // Save the current line.
+
+    //
+    // Explicit notation case. There are two separate blocks:
+    // first for the key (denoted by "?") and second for the value (denoted by ":")
+    //
+    if ((ch === 0x3F/* ? */ || ch === 0x3A/* : */) && is_WS_OR_EOL(following)) {
+
+      if (ch === 0x3F/* ? */) {
+        if (atExplicitKey) {
+          storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null, _keyLine, _keyLineStart, _keyPos);
+          keyTag = keyNode = valueNode = null;
+        }
+
+        detected = true;
+        atExplicitKey = true;
+        allowCompact = true;
+
+      } else if (atExplicitKey) {
+        // i.e. 0x3A/* : */ === character after the explicit key.
+        atExplicitKey = false;
+        allowCompact = true;
+
+      } else {
+        throwError(state, 'incomplete explicit mapping pair; a key node is missed; or followed by a non-tabulated empty line');
+      }
+
+      state.position += 1;
+      ch = following;
+
+    //
+    // Implicit notation case. Flow-style node as the key first, then ":", and the value.
+    //
+    } else {
+      _keyLine = state.line;
+      _keyLineStart = state.lineStart;
+      _keyPos = state.position;
+
+      if (!composeNode(state, flowIndent, CONTEXT_FLOW_OUT, false, true)) {
+        // Neither implicit nor explicit notation.
+        // Reading is done. Go to the epilogue.
+        break;
+      }
+
+      if (state.line === _line) {
+        ch = state.input.charCodeAt(state.position);
+
+        while (is_WHITE_SPACE(ch)) {
+          ch = state.input.charCodeAt(++state.position);
+        }
+
+        if (ch === 0x3A/* : */) {
+          ch = state.input.charCodeAt(++state.position);
+
+          if (!is_WS_OR_EOL(ch)) {
+            throwError(state, 'a whitespace character is expected after the key-value separator within a block mapping');
+          }
+
+          if (atExplicitKey) {
+            storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null, _keyLine, _keyLineStart, _keyPos);
+            keyTag = keyNode = valueNode = null;
+          }
+
+          detected = true;
+          atExplicitKey = false;
+          allowCompact = false;
+          keyTag = state.tag;
+          keyNode = state.result;
+
+        } else if (detected) {
+          throwError(state, 'can not read an implicit mapping pair; a colon is missed');
+
+        } else {
+          state.tag = _tag;
+          state.anchor = _anchor;
+          return true; // Keep the result of `composeNode`.
+        }
+
+      } else if (detected) {
+        throwError(state, 'can not read a block mapping entry; a multiline key may not be an implicit key');
+
+      } else {
+        state.tag = _tag;
+        state.anchor = _anchor;
+        return true; // Keep the result of `composeNode`.
+      }
+    }
+
+    //
+    // Common reading code for both explicit and implicit notations.
+    //
+    if (state.line === _line || state.lineIndent > nodeIndent) {
+      if (atExplicitKey) {
+        _keyLine = state.line;
+        _keyLineStart = state.lineStart;
+        _keyPos = state.position;
+      }
+
+      if (composeNode(state, nodeIndent, CONTEXT_BLOCK_OUT, true, allowCompact)) {
+        if (atExplicitKey) {
+          keyNode = state.result;
+        } else {
+          valueNode = state.result;
+        }
+      }
+
+      if (!atExplicitKey) {
+        storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, _keyLine, _keyLineStart, _keyPos);
+        keyTag = keyNode = valueNode = null;
+      }
+
+      skipSeparationSpace(state, true, -1);
+      ch = state.input.charCodeAt(state.position);
+    }
+
+    if ((state.line === _line || state.lineIndent > nodeIndent) && (ch !== 0)) {
+      throwError(state, 'bad indentation of a mapping entry');
+    } else if (state.lineIndent < nodeIndent) {
+      break;
+    }
+  }
+
+  //
+  // Epilogue.
+  //
+
+  // Special case: last mapping's node contains only the key in explicit notation.
+  if (atExplicitKey) {
+    storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null, _keyLine, _keyLineStart, _keyPos);
+  }
+
+  // Expose the resulting mapping.
+  if (detected) {
+    state.tag = _tag;
+    state.anchor = _anchor;
+    state.kind = 'mapping';
+    state.result = _result;
+  }
+
+  return detected;
+}
+
+function readTagProperty(state) {
+  var _position,
+      isVerbatim = false,
+      isNamed    = false,
+      tagHandle,
+      tagName,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x21/* ! */) return false;
+
+  if (state.tag !== null) {
+    throwError(state, 'duplication of a tag property');
+  }
+
+  ch = state.input.charCodeAt(++state.position);
+
+  if (ch === 0x3C/* < */) {
+    isVerbatim = true;
+    ch = state.input.charCodeAt(++state.position);
+
+  } else if (ch === 0x21/* ! */) {
+    isNamed = true;
+    tagHandle = '!!';
+    ch = state.input.charCodeAt(++state.position);
+
+  } else {
+    tagHandle = '!';
+  }
+
+  _position = state.position;
+
+  if (isVerbatim) {
+    do { ch = state.input.charCodeAt(++state.position); }
+    while (ch !== 0 && ch !== 0x3E/* > */);
+
+    if (state.position < state.length) {
+      tagName = state.input.slice(_position, state.position);
+      ch = state.input.charCodeAt(++state.position);
+    } else {
+      throwError(state, 'unexpected end of the stream within a verbatim tag');
+    }
+  } else {
+    while (ch !== 0 && !is_WS_OR_EOL(ch)) {
+
+      if (ch === 0x21/* ! */) {
+        if (!isNamed) {
+          tagHandle = state.input.slice(_position - 1, state.position + 1);
+
+          if (!PATTERN_TAG_HANDLE.test(tagHandle)) {
+            throwError(state, 'named tag handle cannot contain such characters');
+          }
+
+          isNamed = true;
+          _position = state.position + 1;
+        } else {
+          throwError(state, 'tag suffix cannot contain exclamation marks');
+        }
+      }
+
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    tagName = state.input.slice(_position, state.position);
+
+    if (PATTERN_FLOW_INDICATORS.test(tagName)) {
+      throwError(state, 'tag suffix cannot contain flow indicator characters');
+    }
+  }
+
+  if (tagName && !PATTERN_TAG_URI.test(tagName)) {
+    throwError(state, 'tag name cannot contain such characters: ' + tagName);
+  }
+
+  try {
+    tagName = decodeURIComponent(tagName);
+  } catch (err) {
+    throwError(state, 'tag name is malformed: ' + tagName);
+  }
+
+  if (isVerbatim) {
+    state.tag = tagName;
+
+  } else if (_hasOwnProperty$1.call(state.tagMap, tagHandle)) {
+    state.tag = state.tagMap[tagHandle] + tagName;
+
+  } else if (tagHandle === '!') {
+    state.tag = '!' + tagName;
+
+  } else if (tagHandle === '!!') {
+    state.tag = 'tag:yaml.org,2002:' + tagName;
+
+  } else {
+    throwError(state, 'undeclared tag handle "' + tagHandle + '"');
+  }
+
+  return true;
+}
+
+function readAnchorProperty(state) {
+  var _position,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x26/* & */) return false;
+
+  if (state.anchor !== null) {
+    throwError(state, 'duplication of an anchor property');
+  }
+
+  ch = state.input.charCodeAt(++state.position);
+  _position = state.position;
+
+  while (ch !== 0 && !is_WS_OR_EOL(ch) && !is_FLOW_INDICATOR(ch)) {
+    ch = state.input.charCodeAt(++state.position);
+  }
+
+  if (state.position === _position) {
+    throwError(state, 'name of an anchor node must contain at least one character');
+  }
+
+  state.anchor = state.input.slice(_position, state.position);
+  return true;
+}
+
+function readAlias(state) {
+  var _position, alias,
+      ch;
+
+  ch = state.input.charCodeAt(state.position);
+
+  if (ch !== 0x2A/* * */) return false;
+
+  ch = state.input.charCodeAt(++state.position);
+  _position = state.position;
+
+  while (ch !== 0 && !is_WS_OR_EOL(ch) && !is_FLOW_INDICATOR(ch)) {
+    ch = state.input.charCodeAt(++state.position);
+  }
+
+  if (state.position === _position) {
+    throwError(state, 'name of an alias node must contain at least one character');
+  }
+
+  alias = state.input.slice(_position, state.position);
+
+  if (!_hasOwnProperty$1.call(state.anchorMap, alias)) {
+    throwError(state, 'unidentified alias "' + alias + '"');
+  }
+
+  state.result = state.anchorMap[alias];
+  skipSeparationSpace(state, true, -1);
+  return true;
+}
+
+function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact) {
+  var allowBlockStyles,
+      allowBlockScalars,
+      allowBlockCollections,
+      indentStatus = 1, // 1: this>parent, 0: this=parent, -1: this<parent
+      atNewLine  = false,
+      hasContent = false,
+      typeIndex,
+      typeQuantity,
+      typeList,
+      type,
+      flowIndent,
+      blockIndent;
+
+  if (state.listener !== null) {
+    state.listener('open', state);
+  }
+
+  state.tag    = null;
+  state.anchor = null;
+  state.kind   = null;
+  state.result = null;
+
+  allowBlockStyles = allowBlockScalars = allowBlockCollections =
+    CONTEXT_BLOCK_OUT === nodeContext ||
+    CONTEXT_BLOCK_IN  === nodeContext;
+
+  if (allowToSeek) {
+    if (skipSeparationSpace(state, true, -1)) {
+      atNewLine = true;
+
+      if (state.lineIndent > parentIndent) {
+        indentStatus = 1;
+      } else if (state.lineIndent === parentIndent) {
+        indentStatus = 0;
+      } else if (state.lineIndent < parentIndent) {
+        indentStatus = -1;
+      }
+    }
+  }
+
+  if (indentStatus === 1) {
+    while (readTagProperty(state) || readAnchorProperty(state)) {
+      if (skipSeparationSpace(state, true, -1)) {
+        atNewLine = true;
+        allowBlockCollections = allowBlockStyles;
+
+        if (state.lineIndent > parentIndent) {
+          indentStatus = 1;
+        } else if (state.lineIndent === parentIndent) {
+          indentStatus = 0;
+        } else if (state.lineIndent < parentIndent) {
+          indentStatus = -1;
+        }
+      } else {
+        allowBlockCollections = false;
+      }
+    }
+  }
+
+  if (allowBlockCollections) {
+    allowBlockCollections = atNewLine || allowCompact;
+  }
+
+  if (indentStatus === 1 || CONTEXT_BLOCK_OUT === nodeContext) {
+    if (CONTEXT_FLOW_IN === nodeContext || CONTEXT_FLOW_OUT === nodeContext) {
+      flowIndent = parentIndent;
+    } else {
+      flowIndent = parentIndent + 1;
+    }
+
+    blockIndent = state.position - state.lineStart;
+
+    if (indentStatus === 1) {
+      if (allowBlockCollections &&
+          (readBlockSequence(state, blockIndent) ||
+           readBlockMapping(state, blockIndent, flowIndent)) ||
+          readFlowCollection(state, flowIndent)) {
+        hasContent = true;
+      } else {
+        if ((allowBlockScalars && readBlockScalar(state, flowIndent)) ||
+            readSingleQuotedScalar(state, flowIndent) ||
+            readDoubleQuotedScalar(state, flowIndent)) {
+          hasContent = true;
+
+        } else if (readAlias(state)) {
+          hasContent = true;
+
+          if (state.tag !== null || state.anchor !== null) {
+            throwError(state, 'alias node should not have any properties');
+          }
+
+        } else if (readPlainScalar(state, flowIndent, CONTEXT_FLOW_IN === nodeContext)) {
+          hasContent = true;
+
+          if (state.tag === null) {
+            state.tag = '?';
+          }
+        }
+
+        if (state.anchor !== null) {
+          state.anchorMap[state.anchor] = state.result;
+        }
+      }
+    } else if (indentStatus === 0) {
+      // Special case: block sequences are allowed to have same indentation level as the parent.
+      // http://www.yaml.org/spec/1.2/spec.html#id2799784
+      hasContent = allowBlockCollections && readBlockSequence(state, blockIndent);
+    }
+  }
+
+  if (state.tag === null) {
+    if (state.anchor !== null) {
+      state.anchorMap[state.anchor] = state.result;
+    }
+
+  } else if (state.tag === '?') {
+    // Implicit resolving is not allowed for non-scalar types, and '?'
+    // non-specific tag is only automatically assigned to plain scalars.
+    //
+    // We only need to check kind conformity in case user explicitly assigns '?'
+    // tag, for example like this: "!<?> [0]"
+    //
+    if (state.result !== null && state.kind !== 'scalar') {
+      throwError(state, 'unacceptable node kind for !<?> tag; it should be "scalar", not "' + state.kind + '"');
+    }
+
+    for (typeIndex = 0, typeQuantity = state.implicitTypes.length; typeIndex < typeQuantity; typeIndex += 1) {
+      type = state.implicitTypes[typeIndex];
+
+      if (type.resolve(state.result)) { // `state.result` updated in resolver if matched
+        state.result = type.construct(state.result);
+        state.tag = type.tag;
+        if (state.anchor !== null) {
+          state.anchorMap[state.anchor] = state.result;
+        }
+        break;
+      }
+    }
+  } else if (state.tag !== '!') {
+    if (_hasOwnProperty$1.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
+      type = state.typeMap[state.kind || 'fallback'][state.tag];
+    } else {
+      // looking for multi type
+      type = null;
+      typeList = state.typeMap.multi[state.kind || 'fallback'];
+
+      for (typeIndex = 0, typeQuantity = typeList.length; typeIndex < typeQuantity; typeIndex += 1) {
+        if (state.tag.slice(0, typeList[typeIndex].tag.length) === typeList[typeIndex].tag) {
+          type = typeList[typeIndex];
+          break;
+        }
+      }
+    }
+
+    if (!type) {
+      throwError(state, 'unknown tag !<' + state.tag + '>');
+    }
+
+    if (state.result !== null && type.kind !== state.kind) {
+      throwError(state, 'unacceptable node kind for !<' + state.tag + '> tag; it should be "' + type.kind + '", not "' + state.kind + '"');
+    }
+
+    if (!type.resolve(state.result, state.tag)) { // `state.result` updated in resolver if matched
+      throwError(state, 'cannot resolve a node with !<' + state.tag + '> explicit tag');
+    } else {
+      state.result = type.construct(state.result, state.tag);
+      if (state.anchor !== null) {
+        state.anchorMap[state.anchor] = state.result;
+      }
+    }
+  }
+
+  if (state.listener !== null) {
+    state.listener('close', state);
+  }
+  return state.tag !== null ||  state.anchor !== null || hasContent;
+}
+
+function readDocument(state) {
+  var documentStart = state.position,
+      _position,
+      directiveName,
+      directiveArgs,
+      hasDirectives = false,
+      ch;
+
+  state.version = null;
+  state.checkLineBreaks = state.legacy;
+  state.tagMap = Object.create(null);
+  state.anchorMap = Object.create(null);
+
+  while ((ch = state.input.charCodeAt(state.position)) !== 0) {
+    skipSeparationSpace(state, true, -1);
+
+    ch = state.input.charCodeAt(state.position);
+
+    if (state.lineIndent > 0 || ch !== 0x25/* % */) {
+      break;
+    }
+
+    hasDirectives = true;
+    ch = state.input.charCodeAt(++state.position);
+    _position = state.position;
+
+    while (ch !== 0 && !is_WS_OR_EOL(ch)) {
+      ch = state.input.charCodeAt(++state.position);
+    }
+
+    directiveName = state.input.slice(_position, state.position);
+    directiveArgs = [];
+
+    if (directiveName.length < 1) {
+      throwError(state, 'directive name must not be less than one character in length');
+    }
+
+    while (ch !== 0) {
+      while (is_WHITE_SPACE(ch)) {
+        ch = state.input.charCodeAt(++state.position);
+      }
+
+      if (ch === 0x23/* # */) {
+        do { ch = state.input.charCodeAt(++state.position); }
+        while (ch !== 0 && !is_EOL(ch));
+        break;
+      }
+
+      if (is_EOL(ch)) break;
+
+      _position = state.position;
+
+      while (ch !== 0 && !is_WS_OR_EOL(ch)) {
+        ch = state.input.charCodeAt(++state.position);
+      }
+
+      directiveArgs.push(state.input.slice(_position, state.position));
+    }
+
+    if (ch !== 0) readLineBreak(state);
+
+    if (_hasOwnProperty$1.call(directiveHandlers, directiveName)) {
+      directiveHandlers[directiveName](state, directiveName, directiveArgs);
+    } else {
+      throwWarning(state, 'unknown document directive "' + directiveName + '"');
+    }
+  }
+
+  skipSeparationSpace(state, true, -1);
+
+  if (state.lineIndent === 0 &&
+      state.input.charCodeAt(state.position)     === 0x2D/* - */ &&
+      state.input.charCodeAt(state.position + 1) === 0x2D/* - */ &&
+      state.input.charCodeAt(state.position + 2) === 0x2D/* - */) {
+    state.position += 3;
+    skipSeparationSpace(state, true, -1);
+
+  } else if (hasDirectives) {
+    throwError(state, 'directives end mark is expected');
+  }
+
+  composeNode(state, state.lineIndent - 1, CONTEXT_BLOCK_OUT, false, true);
+  skipSeparationSpace(state, true, -1);
+
+  if (state.checkLineBreaks &&
+      PATTERN_NON_ASCII_LINE_BREAKS.test(state.input.slice(documentStart, state.position))) {
+    throwWarning(state, 'non-ASCII line breaks are interpreted as content');
+  }
+
+  state.documents.push(state.result);
+
+  if (state.position === state.lineStart && testDocumentSeparator(state)) {
+
+    if (state.input.charCodeAt(state.position) === 0x2E/* . */) {
+      state.position += 3;
+      skipSeparationSpace(state, true, -1);
+    }
+    return;
+  }
+
+  if (state.position < (state.length - 1)) {
+    throwError(state, 'end of the stream or a document separator is expected');
+  } else {
+    return;
+  }
+}
+
+
+function loadDocuments(input, options) {
+  input = String(input);
+  options = options || {};
+
+  if (input.length !== 0) {
+
+    // Add tailing `\n` if not exists
+    if (input.charCodeAt(input.length - 1) !== 0x0A/* LF */ &&
+        input.charCodeAt(input.length - 1) !== 0x0D/* CR */) {
+      input += '\n';
+    }
+
+    // Strip BOM
+    if (input.charCodeAt(0) === 0xFEFF) {
+      input = input.slice(1);
+    }
+  }
+
+  var state = new State$1(input, options);
+
+  var nullpos = input.indexOf('\0');
+
+  if (nullpos !== -1) {
+    state.position = nullpos;
+    throwError(state, 'null byte is not allowed in input');
+  }
+
+  // Use 0 as string terminator. That significantly simplifies bounds check.
+  state.input += '\0';
+
+  while (state.input.charCodeAt(state.position) === 0x20/* Space */) {
+    state.lineIndent += 1;
+    state.position += 1;
+  }
+
+  while (state.position < (state.length - 1)) {
+    readDocument(state);
+  }
+
+  return state.documents;
+}
+
+
+function load$1(input, options) {
+  var documents = loadDocuments(input, options);
+
+  if (documents.length === 0) {
+    /*eslint-disable no-undefined*/
+    return undefined;
+  } else if (documents.length === 1) {
+    return documents[0];
+  }
+  throw new exception('expected a single document in the stream, but found more');
+}
+var load_1    = load$1;
+
+var loader = {
+	load: load_1
+};
+var load                = loader.load;
+
+streamDeck.logger.setLevel(LogLevel.TRACE);
+// Global variables for camilla connection
+let camIp$1 = null;
+let camPort$1 = null;
+// Function to send websocket messages
+async function sendWebSocketMessage$1(ip, port, message) {
+    return new Promise((resolve) => {
+        try {
+            const ws = new WebSocket(`ws://${ip}:${port}`);
+            const timeoutId = setTimeout(() => {
+                ws.close();
+                resolve({
+                    success: false,
+                    error: 'Connection timeout after 5 seconds'
+                });
+            }, 5000);
+            ws.onopen = () => {
+                const messageString = typeof message === 'string'
+                    ? message
+                    : JSON.stringify(message);
+                ws.send(messageString);
+            };
+            ws.onmessage = (event) => {
+                clearTimeout(timeoutId);
+                try {
+                    const data = JSON.parse(event.data.toString());
+                    resolve({
+                        success: true,
+                        data: data
+                    });
+                }
+                catch (e) {
+                    resolve({
+                        success: false,
+                        error: 'Failed to parse response data'
+                    });
+                }
+                ws.close();
+            };
+            ws.onerror = (error) => {
+                clearTimeout(timeoutId);
+                resolve({
+                    success: false,
+                    error: `WebSocket error: ${error}`
+                });
+                ws.close();
+            };
+        }
+        catch (error) {
+            resolve({
+                success: false,
+                error: `Failed to create WebSocket connection: ${error}`
+            });
+        }
+    });
+}
+// Handle global settings updates to get IP and Port
+async function handleGlobalSettings$1(settings) {
+    streamDeck.logger.info('Received global settings:', JSON.stringify(settings, null, 2));
+    if (settings.camillaIP) {
+        camIp$1 = settings.camillaIP;
+        streamDeck.logger.info(`Camilla IP: ${camIp$1}`);
+    }
+    else {
+        streamDeck.logger.warn('Missing Camilla IP configuration');
+    }
+    if (settings.camillaPort) {
+        camPort$1 = parseInt(settings.camillaPort);
+        streamDeck.logger.info(`Camilla Port: ${camPort$1}`);
+    }
+    else {
+        streamDeck.logger.warn('Missing Camilla Port configuration');
+    }
+}
+// Initial settings load
+streamDeck.settings.getGlobalSettings()
+    .then(handleGlobalSettings$1)
+    .catch((error) => {
+    streamDeck.logger.error('Failed to get global settings:', error);
+});
+// Settings change handler
+streamDeck.settings.onDidReceiveGlobalSettings((ev) => {
+    streamDeck.logger.info('Received settings update event');
+    handleGlobalSettings$1(ev.settings)
+        .catch((error) => {
+        streamDeck.logger.error('Failed to handle global settings update:', error);
+    });
+});
+let ChangeConfig = (() => {
+    let _classDecorators = [action({ UUID: "com.alexander-vyverman.sdcamilladsp.change-config" })];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    let _classSuper = SingletonAction;
+    (class extends _classSuper {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+        onWillAppear(ev) {
+            // streamDeck.logger.info("onWillAppear") 
+            const { settings } = ev.payload;
+            const filename = path$1.basename(settings.yamlpath, path$1.extname(settings.yamlpath));
+            ev.action.setTitle(filename);
+        }
+        async onKeyDown(ev) {
+            const { settings } = ev.payload;
+            streamDeck.logger.info("onKeyDown triggered with yamlpath: ", settings.yamlpath);
+            // Check if we have the required connection settings
+            if (!camIp$1 || !camPort$1) {
+                streamDeck.logger.error('Missing Camilla IP or Port configuration');
+                return;
+            }
+            // Check if yamlpath is provided
+            if (!settings.yamlpath) {
+                streamDeck.logger.error('No YAML path configured');
+                return;
+            }
+            try {
+                // Read the YAML file contents
+                const yamlContent = fs.readFileSync(settings.yamlpath, 'utf8');
+                streamDeck.logger.info(`Successfully read YAML file: ${settings.yamlpath}`);
+                streamDeck.logger.debug(`YAML content length: ${yamlContent.length} characters`);
+                streamDeck.logger.debug(`YAML content preview (first 200 chars): ${yamlContent.substring(0, 200)}`);
+                // Parse YAML to JavaScript object
+                const yamlObject = load(yamlContent);
+                streamDeck.logger.info('Successfully parsed YAML to JavaScript object');
+                streamDeck.logger.debug('Parsed YAML object keys:', Object.keys(yamlObject));
+                // Convert the JavaScript object to JSON string
+                const jsonString = JSON.stringify(yamlObject);
+                streamDeck.logger.info(`Converted YAML to JSON string (length: ${jsonString.length} characters)`);
+                streamDeck.logger.debug(`JSON string preview (first 200 chars): ${jsonString.substring(0, 200)}`);
+                // Prepare the message with SetConfigJson key and JSON content as string value
+                const message = {
+                    "SetConfigJson": jsonString
+                };
+                streamDeck.logger.info(`Sending SetConfigJson message to ${camIp$1}:${camPort$1}`);
+                streamDeck.logger.info(`Complete message being sent over WebSocket:`);
+                streamDeck.logger.info(JSON.stringify(message, null, 2));
+                streamDeck.logger.debug(`Raw message string length: ${JSON.stringify(message).length} characters`);
+                streamDeck.logger.debug(`Raw message string: ${JSON.stringify(message)}`);
+                // Send the message over websocket
+                const response = await sendWebSocketMessage$1(camIp$1, camPort$1, message);
+                if (response.success) {
+                    streamDeck.logger.info('WebSocket communication successful');
+                    streamDeck.logger.info('Full response:', JSON.stringify(response.data, null, 2));
+                    // Check if the response contains an error
+                    if (response.data && response.data.SetConfigJson) {
+                        if (response.data.SetConfigJson.result === "Error") {
+                            streamDeck.logger.error('CamillaDSP returned an error result for SetConfigJson');
+                            streamDeck.logger.error('SetConfigJson response:', JSON.stringify(response.data.SetConfigJson, null, 2));
+                            // Look for additional error information
+                            if (response.data.SetConfigJson.message) {
+                                streamDeck.logger.error('Error message:', response.data.SetConfigJson.message);
+                            }
+                            if (response.data.SetConfigJson.details) {
+                                streamDeck.logger.error('Error details:', response.data.SetConfigJson.details);
+                            }
+                        }
+                        else {
+                            streamDeck.logger.info('CamillaDSP accepted the JSON configuration successfully');
+                            streamDeck.logger.info('SetConfigJson result:', response.data.SetConfigJson.result);
+                        }
+                    }
+                    else {
+                        streamDeck.logger.warn('Unexpected response structure - no SetConfigJson field found');
+                        streamDeck.logger.warn('Response keys:', Object.keys(response.data || {}));
+                    }
+                }
+                else {
+                    streamDeck.logger.error('WebSocket communication failed:', response.error);
+                }
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    if (error.message.includes('ENOENT')) {
+                        streamDeck.logger.error(`YAML file not found: ${settings.yamlpath}`);
+                    }
+                    else if (error.message.includes('EACCES')) {
+                        streamDeck.logger.error(`Permission denied reading file: ${settings.yamlpath}`);
+                    }
+                    else if (error.message.includes('YAMLException')) {
+                        streamDeck.logger.error(`YAML parsing error: ${error.message}`);
+                        streamDeck.logger.error('Please check the YAML file syntax');
+                    }
+                    else {
+                        streamDeck.logger.error(`Error processing YAML file: ${error.message}`);
+                        streamDeck.logger.error(`Error stack: ${error.stack}`);
+                    }
+                }
+                else {
+                    streamDeck.logger.error('Unknown error occurred while processing YAML file:', error);
+                }
+            }
+        }
+        async onDidReceiveSettings(ev) {
+            // Update the count from the settings.
+            const { settings } = ev.payload;
+            const filename = path$1.basename(settings.yamlpath, path$1.extname(settings.yamlpath));
+            ev.action.setTitle(filename);
+            streamDeck.logger.info("these are the current settings for the change config action: ", settings.yamlpath);
+        }
+    });
+    return _classThis;
+})();
+
+// / <reference path="@elgato/streamdeck" />
+// let defVal = 50;
+// let reconnectInterval = 5000;
+let camIp = null;
+let camPort = null;
+// let inContext: any = null;
+let volValue = null;
+let dimOn = false;
+let camSocketOpen = false;
+let globSettings = {};
+async function handleGlobalSettings(settings) {
+    streamDeck.logger.info('Received global settings:', JSON.stringify(settings, null, 2));
+    globSettings = settings;
+    const previousIp = camIp;
+    const previousPort = camPort;
+    if (settings.camillaIP) {
+        camIp = settings.camillaIP;
+        console.info(`Camilla IP: ${camIp}`);
+    }
+    else {
+        console.warn('Missing Camilla IP configuration');
+    }
+    if (settings.camillaPort) {
+        camPort = settings.camillaPort;
+        console.info(`Camilla Port: ${camPort}`);
+    }
+    else {
+        console.warn('Missing Camilla Port configuration');
+    }
+    streamDeck.logger.info(`IP: ${previousIp} -> ${camIp}`);
+    streamDeck.logger.info(`Port: ${previousPort} -> ${camPort}`);
+    if (camIp && camPort) {
+        try {
+            streamDeck.logger.info(`Attempting to connect to WebSocket at ws://${camIp}:${camPort}`);
+            const response = await sendWebSocketMessage(camIp, camPort, '"GetVolume"');
+            if (response.success && response.data) {
+                camSocketOpen = true;
+                globSettings.camSocketOpen = camSocketOpen;
+                streamDeck.logger.info('Successfully connected to WebSocket');
+                await streamDeck.settings.setGlobalSettings(globSettings);
+                streamDeck.logger.info('Updated global settings with connection status');
+                // Improved type checking and error handling
+                if ('GetVolume' in response.data && response.data.GetVolume?.value !== undefined) {
+                    const previousVolume = volValue;
+                    volValue = Math.round(response.data.GetVolume.value);
+                    streamDeck.logger.info(`Volume updated: ${previousVolume} -> ${volValue}`);
+                }
+                else {
+                    console.warn('Invalid GetVolume response structure:', JSON.stringify(response.data, null, 2));
+                    throw new Error('Invalid response structure from CamillaDSP');
+                }
+            }
+            else {
+                console.error(`Failed to get initial volume: ${response.error}`);
+                console.debug('Full response:', JSON.stringify(response, null, 2));
+            }
+        }
+        catch (error) {
+            console.error('Failed to initialize connection:', error);
+            console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+        }
+    }
+    else {
+        console.warn('Missing IP or Port configuration:', { camIp, camPort });
+    }
+}
+// Initial settings load
+streamDeck.logger.info('Loading initial global settings...');
+streamDeck.settings.getGlobalSettings()
+    .then(handleGlobalSettings)
+    .catch((error) => {
+    console.error('Failed to get global settings:', error);
+    console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+});
+// Settings change handler
+streamDeck.settings.onDidReceiveGlobalSettings((ev) => {
+    streamDeck.logger.info('Received settings update event');
+    handleGlobalSettings(ev.settings)
+        .catch((error) => {
+        console.error('Failed to handle global settings update:', error);
+        console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+    });
+});
+async function sendWebSocketMessage(ip, port, message) {
+    return new Promise((resolve) => {
+        try {
+            const ws = new WebSocket(`ws://${ip}:${port}`);
+            const timeoutId = setTimeout(() => {
+                ws.close();
+                resolve({
+                    success: false,
+                    error: 'Connection timeout after 5 seconds'
+                });
+            }, 5000);
+            ws.onopen = () => {
+                const messageString = typeof message === 'string'
+                    ? message
+                    : JSON.stringify(message);
+                ws.send(messageString);
+            };
+            ws.onmessage = (event) => {
+                clearTimeout(timeoutId);
+                try {
+                    const data = JSON.parse(event.data.toString());
+                    resolve({
+                        success: true,
+                        data: data
+                    });
+                }
+                catch (e) {
+                    resolve({
+                        success: false,
+                        error: 'Failed to parse response data'
+                    });
+                }
+                ws.close();
+            };
+            ws.onerror = (error) => {
+                clearTimeout(timeoutId);
+                resolve({
+                    success: false,
+                    error: `WebSocket error: ${error}`
+                });
+                ws.close();
+            };
+        }
+        catch (error) {
+            resolve({
+                success: false,
+                error: `Failed to create WebSocket connection: ${error}`
+            });
+        }
+    });
+}
+let Volume = (() => {
+    let _classDecorators = [action({ UUID: "com.alexander-vyverman.sdcamilladsp.volume" })];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
+    let _classSuper = SingletonAction;
+    (class extends _classSuper {
+        static { _classThis = this; }
+        static {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
+            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+            _classThis = _classDescriptor.value;
+            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+            __runInitializers(_classThis, _classExtraInitializers);
+        }
+        constructor() {
+            super();
+        }
+        async onWillAppear(ev) {
+        }
+        async onDialRotate(ev) {
+            if (!camIp || !camPort) {
+                console.error('Missing IP or Port configuration');
+                return;
+            }
+            const dialVal = volValue + ev.payload.ticks;
+            if (dialVal <= 0 && dialVal >= -80) {
+                const response = await sendWebSocketMessage(camIp, camPort, { "AdjustVolume": ev.payload.ticks });
+                if (response.success) {
+                    // Handle successful response
+                    const data = response.data;
+                    if (data && data.AdjustVolume) {
+                        volValue = Math.round(data.AdjustVolume.value);
+                        ev.action.setFeedback({
+                            value: volValue,
+                            indicator: {
+                                value: ((volValue + 80) / 80) * 100,
+                                enabled: true
+                            }
+                        });
+                    }
+                }
+                else {
+                    console.error(response.error);
+                }
+            }
+        }
+        async onDialDown(ev) {
+            if (!camIp || !camPort)
+                return;
+            dimOn = !dimOn;
+            streamDeck.logger.info("dial down pressed");
+            const dimVol = dimOn ? volValue - 20 : volValue + 20;
+            volValue = Math.min(Math.max(dimVol, -80), 100); // Clamp between -80 and 100
+            const response = await sendWebSocketMessage(camIp, camPort, { "SetVolume": volValue });
+            if (response.success) {
+                ev.action.setFeedback({
+                    title: dimOn ? "DIM ON" : "Volume",
+                    value: volValue,
+                    indicator: {
+                        value: ((volValue + 80) / 80) * 100,
+                        enabled: true
+                    }
+                });
+            }
+            else {
+                console.error('Failed to set volume:', response.error);
+            }
+        }
+    });
+    return _classThis;
+})();
+
+// We can enable "trace" logging so that all messages between the Stream Deck, and the plugin are recorded. When storing sensitive information
+streamDeck.logger.setLevel(LogLevel.TRACE);
+// Register the increment action.
+// streamDeck.actions.registerAction(new IncrementCounter());
+streamDeck.actions.registerAction(new ChangeConfig());
+streamDeck.actions.registerAction(new Volume());
+// Finally, connect to the Stream Deck.
+streamDeck.connect();
+streamDeck.logger.info("Plugin connected to Stream Deck software");
+//# sourceMappingURL=plugin.js.map
