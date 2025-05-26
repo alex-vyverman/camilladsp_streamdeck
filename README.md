@@ -20,8 +20,7 @@ A Stream Deck plugin for controlling [CamillaDSP](https://github.com/HEnquist/ca
 - **Operating System**: 
   - macOS 12 or higher
   - Windows 10 or higher
-- **Node.js**: Version 20 (automatically managed by Stream Deck)
-- **CamillaDSP**: Running instance with WebSocket API enabled
+- **CamillaDSP**: Running instance with WebSocket API enabled (On the same, or on a remote system)
 
 ## Installation
 
@@ -36,11 +35,17 @@ A Stream Deck plugin for controlling [CamillaDSP](https://github.com/HEnquist/ca
 ## Setup
 
 ### 1. Configure CamillaDSP Connection
-1. Open Stream Deck software
-2. Go to plugin settings (global settings)
-3. Enter your CamillaDSP details:
+1. Make sure CamillaDSP is compiled, and running with the websocket server enabled and reachable. 
+For example: 
+`camilladsp --address 127.0.0.1 --port 1234` for a local host
+or `camilladsp --address 0.0.0.0 --port 1234` for a remote host
+2. Open Stream Deck software
+3. Go to plugin settings (global settings)
+4. Enter your CamillaDSP details:
    - **IP Address**: The IP where CamillaDSP is running (e.g., `localhost` or `192.168.1.100`)
    - **Port**: The WebSocket port (default: `1234`)
+   - Press the 'test' button. If a connection is established, you will see the info on the version and ip adress where CamillaDSP is running.
+  
 
 ### 2. Add Actions to Your Stream Deck
 
@@ -48,6 +53,15 @@ A Stream Deck plugin for controlling [CamillaDSP](https://github.com/HEnquist/ca
 1. Drag the "Change configuration" action to a button
 2. In the property inspector, set the **YAML Path** to your configuration file
 3. The button will display the filename and switch to that config when pressed
+
+  Note: 
+  The YAML configuration file is sent from the system running the StreamDeck plugin to CamillaDSP and applied directly.
+  This is particularly important to note if you’re running CamillaDSP with its GUI on a separate system from the one hosting the StreamDeck software.
+  
+  In such cases, changes made to the configuration file on the remote system (where CamillaDSP is running) will not be reflected automatically, since the StreamDeck plugin does not have access to that file.
+  Therefore, whenever you update the configuration on the remote system, you’ll need to manually transfer the updated YAML file to the local system running the StreamDeck plugin.
+  
+  As long as the path and filename remain unchanged on the local system, no adjustments to the plugin settings are necessary after each update.
 
 #### Volume Control Action
 1. Drag the "Main Volume Encoder" action to a rotary encoder
@@ -58,7 +72,7 @@ A Stream Deck plugin for controlling [CamillaDSP](https://github.com/HEnquist/ca
 
 ### Configuration Switching
 - Press any configured button to instantly switch CamillaDSP to that configuration
-- Perfect for switching between different audio profiles (music, movies, gaming, etc.)
+- Perfect for switching between different audio profiles (music, movies, gaming, etc.), headphones and different sets of speakers
 
 ### Volume Control
 - **Rotate**: Adjust main volume in 1dB increments
