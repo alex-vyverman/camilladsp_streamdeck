@@ -76,10 +76,12 @@ async function handleGlobalSettings(settings: GlobalSettings) {
 
             if (response.success && response.data) {
 				camSocketOpen = true;
-				globSettings.camSocketOpen = camSocketOpen;
-				streamDeck.logger.info('Successfully connected to WebSocket');
-				await streamDeck.settings.setGlobalSettings(globSettings);
-				streamDeck.logger.info('Updated global settings with connection status');
+				if (globSettings.camSocketOpen !== camSocketOpen) {
+					globSettings.camSocketOpen = camSocketOpen;
+					streamDeck.logger.info('Successfully connected to WebSocket');
+					await streamDeck.settings.setGlobalSettings(globSettings);
+					streamDeck.logger.info('Updated global settings with connection status');
+				}
 			
 				// Improved type checking and error handling
 				if ('GetVolume' in response.data && response.data.GetVolume?.value !== undefined) {
