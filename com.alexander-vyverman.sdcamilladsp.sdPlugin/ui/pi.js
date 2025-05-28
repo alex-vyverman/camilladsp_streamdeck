@@ -27,8 +27,12 @@ streamDeckClient.didReceiveGlobalSettings.subscribe((globalSettings) => {
         document.getElementById('camillaip').value = globalSettings.payload.settings.camillaIP;
         document.getElementById('camillaport').value = globalSettings.payload.settings.camillaPort;
         savedstate = true;
-        test(version);
-        handlestate();
+        // Only test if not already validated
+        if (!validatedstate) {
+            test(version);
+        } else {
+            handlestate();
+        }
     } else {
         console.warn('Global settings do not contain camillaIP or camillaPort');
     }

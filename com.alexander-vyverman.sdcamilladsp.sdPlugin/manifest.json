@@ -8,7 +8,7 @@
 			"UUID": "com.alexander-vyverman.sdcamilladsp.change-config",
 			"Icon": "imgs/actions/config/icons8-config",
 			"Tooltip": "Set the Yaml file which will be sent to CamillaDSP upon clicking.",
-			"PropertyInspectorPath": "ui/increment-counter.html",
+			"PropertyInspectorPath": "ui/pi-change-config.html",
 			"Controllers": [
 				"Keypad"
 			],
@@ -24,7 +24,7 @@
 			"UUID": "com.alexander-vyverman.sdcamilladsp.volume",
 			"Icon": "imgs/actions/volume/icons8-voice",
 			"Tooltip": "control the main Volume using the StreamDeck rotary encoder",
-			"PropertyInspectorPath": "ui/increment-counter.html",
+			"PropertyInspectorPath": "ui/pi-volume.html",
 			"Encoder": {
 				"layout": "$B1"
 			},

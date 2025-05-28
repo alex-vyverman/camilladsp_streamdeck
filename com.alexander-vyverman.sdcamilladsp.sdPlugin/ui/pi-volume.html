@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <title>CamillaDSP Volume Settings</title>
+    <meta charset="utf-8" />
+    <script src="https://sdpi-components.dev/releases/v3/sdpi-components.js"></script>
+    <script src="pi.js" defer></script>
+</head>
+
+<body>
+    <sdpi-item>CamillaDSP Settings</sdpi-item>
+    <!--
+        Learn more about property inspector components at https://sdpi-components.dev/docs/components
+    -->
+    <sdpi-item label="CamillaDSP IP Address">
+        <sdpi-textfield id="camillaip"  placeholder="localhost" required></sdpi-textfield>
+    </sdpi-item>
+    <sdpi-item label="CamillaDSP Port">
+        <sdpi-textfield id="camillaport"  placeholder="1234" required></sdpi-textfield>
+    </sdpi-item>
+    <sdpi-item>
+        <sdpi-button id="configbutton" onclick="javascript:handlebutton()">
+            Test
+        </sdpi-button>
+    </sdpi-item>
+    <sdpi-item id="versionInfo"></sdpi-item>
+
+    
+
+</body>
+
+</html>
