@@ -2,13 +2,18 @@ const { streamDeckClient } = SDPIComponents;
 
 
 let localSettings = {}
+let controllerType = ''
 
 const version = '"GetVersion"'
 streamDeckClient.getSettings().then((settings) => { 
     console.log("settings: ", settings)
-    localSettings = settings.settings;
+    localSettings = settings;
+    controllerType = settings.controller || 'default';
+    console.log("controllerType: ", controllerType)
     console.log("localSettings: ", localSettings)
-
+    
+    // Update visibility based on controller type
+    updateControllerVisibility();
 });
 streamDeckClient.getGlobalSettings().then((globalSettings) => { console.log("globalSettings: ", globalSettings) });
 streamDeckClient.getConnectionInfo().then((info) => { console.log("info: ", info) });
@@ -154,4 +159,77 @@ function saveGlobSettings() {
     savedstate = true;
     handlestate();
 
+}
+
+// Function to update volume step display
+function updateVolumeStepDisplay() {
+    const volumeStepElement = document.getElementById('volumeStep');
+    const volumeStepValueElement = document.getElementById('volumeStepValue');
+    
+    if (volumeStepElement && volumeStepValueElement) {
+        // Try different ways to get the current value
+        let currentValue = volumeStepElement.value || 
+                          volumeStepElement.getAttribute('value') || 
+                          volumeStepElement.sdValue || 
+                          '0';
+        volumeStepValueElement.textContent = `${currentValue} dB`;
+    }
+}
+
+let volumeStepInterval;
+
+// Initialize volume step display when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Update controller visibility
+    updateControllerVisibility();
+    
+    // Use a timeout to ensure SDPI components are fully loaded
+    setTimeout(() => {
+        const volumeStepElement = document.getElementById('volumeStep');
+        
+        if (volumeStepElement) {
+            // Set initial value
+            updateVolumeStepDisplay();
+            
+            // Poll for changes every 100ms as a fallback
+            if (volumeStepInterval) {
+                clearInterval(volumeStepInterval);
+            }
+            volumeStepInterval = setInterval(updateVolumeStepDisplay, 100);
+            
+            // Try to listen for SDPI-specific events
+            volumeStepElement.addEventListener('sdpi-item-change', updateVolumeStepDisplay);
+            volumeStepElement.addEventListener('sdpi-change', updateVolumeStepDisplay);
+            
+            // Standard events
+            volumeStepElement.addEventListener('input', updateVolumeStepDisplay);
+            volumeStepElement.addEventListener('change', updateVolumeStepDisplay);
+            
+            // Use MutationObserver to watch for any attribute changes
+            const observer = new MutationObserver(() => {
+                updateVolumeStepDisplay();
+            });
+            observer.observe(volumeStepElement, { 
+                attributes: true, 
+                childList: true,
+                subtree: true
+            });
+        }
+    }, 500);
+});
+
+// Function to show/hide keypad-specific controls
+function updateControllerVisibility() {
+    const volumeUpDown = document.getElementById('volumeUpDown');
+    const volumeStepContainer = document.getElementById('volumeStepContainer');
+    
+    if (volumeUpDown && volumeStepContainer) {
+        if (controllerType === 'Keypad') {
+            volumeUpDown.style.display = '';
+            volumeStepContainer.style.display = '';
+        } else {
+            volumeUpDown.style.display = 'none';
+            volumeStepContainer.style.display = 'none';
+        }
+    }
 }

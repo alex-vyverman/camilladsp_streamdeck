@@ -127,6 +127,7 @@ export class ChangeConfig extends SingletonAction<ChangeConfigSettings> {
     override onWillAppear(ev: WillAppearEvent<ChangeConfigSettings>): void | Promise<void> {
         // streamDeck.logger.info("onWillAppear") 
         const { settings } = ev.payload;
+        streamDeck.logger.info("onWillAppear triggered with yamlpath: ", settings.yamlpath);
         const filename = path.basename(settings.yamlpath, path.extname(settings.yamlpath))
         ev.action.setTitle(filename);
     }

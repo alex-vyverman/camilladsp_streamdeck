@@ -1,20 +1,18 @@
-import require$$0$4 from 'events';
+import require$$0$3 from 'events';
 import require$$1$1 from 'https';
-import require$$2$1 from 'http';
+import require$$2 from 'http';
 import require$$3 from 'net';
 import require$$4 from 'tls';
 import require$$1 from 'crypto';
-import require$$0$3 from 'stream';
+import require$$0$2 from 'stream';
 import require$$7 from 'url';
-import require$$0$1 from 'zlib';
-import * as require$$0 from 'fs';
-import require$$0__default from 'fs';
-import path from 'path';
-import require$$2 from 'os';
-import require$$0$2 from 'buffer';
-import path$1, { join } from 'node:path';
+import require$$0 from 'zlib';
+import require$$0$1 from 'buffer';
+import path, { join } from 'node:path';
 import { cwd } from 'node:process';
-import fs, { existsSync, readFileSync } from 'node:fs';
+import fs$1, { existsSync, readFileSync } from 'node:fs';
+import * as fs from 'fs';
+import path$1 from 'path';
 
 /**!
  * @author Elgato
@@ -67,10 +65,6 @@ var DeviceType;
      * Stream Deck Neo, comprised of 8 customizable LCD keys in a 4 x 2 layout, an info bar, and 2 touch points for page navigation.
      */
     DeviceType[DeviceType["StreamDeckNeo"] = 9] = "StreamDeckNeo";
-    /**
-     * Stream Deck Studio, comprised of 32 customizable LCD keys in a 16 x 2 layout, and 2 dials (1 on either side).
-     */
-    DeviceType[DeviceType["StreamDeckStudio"] = 10] = "StreamDeckStudio";
 })(DeviceType || (DeviceType = {}));
 
 /**
@@ -136,300 +130,6 @@ function requireConstants () {
 	  NOOP: () => {}
 	};
 	return constants;
-}
-
-var bufferutil = {exports: {}};
-
-function commonjsRequire(path) {
-	throw new Error('Could not dynamically require "' + path + '". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.');
-}
-
-var nodeGypBuild$1 = {exports: {}};
-
-var nodeGypBuild;
-var hasRequiredNodeGypBuild$1;
-
-function requireNodeGypBuild$1 () {
-	if (hasRequiredNodeGypBuild$1) return nodeGypBuild;
-	hasRequiredNodeGypBuild$1 = 1;
-	var fs = require$$0__default;
-	var path$1 = path;
-	var os = require$$2;
-
-	// Workaround to fix webpack's build warnings: 'the request of a dependency is an expression'
-	var runtimeRequire = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : commonjsRequire; // eslint-disable-line
-
-	var vars = (process.config && process.config.variables) || {};
-	var prebuildsOnly = !!process.env.PREBUILDS_ONLY;
-	var abi = process.versions.modules; // TODO: support old node where this is undef
-	var runtime = isElectron() ? 'electron' : (isNwjs() ? 'node-webkit' : 'node');
-
-	var arch = process.env.npm_config_arch || os.arch();
-	var platform = process.env.npm_config_platform || os.platform();
-	var libc = process.env.LIBC || (isAlpine(platform) ? 'musl' : 'glibc');
-	var armv = process.env.ARM_VERSION || (arch === 'arm64' ? '8' : vars.arm_version) || '';
-	var uv = (process.versions.uv || '').split('.')[0];
-
-	nodeGypBuild = load;
-
-	function load (dir) {
-	  return runtimeRequire(load.resolve(dir))
-	}
-
-	load.resolve = load.path = function (dir) {
-	  dir = path$1.resolve(dir || '.');
-
-	  try {
-	    var name = runtimeRequire(path$1.join(dir, 'package.json')).name.toUpperCase().replace(/-/g, '_');
-	    if (process.env[name + '_PREBUILD']) dir = process.env[name + '_PREBUILD'];
-	  } catch (err) {}
-
-	  if (!prebuildsOnly) {
-	    var release = getFirst(path$1.join(dir, 'build/Release'), matchBuild);
-	    if (release) return release
-
-	    var debug = getFirst(path$1.join(dir, 'build/Debug'), matchBuild);
-	    if (debug) return debug
-	  }
-
-	  var prebuild = resolve(dir);
-	  if (prebuild) return prebuild
-
-	  var nearby = resolve(path$1.dirname(process.execPath));
-	  if (nearby) return nearby
-
-	  var target = [
-	    'platform=' + platform,
-	    'arch=' + arch,
-	    'runtime=' + runtime,
-	    'abi=' + abi,
-	    'uv=' + uv,
-	    armv ? 'armv=' + armv : '',
-	    'libc=' + libc,
-	    'node=' + process.versions.node,
-	    process.versions.electron ? 'electron=' + process.versions.electron : '',
-	    typeof __webpack_require__ === 'function' ? 'webpack=true' : '' // eslint-disable-line
-	  ].filter(Boolean).join(' ');
-
-	  throw new Error('No native build was found for ' + target + '\n    loaded from: ' + dir + '\n')
-
-	  function resolve (dir) {
-	    // Find matching "prebuilds/<platform>-<arch>" directory
-	    var tuples = readdirSync(path$1.join(dir, 'prebuilds')).map(parseTuple);
-	    var tuple = tuples.filter(matchTuple(platform, arch)).sort(compareTuples)[0];
-	    if (!tuple) return
-
-	    // Find most specific flavor first
-	    var prebuilds = path$1.join(dir, 'prebuilds', tuple.name);
-	    var parsed = readdirSync(prebuilds).map(parseTags);
-	    var candidates = parsed.filter(matchTags(runtime, abi));
-	    var winner = candidates.sort(compareTags(runtime))[0];
-	    if (winner) return path$1.join(prebuilds, winner.file)
-	  }
-	};
-
-	function readdirSync (dir) {
-	  try {
-	    return fs.readdirSync(dir)
-	  } catch (err) {
-	    return []
-	  }
-	}
-
-	function getFirst (dir, filter) {
-	  var files = readdirSync(dir).filter(filter);
-	  return files[0] && path$1.join(dir, files[0])
-	}
-
-	function matchBuild (name) {
-	  return /\.node$/.test(name)
-	}
-
-	function parseTuple (name) {
-	  // Example: darwin-x64+arm64
-	  var arr = name.split('-');
-	  if (arr.length !== 2) return
-
-	  var platform = arr[0];
-	  var architectures = arr[1].split('+');
-
-	  if (!platform) return
-	  if (!architectures.length) return
-	  if (!architectures.every(Boolean)) return
-
-	  return { name, platform, architectures }
-	}
-
-	function matchTuple (platform, arch) {
-	  return function (tuple) {
-	    if (tuple == null) return false
-	    if (tuple.platform !== platform) return false
-	    return tuple.architectures.includes(arch)
-	  }
-	}
-
-	function compareTuples (a, b) {
-	  // Prefer single-arch prebuilds over multi-arch
-	  return a.architectures.length - b.architectures.length
-	}
-
-	function parseTags (file) {
-	  var arr = file.split('.');
-	  var extension = arr.pop();
-	  var tags = { file: file, specificity: 0 };
-
-	  if (extension !== 'node') return
-
-	  for (var i = 0; i < arr.length; i++) {
-	    var tag = arr[i];
-
-	    if (tag === 'node' || tag === 'electron' || tag === 'node-webkit') {
-	      tags.runtime = tag;
-	    } else if (tag === 'napi') {
-	      tags.napi = true;
-	    } else if (tag.slice(0, 3) === 'abi') {
-	      tags.abi = tag.slice(3);
-	    } else if (tag.slice(0, 2) === 'uv') {
-	      tags.uv = tag.slice(2);
-	    } else if (tag.slice(0, 4) === 'armv') {
-	      tags.armv = tag.slice(4);
-	    } else if (tag === 'glibc' || tag === 'musl') {
-	      tags.libc = tag;
-	    } else {
-	      continue
-	    }
-
-	    tags.specificity++;
-	  }
-
-	  return tags
-	}
-
-	function matchTags (runtime, abi) {
-	  return function (tags) {
-	    if (tags == null) return false
-	    if (tags.runtime && tags.runtime !== runtime && !runtimeAgnostic(tags)) return false
-	    if (tags.abi && tags.abi !== abi && !tags.napi) return false
-	    if (tags.uv && tags.uv !== uv) return false
-	    if (tags.armv && tags.armv !== armv) return false
-	    if (tags.libc && tags.libc !== libc) return false
-
-	    return true
-	  }
-	}
-
-	function runtimeAgnostic (tags) {
-	  return tags.runtime === 'node' && tags.napi
-	}
-
-	function compareTags (runtime) {
-	  // Precedence: non-agnostic runtime, abi over napi, then by specificity.
-	  return function (a, b) {
-	    if (a.runtime !== b.runtime) {
-	      return a.runtime === runtime ? -1 : 1
-	    } else if (a.abi !== b.abi) {
-	      return a.abi ? -1 : 1
-	    } else if (a.specificity !== b.specificity) {
-	      return a.specificity > b.specificity ? -1 : 1
-	    } else {
-	      return 0
-	    }
-	  }
-	}
-
-	function isNwjs () {
-	  return !!(process.versions && process.versions.nw)
-	}
-
-	function isElectron () {
-	  if (process.versions && process.versions.electron) return true
-	  if (process.env.ELECTRON_RUN_AS_NODE) return true
-	  return typeof window !== 'undefined' && window.process && window.process.type === 'renderer'
-	}
-
-	function isAlpine (platform) {
-	  return platform === 'linux' && fs.existsSync('/etc/alpine-release')
-	}
-
-	// Exposed for unit tests
-	// TODO: move to lib
-	load.parseTags = parseTags;
-	load.matchTags = matchTags;
-	load.compareTags = compareTags;
-	load.parseTuple = parseTuple;
-	load.matchTuple = matchTuple;
-	load.compareTuples = compareTuples;
-	return nodeGypBuild;
-}
-
-var hasRequiredNodeGypBuild;
-
-function requireNodeGypBuild () {
-	if (hasRequiredNodeGypBuild) return nodeGypBuild$1.exports;
-	hasRequiredNodeGypBuild = 1;
-	const runtimeRequire = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : commonjsRequire; // eslint-disable-line
-	if (typeof runtimeRequire.addon === 'function') { // if the platform supports native resolving prefer that
-	  nodeGypBuild$1.exports = runtimeRequire.addon.bind(runtimeRequire);
-	} else { // else use the runtime version here
-	  nodeGypBuild$1.exports = requireNodeGypBuild$1();
-	}
-	return nodeGypBuild$1.exports;
-}
-
-var fallback$1;
-var hasRequiredFallback$1;
-
-function requireFallback$1 () {
-	if (hasRequiredFallback$1) return fallback$1;
-	hasRequiredFallback$1 = 1;
-
-	/**
-	 * Masks a buffer using the given mask.
-	 *
-	 * @param {Buffer} source The buffer to mask
-	 * @param {Buffer} mask The mask to use
-	 * @param {Buffer} output The buffer where to store the result
-	 * @param {Number} offset The offset at which to start writing
-	 * @param {Number} length The number of bytes to mask.
-	 * @public
-	 */
-	const mask = (source, mask, output, offset, length) => {
-	  for (var i = 0; i < length; i++) {
-	    output[offset + i] = source[i] ^ mask[i & 3];
-	  }
-	};
-
-	/**
-	 * Unmasks a buffer using the given mask.
-	 *
-	 * @param {Buffer} buffer The buffer to unmask
-	 * @param {Buffer} mask The mask to use
-	 * @public
-	 */
-	const unmask = (buffer, mask) => {
-	  // Required until https://github.com/nodejs/node/issues/9006 is resolved.
-	  const length = buffer.length;
-	  for (var i = 0; i < length; i++) {
-	    buffer[i] ^= mask[i & 3];
-	  }
-	};
-
-	fallback$1 = { mask, unmask };
-	return fallback$1;
-}
-
-var hasRequiredBufferutil;
-
-function requireBufferutil () {
-	if (hasRequiredBufferutil) return bufferutil.exports;
-	hasRequiredBufferutil = 1;
-
-	try {
-	  bufferutil.exports = requireNodeGypBuild()(__dirname);
-	} catch (e) {
-	  bufferutil.exports = requireFallback$1();
-	}
-	return bufferutil.exports;
 }
 
 var hasRequiredBufferUtil;
@@ -552,7 +252,7 @@ function requireBufferUtil () {
 	/* istanbul ignore else  */
 	if (!process.env.WS_NO_BUFFER_UTIL) {
 	  try {
-	    const bufferUtil$1 = requireBufferutil();
+	    const bufferUtil$1 = require('bufferutil');
 
 	    bufferUtil.exports.mask = function (source, mask, output, offset, length) {
 	      if (length < 48) _mask(source, mask, output, offset, length);
@@ -640,7 +340,7 @@ function requirePermessageDeflate () {
 	if (hasRequiredPermessageDeflate) return permessageDeflate;
 	hasRequiredPermessageDeflate = 1;
 
-	const zlib = require$$0$1;
+	const zlib = require$$0;
 
 	const bufferUtil = requireBufferUtil();
 	const Limiter = requireLimiter();
@@ -1134,14 +834,6 @@ function requirePermessageDeflate () {
 	  this[kError].code = 'WS_ERR_UNSUPPORTED_MESSAGE_LENGTH';
 	  this[kError][kStatusCode] = 1009;
 	  this.removeListener('data', inflateOnData);
-
-	  //
-	  // The choice to employ `zlib.reset()` over `zlib.close()` is dictated by the
-	  // fact that in Node.js versions prior to 13.10.0, the callback for
-	  // `zlib.flush()` is not called if `zlib.close()` is used. Utilizing
-	  // `zlib.reset()` ensures that either the callback is invoked or an error is
-	  // emitted.
-	  //
 	  this.reset();
 	}
 
@@ -1157,12 +849,6 @@ function requirePermessageDeflate () {
 	  // closed when an error is emitted.
 	  //
 	  this[kPerMessageDeflate]._inflate = null;
-
-	  if (this[kError]) {
-	    this[kCallback](this[kError]);
-	    return;
-	  }
-
 	  err[kStatusCode] = 1007;
 	  this[kCallback](err);
 	}
@@ -1171,99 +857,13 @@ function requirePermessageDeflate () {
 
 var validation = {exports: {}};
 
-var utf8Validate = {exports: {}};
-
-var fallback;
-var hasRequiredFallback;
-
-function requireFallback () {
-	if (hasRequiredFallback) return fallback;
-	hasRequiredFallback = 1;
-
-	/**
-	 * Checks if a given buffer contains only correct UTF-8.
-	 * Ported from https://www.cl.cam.ac.uk/%7Emgk25/ucs/utf8_check.c by
-	 * Markus Kuhn.
-	 *
-	 * @param {Buffer} buf The buffer to check
-	 * @return {Boolean} `true` if `buf` contains only correct UTF-8, else `false`
-	 * @public
-	 */
-	function isValidUTF8(buf) {
-	  const len = buf.length;
-	  let i = 0;
-
-	  while (i < len) {
-	    if ((buf[i] & 0x80) === 0x00) {  // 0xxxxxxx
-	      i++;
-	    } else if ((buf[i] & 0xe0) === 0xc0) {  // 110xxxxx 10xxxxxx
-	      if (
-	        i + 1 === len ||
-	        (buf[i + 1] & 0xc0) !== 0x80 ||
-	        (buf[i] & 0xfe) === 0xc0  // overlong
-	      ) {
-	        return false;
-	      }
-
-	      i += 2;
-	    } else if ((buf[i] & 0xf0) === 0xe0) {  // 1110xxxx 10xxxxxx 10xxxxxx
-	      if (
-	        i + 2 >= len ||
-	        (buf[i + 1] & 0xc0) !== 0x80 ||
-	        (buf[i + 2] & 0xc0) !== 0x80 ||
-	        buf[i] === 0xe0 && (buf[i + 1] & 0xe0) === 0x80 ||  // overlong
-	        buf[i] === 0xed && (buf[i + 1] & 0xe0) === 0xa0  // surrogate (U+D800 - U+DFFF)
-	      ) {
-	        return false;
-	      }
-
-	      i += 3;
-	    } else if ((buf[i] & 0xf8) === 0xf0) {  // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-	      if (
-	        i + 3 >= len ||
-	        (buf[i + 1] & 0xc0) !== 0x80 ||
-	        (buf[i + 2] & 0xc0) !== 0x80 ||
-	        (buf[i + 3] & 0xc0) !== 0x80 ||
-	        buf[i] === 0xf0 && (buf[i + 1] & 0xf0) === 0x80 ||  // overlong
-	        buf[i] === 0xf4 && buf[i + 1] > 0x8f || buf[i] > 0xf4  // > U+10FFFF
-	      ) {
-	        return false;
-	      }
-
-	      i += 4;
-	    } else {
-	      return false;
-	    }
-	  }
-
-	  return true;
-	}
-
-	fallback = isValidUTF8;
-	return fallback;
-}
-
-var hasRequiredUtf8Validate;
-
-function requireUtf8Validate () {
-	if (hasRequiredUtf8Validate) return utf8Validate.exports;
-	hasRequiredUtf8Validate = 1;
-
-	try {
-	  utf8Validate.exports = requireNodeGypBuild()(__dirname);
-	} catch (e) {
-	  utf8Validate.exports = requireFallback();
-	}
-	return utf8Validate.exports;
-}
-
 var hasRequiredValidation;
 
 function requireValidation () {
 	if (hasRequiredValidation) return validation.exports;
 	hasRequiredValidation = 1;
 
-	const { isUtf8 } = require$$0$2;
+	const { isUtf8 } = require$$0$1;
 
 	const { hasBlob } = requireConstants();
 
@@ -1404,7 +1004,7 @@ function requireValidation () {
 	  };
 	} /* istanbul ignore else  */ else if (!process.env.WS_NO_UTF_8_VALIDATE) {
 	  try {
-	    const isValidUTF8 = requireUtf8Validate();
+	    const isValidUTF8 = require('utf-8-validate');
 
 	    validation.exports.isValidUTF8 = function (buf) {
 	      return buf.length < 32 ? _isValidUTF8(buf) : isValidUTF8(buf);
@@ -1423,7 +1023,7 @@ function requireReceiver () {
 	if (hasRequiredReceiver) return receiver;
 	hasRequiredReceiver = 1;
 
-	const { Writable } = require$$0$3;
+	const { Writable } = require$$0$2;
 
 	const PerMessageDeflate = requirePermessageDeflate();
 	const {
@@ -2139,7 +1739,7 @@ function requireSender () {
 	if (hasRequiredSender) return sender;
 	hasRequiredSender = 1;
 
-	const { Duplex } = require$$0$3;
+	const { Duplex } = require$$0$2;
 	const { randomFillSync } = require$$1;
 
 	const PerMessageDeflate = requirePermessageDeflate();
@@ -3260,13 +2860,13 @@ function requireWebsocket () {
 	if (hasRequiredWebsocket) return websocket;
 	hasRequiredWebsocket = 1;
 
-	const EventEmitter = require$$0$4;
+	const EventEmitter = require$$0$3;
 	const https = require$$1$1;
-	const http = require$$2$1;
+	const http = require$$2;
 	const net = require$$3;
 	const tls = require$$4;
 	const { randomBytes, createHash } = require$$1;
-	const { Duplex, Readable } = require$$0$3;
+	const { Duplex, Readable } = require$$0$2;
 	const { URL } = require$$7;
 
 	const PerMessageDeflate = requirePermessageDeflate();
@@ -3966,7 +3566,7 @@ function requireWebsocket () {
 	  if (parsedUrl.protocol !== 'ws:' && !isSecure && !isIpcUrl) {
 	    invalidUrlMessage =
 	      'The URL\'s protocol must be one of "ws:", "wss:", ' +
-	      '"http:", "https:", or "ws+unix:"';
+	      '"http:", "https", or "ws+unix:"';
 	  } else if (isIpcUrl && !parsedUrl.pathname) {
 	    invalidUrlMessage = "The URL's pathname is empty";
 	  } else if (parsedUrl.hash) {
@@ -4657,7 +4257,7 @@ function requireStream () {
 	hasRequiredStream = 1;
 
 	requireWebsocket();
-	const { Duplex } = require$$0$3;
+	const { Duplex } = require$$0$2;
 
 	/**
 	 * Emits the `'close'` event on a stream.
@@ -4905,9 +4505,9 @@ function requireWebsocketServer () {
 	if (hasRequiredWebsocketServer) return websocketServer;
 	hasRequiredWebsocketServer = 1;
 
-	const EventEmitter = require$$0$4;
-	const http = require$$2$1;
-	const { Duplex } = require$$0$3;
+	const EventEmitter = require$$0$3;
+	const http = require$$2;
+	const { Duplex } = require$$0$2;
 	const { createHash } = require$$1;
 
 	const extension = requireExtension();
@@ -6402,37 +6002,6 @@ class DidReceiveGlobalSettingsEvent extends Event {
 }
 
 /**
- * Provides a wrapper around a value that is lazily instantiated.
- */
-class Lazy {
-    /**
-     * Private backing field for {@link Lazy.value}.
-     */
-    #value = undefined;
-    /**
-     * Factory responsible for instantiating the value.
-     */
-    #valueFactory;
-    /**
-     * Initializes a new instance of the {@link Lazy} class.
-     * @param valueFactory The factory responsible for instantiating the value.
-     */
-    constructor(valueFactory) {
-        this.#valueFactory = valueFactory;
-    }
-    /**
-     * Gets the value.
-     * @returns The value.
-     */
-    get value() {
-        if (this.#value === undefined) {
-            this.#value = this.#valueFactory();
-        }
-        return this.#value;
-    }
-}
-
-/**
  * Wraps an underlying Promise{T}, exposing the resolve and reject delegates as methods, allowing for it to be awaited, resolved, or rejected externally.
  */
 class PromiseCompletionSource {
@@ -6564,7 +6133,7 @@ function isDebugMode() {
  * @returns The plugin's unique-identifier.
  */
 function getPluginUUID() {
-    const name = path$1.basename(process.cwd());
+    const name = path.basename(process.cwd());
     const suffixIndex = name.lastIndexOf(".sdPlugin");
     return suffixIndex < 0 ? name : name.substring(0, suffixIndex);
 }
@@ -6595,14 +6164,14 @@ class FileTarget {
      * @inheritdoc
      */
     write(entry) {
-        const fd = fs.openSync(this.filePath, "a");
+        const fd = fs$1.openSync(this.filePath, "a");
         try {
             const msg = this.options.format(entry);
-            fs.writeSync(fd, msg + "\n");
+            fs$1.writeSync(fd, msg + "\n");
             this.size += msg.length;
         }
         finally {
-            fs.closeSync(fd);
+            fs$1.closeSync(fd);
         }
         if (this.size >= this.options.maxSize) {
             this.reIndex();
@@ -6615,7 +6184,7 @@ class FileTarget {
      * @returns File path that represents the indexed log file.
      */
     getLogFilePath(index = 0) {
-        return path$1.join(this.options.dest, `${this.options.fileName}.${index}.log`);
+        return path.join(this.options.dest, `${this.options.fileName}.${index}.log`);
     }
     /**
      * Gets the log files associated with this file target, including past and present.
@@ -6623,7 +6192,7 @@ class FileTarget {
      */
     getLogFiles() {
         const regex = /^\.(\d+)\.log$/;
-        return fs
+        return fs$1
             .readdirSync(this.options.dest, { withFileTypes: true })
             .reduce((prev, entry) => {
             if (entry.isDirectory() || entry.name.indexOf(this.options.fileName) < 0) {
@@ -6634,7 +6203,7 @@ class FileTarget {
                 return prev;
             }
             prev.push({
-                path: path$1.join(this.options.dest, entry.name),
+                path: path.join(this.options.dest, entry.name),
                 index: parseInt(match[1]),
             });
             return prev;
@@ -6649,18 +6218,18 @@ class FileTarget {
      */
     reIndex() {
         // When the destination directory is new, create it, and return.
-        if (!fs.existsSync(this.options.dest)) {
-            fs.mkdirSync(this.options.dest);
+        if (!fs$1.existsSync(this.options.dest)) {
+            fs$1.mkdirSync(this.options.dest);
             return;
         }
         const logFiles = this.getLogFiles();
         for (let i = logFiles.length - 1; i >= 0; i--) {
             const log = logFiles[i];
             if (i >= this.options.maxFileCount - 1) {
-                fs.rmSync(log.path);
+                fs$1.rmSync(log.path);
             }
             else {
-                fs.renameSync(log.path, this.getLogFilePath(i + 1));
+                fs$1.renameSync(log.path, this.getLogFilePath(i + 1));
             }
         }
     }
@@ -6668,7 +6237,7 @@ class FileTarget {
 
 // Log all entires to a log file.
 const fileTarget = new FileTarget({
-    dest: path$1.join(cwd(), "logs"),
+    dest: path.join(cwd(), "logs"),
     fileName: getPluginUUID(),
     format: stringFormatter(),
     maxFileCount: 10,
@@ -7977,7 +7546,7 @@ class KeyAction extends Action {
     }
 }
 
-const manifest = new Lazy(() => getManifest());
+const manifest = getManifest();
 /**
  * Provides functions, and information, for interacting with Stream Deck actions.
  */
@@ -8135,7 +7704,7 @@ class ActionService extends ReadOnlyActionStore {
         if (action.manifestId === undefined) {
             throw new Error("The action's manifestId cannot be undefined.");
         }
-        if (!manifest.value.Actions.some((a) => a.UUID === action.manifestId)) {
+        if (!manifest.Actions.some((a) => a.UUID === action.manifestId)) {
             throw new Error(`The action's manifestId was not found within the manifest: ${action.manifestId}`);
         }
         // Routes an event to the action, when the applicable listener is defined on the action.
@@ -8297,13 +7866,13 @@ const deviceService = new DeviceService();
  * @returns Contents of the locale.
  */
 function fileSystemLocaleProvider(language) {
-    const filePath = path$1.join(process.cwd(), `${language}.json`);
-    if (!fs.existsSync(filePath)) {
+    const filePath = path.join(process.cwd(), `${language}.json`);
+    if (!fs$1.existsSync(filePath)) {
         return null;
     }
     try {
         // Parse the translations from the file.
-        const contents = fs.readFileSync(filePath, { flag: "r" })?.toString();
+        const contents = fs$1.readFileSync(filePath, { flag: "r" })?.toString();
         return parseLocalizations(contents);
     }
     catch (err) {
@@ -11505,7 +11074,8 @@ let ChangeConfig = (() => {
         onWillAppear(ev) {
             // streamDeck.logger.info("onWillAppear") 
             const { settings } = ev.payload;
-            const filename = path.basename(settings.yamlpath, path.extname(settings.yamlpath));
+            streamDeck.logger.info("onWillAppear triggered with yamlpath: ", settings.yamlpath);
+            const filename = path$1.basename(settings.yamlpath, path$1.extname(settings.yamlpath));
             ev.action.setTitle(filename);
         }
         async onKeyDown(ev) {
@@ -11523,7 +11093,7 @@ let ChangeConfig = (() => {
             }
             try {
                 // Read the YAML file contents
-                const yamlContent = require$$0.readFileSync(settings.yamlpath, 'utf8');
+                const yamlContent = fs.readFileSync(settings.yamlpath, 'utf8');
                 streamDeck.logger.info(`Successfully read YAML file: ${settings.yamlpath}`);
                 streamDeck.logger.debug(`YAML content length: ${yamlContent.length} characters`);
                 streamDeck.logger.debug(`YAML content preview (first 200 chars): ${yamlContent.substring(0, 200)}`);
@@ -11601,7 +11171,7 @@ let ChangeConfig = (() => {
         async onDidReceiveSettings(ev) {
             // Update the count from the settings.
             const { settings } = ev.payload;
-            const filename = path.basename(settings.yamlpath, path.extname(settings.yamlpath));
+            const filename = path$1.basename(settings.yamlpath, path$1.extname(settings.yamlpath));
             ev.action.setTitle(filename);
             streamDeck.logger.info("these are the current settings for the change config action: ", settings.yamlpath);
         }
@@ -11614,6 +11184,7 @@ let ChangeConfig = (() => {
 // let reconnectInterval = 5000;
 let camIp = null;
 let camPort = null;
+let incrdB = 1; // dB change per tick
 // let inContext: any = null;
 let volValue = null;
 let dimOn = false;
@@ -11763,7 +11334,37 @@ let Volume = (() => {
         constructor() {
             super();
         }
-        async onWillAppear(ev) {
+        onWillAppear(ev) {
+            const { settings } = ev.payload;
+            streamDeck.logger.info('local settings:', settings);
+        }
+        async onKeyDown(ev) {
+            console.log('Key down event received:', ev.payload.settings);
+            let volumeNegative = (ev.payload.settings.upDown === "down");
+            incrdB = ev.payload.settings.volumeStep || 1; // Default to 1 dB if not set
+            console.log('Volume negative:', volumeNegative);
+            console.log('Current volume value:', volValue);
+            if (volumeNegative) {
+                incrdB = -Math.abs(incrdB);
+            }
+            else {
+                incrdB = Math.abs(incrdB);
+            }
+            const response = await sendWebSocketMessage(camIp, camPort, { "AdjustVolume": incrdB });
+            if (response.success) {
+                // Handle successful response
+                const data = response.data;
+                if (data && data.AdjustVolume) {
+                    volValue = Math.round(data.AdjustVolume.value);
+                    // Display volume value immediately
+                    ev.action.setTitle(volValue.toString());
+                    // After 3 seconds, revert to showing +/- based on volumeNegative
+                    setTimeout(() => {
+                        const displaySymbol = volumeNegative ? "-" : "+";
+                        ev.action.setTitle(displaySymbol);
+                    }, 3000);
+                }
+            }
         }
         async onDialRotate(ev) {
             if (!camIp || !camPort) {

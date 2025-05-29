@@ -14,19 +14,36 @@
         Learn more about property inspector components at https://sdpi-components.dev/docs/components
     -->
     <sdpi-item label="CamillaDSP IP Address">
-        <sdpi-textfield id="camillaip"  placeholder="localhost" required></sdpi-textfield>
+        <sdpi-textfield id="camillaip" placeholder="localhost" required></sdpi-textfield>
     </sdpi-item>
     <sdpi-item label="CamillaDSP Port">
-        <sdpi-textfield id="camillaport"  placeholder="1234" required></sdpi-textfield>
+        <sdpi-textfield id="camillaport" placeholder="1234" required></sdpi-textfield>
     </sdpi-item>
     <sdpi-item>
         <sdpi-button id="configbutton" onclick="javascript:handlebutton()">
             Test
         </sdpi-button>
-    </sdpi-item>
-    <sdpi-item id="versionInfo"></sdpi-item>
-
+    </sdpi-item>    <sdpi-item id="versionInfo"></sdpi-item>
     
+    
+    
+    <sdpi-item id="volumeUpDown" label="Volume up/down" style="display: none;">
+        <sdpi-select setting="upDown" placeholder="up/down">
+            <option value="up">UP</option>
+            <option value="down">DOWN</option>
+        </sdpi-select>
+    </sdpi-item>
+
+    <sdpi-item id="volumeStepContainer" label="Volume Step per push in dB" style="display: none;">
+        <sdpi-range id="volumeStep" setting="volumeStep" min="0" max="5" step="1" showlabels>
+        </sdpi-range>
+        <sdpi-item id="volumeStepValue"></sdpi-item>
+    </sdpi-item>
+
+
+
+
+
 
 </body>
 

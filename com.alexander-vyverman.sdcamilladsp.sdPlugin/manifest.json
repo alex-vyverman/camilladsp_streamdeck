@@ -23,13 +23,14 @@
 			"Name": "Main Volume Encoder",
 			"UUID": "com.alexander-vyverman.sdcamilladsp.volume",
 			"Icon": "imgs/actions/volume/icons8-voice",
-			"Tooltip": "control the main Volume using the StreamDeck rotary encoder",
+			"Tooltip": "control the main Volume",
 			"PropertyInspectorPath": "ui/pi-volume.html",
 			"Encoder": {
 				"layout": "$B1"
 			},
 			"Controllers": [
-				"Encoder"
+				"Encoder",
+				"Keypad"
 			],
 			"States": [
 				{

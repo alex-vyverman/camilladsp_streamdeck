@@ -1,4 +1,4 @@
-import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent, DialDownEvent, DidReceiveGlobalSettingsEvent, WillAppearEvent } from "@elgato/streamdeck";
+import { action, KeyDownEvent, SingletonAction, DialRotateEvent, DidReceiveSettingsEvent, DialDownEvent, DidReceiveGlobalSettingsEvent, WillAppearEvent, JsonObject } from "@elgato/streamdeck";
 import streamDeck from '@elgato/streamdeck';
 import WebSocket from 'ws';
 
@@ -9,7 +9,7 @@ import WebSocket from 'ws';
 // let reconnectInterval = 5000;
 let camIp: any = null;
 let camPort: any = null;
-const incrdB = 1; // dB change per tick
+let incrdB = 1; // dB change per tick
 let ws: any = null; // Declare a variable to hold the WebSocket connection
 // let inContext: any = null;
 let volValue: any = null;
@@ -198,7 +198,47 @@ export class Volume extends SingletonAction {
 		super();
 	}
 
-	override async onWillAppear(ev: WillAppearEvent<Record<string, any>>): Promise<void> {
+	override onWillAppear(ev: WillAppearEvent<Record<string, any>>): void | Promise<void> {
+		const { settings } = ev.payload;
+		streamDeck.logger.info('local settings:', settings);
+
+	}
+
+	override async onKeyDown(ev: KeyDownEvent<Record<string, any>>){
+		console.log('Key down event received:', ev.payload.settings);
+		let volumeNegative = (ev.payload.settings.upDown === "down");
+		incrdB = ev.payload.settings.volumeStep || 1; // Default to 1 dB if not set
+		console.log('Volume negative:', volumeNegative);
+		console.log('Current volume value:', volValue);
+
+		if (volumeNegative) {
+			incrdB = -Math.abs(incrdB);
+		} else {
+			incrdB = Math.abs(incrdB);
+		}
+		const response = await sendWebSocketMessage(
+			camIp,
+			camPort,
+			{ "AdjustVolume": incrdB }
+		);
+		if (response.success) {
+			// Handle successful response
+			const data = response.data;
+			if (data && data.AdjustVolume) {
+				volValue = Math.round(data.AdjustVolume.value);
+				// Display volume value immediately
+				ev.action.setTitle(volValue.toString());
+				
+				// After 3 seconds, revert to showing +/- based on volumeNegative
+				setTimeout(() => {
+					const displaySymbol = volumeNegative ? "-" : "+";
+					ev.action.setTitle(displaySymbol);
+				}, 3000);
+			}
+		}
+
+
+
 
 	}
 
