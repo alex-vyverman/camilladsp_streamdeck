@@ -34,7 +34,23 @@
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/counter/key",
+					"Image": "imgs/actions/volume/icons8-volume-up-white-72",
+					"TitleAlignment": "middle"
+				}
+			]
+		},
+		{
+			"Name": "Status information",
+			"UUID": "com.alexander-vyverman.sdcamilladsp.status",
+			"Icon": "imgs/actions/volume-button/icons8-volume-up-white-72",
+			"Tooltip": "Shows the current status of the CamillaDSP server.",
+			"PropertyInspectorPath": "ui/pi-volume-button.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/volume-button/icons8-volume-up-white-72",
 					"TitleAlignment": "middle"
 				}
 			]
