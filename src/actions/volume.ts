@@ -7,22 +7,19 @@ import WebSocket from 'ws';
 
 // let defVal = 50;
 // let reconnectInterval = 5000;
-let camIp: any = null;
-let camPort: any = null;
+let camIp: string | null = null;
+let camPort: number | null = null;
 let incrdB = 1; // dB change per tick
-let ws: any = null; // Declare a variable to hold the WebSocket connection
-// let inContext: any = null;
-let volValue: any = null;
+let volValue: number | null = null;
 let dimOn: boolean = false;
 let camSocketOpen: boolean = false;
 let globSettings: GlobalSettings = {};
-// let actionObj: object = {}
 
 interface GlobalSettings {
 	camillaIP?: string;
-	camillaPORT?: string;
+	camillaPort?: string;
 	camSocketOpen?: boolean;
-	[key: string]: any; // Add this to allow for additional properties
+	[key: string]: any;
 }
 
 interface VolumeResponse {
@@ -50,17 +47,16 @@ async function handleGlobalSettings(settings: GlobalSettings) {
 
     if (settings.camillaIP) {
 		camIp = settings.camillaIP;
-		console.info(`Camilla IP: ${camIp}`);
+		streamDeck.logger.info(`Camilla IP: ${camIp}`);
 	} else {
-		console.warn('Missing Camilla IP configuration');
-
-	};
+		streamDeck.logger.warn('Missing Camilla IP configuration');
+	}
     if (settings.camillaPort)  {
-		camPort = settings.camillaPort
-		console.info(`Camilla Port: ${camPort}`);
+		camPort = parseInt(settings.camillaPort);
+		streamDeck.logger.info(`Camilla Port: ${camPort}`);
 	} else {
-		console.warn('Missing Camilla Port configuration');
-	};
+		streamDeck.logger.warn('Missing Camilla Port configuration');
+	}
     
     streamDeck.logger.info(`IP: ${previousIp} -> ${camIp}`);
     streamDeck.logger.info(`Port: ${previousPort} -> ${camPort}`);
@@ -83,25 +79,22 @@ async function handleGlobalSettings(settings: GlobalSettings) {
 					streamDeck.logger.info('Updated global settings with connection status');
 				}
 			
-				// Improved type checking and error handling
 				if ('GetVolume' in response.data && response.data.GetVolume?.value !== undefined) {
 					const previousVolume = volValue;
 					volValue = Math.round(response.data.GetVolume.value);
 					streamDeck.logger.info(`Volume updated: ${previousVolume} -> ${volValue}`);
 				} else {
-					console.warn('Invalid GetVolume response structure:', JSON.stringify(response.data, null, 2));
+					streamDeck.logger.warn('Invalid GetVolume response structure:', JSON.stringify(response.data, null, 2));
 					throw new Error('Invalid response structure from CamillaDSP');
 				}
 			} else {
-				console.error(`Failed to get initial volume: ${response.error}`);
-				console.debug('Full response:', JSON.stringify(response, null, 2));
+				streamDeck.logger.error(`Failed to get initial volume: ${response.error}`);
 			}
         } catch (error) {
-            console.error('Failed to initialize connection:', error);
-            console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+            streamDeck.logger.error('Failed to initialize connection:', error instanceof Error ? error.message : String(error));
         }
     } else {
-        console.warn('Missing IP or Port configuration:', { camIp, camPort });
+        streamDeck.logger.warn('Missing IP or Port configuration:', JSON.stringify({ camIp, camPort }));
     }
 }
 
@@ -110,8 +103,7 @@ streamDeck.logger.info('Loading initial global settings...');
 streamDeck.settings.getGlobalSettings()
     .then(handleGlobalSettings)
     .catch((error) => {
-        console.error('Failed to get global settings:', error);
-        console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+        streamDeck.logger.error('Failed to get global settings:', error instanceof Error ? error.message : String(error));
     });
 
 // Settings change handler
@@ -119,16 +111,9 @@ streamDeck.settings.onDidReceiveGlobalSettings((ev: DidReceiveGlobalSettingsEven
     streamDeck.logger.info('Received settings update event');
 	handleGlobalSettings(ev.settings)
         .catch((error) => {
-            console.error('Failed to handle global settings update:', error);
-            console.debug('Stack trace:', error instanceof Error ? error.stack : 'No stack trace available');
+            streamDeck.logger.error('Failed to handle global settings update:', error instanceof Error ? error.message : String(error));
         });
 });
-
-interface WebSocketResponse {
-	success: boolean;
-	data?: VolumeResponse;
-	error?: string;
-}
 
 async function sendWebSocketMessage(
 	ip: string,
@@ -205,11 +190,15 @@ export class Volume extends SingletonAction {
 	}
 
 	override async onKeyDown(ev: KeyDownEvent<Record<string, any>>){
-		console.log('Key down event received:', ev.payload.settings);
+		if (!camIp || !camPort) {
+			streamDeck.logger.error('Missing IP or Port configuration');
+			return;
+		}
+		streamDeck.logger.info('Key down event received:', JSON.stringify(ev.payload.settings));
 		let volumeNegative = (ev.payload.settings.upDown === "down");
 		incrdB = ev.payload.settings.volumeStep || 1; // Default to 1 dB if not set
-		console.log('Volume negative:', volumeNegative);
-		console.log('Current volume value:', volValue);
+		streamDeck.logger.info('Volume negative:', String(volumeNegative));
+		streamDeck.logger.info('Current volume value:', String(volValue));
 
 		if (volumeNegative) {
 			incrdB = -Math.abs(incrdB);
@@ -244,7 +233,11 @@ export class Volume extends SingletonAction {
 
 	override async onDialRotate(ev: DialRotateEvent<Record<string, any>>) {
 		if (!camIp || !camPort) {
-			console.error('Missing IP or Port configuration');
+			streamDeck.logger.error('Missing IP or Port configuration');
+			return;
+		}
+		if (volValue === null) {
+			streamDeck.logger.warn('Volume not yet initialized, skipping dial rotate');
 			return;
 		}
 
@@ -270,13 +263,17 @@ export class Volume extends SingletonAction {
 					});
 				}
 			} else {
-				console.error(response.error);
+				streamDeck.logger.error(response.error);
 			}
 		}
 	}
 
 	override async onDialDown(ev: DialDownEvent<Record<string, any>>) {
 		if (!camIp || !camPort) return;
+		if (volValue === null) {
+			streamDeck.logger.warn('Volume not yet initialized, skipping dial down');
+			return;
+		}
 		
 		dimOn = !dimOn;
 		streamDeck.logger.info("dial down pressed");
@@ -300,7 +297,7 @@ export class Volume extends SingletonAction {
 				}
 			});
 		} else {
-			console.error('Failed to set volume:', response.error);
+			streamDeck.logger.error('Failed to set volume:', response.error);
 		}
 	}
 

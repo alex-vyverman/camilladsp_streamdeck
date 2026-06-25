@@ -1,12 +1,10 @@
-import { action, DidReceiveSettingsEvent, DidReceiveGlobalSettingsEvent, JsonObject, KeyDownEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
-import streamDeck, { LogLevel } from "@elgato/streamdeck";
+import { action, DidReceiveGlobalSettingsEvent, JsonObject, KeyDownEvent, SingletonAction, WillAppearEvent } from "@elgato/streamdeck";
+import streamDeck from "@elgato/streamdeck";
 import WebSocket from 'ws';
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
 
-let statusTitle: string = 'Status';
 let configJson: JsonObject = {};
 let evAction: WillAppearEvent<JsonObject> | null = null;
+let statusCheckInterval: NodeJS.Timeout | null = null;
 
 
 // Global variables for camilla connection
@@ -116,29 +114,24 @@ streamDeck.settings.getGlobalSettings()
 // Settings change handler
 streamDeck.settings.onDidReceiveGlobalSettings((ev: DidReceiveGlobalSettingsEvent<GlobalSettings>) => {
     streamDeck.logger.info('STATUS ACTION: Received  settings update event');
-    // Store the interval ID in a module-level variable
-    let statusCheckInterval: NodeJS.Timeout | null = null;
 
     handleGlobalSettings(ev.settings)
         .then(() => {
-            // Only start the interval if it's not already running and we have valid connection details
-            if (!statusCheckInterval && camIp && camPort) {
+            // Clear any existing interval before creating a new one
+            if (statusCheckInterval) {
+                clearInterval(statusCheckInterval);
+                statusCheckInterval = null;
+            }
+            // Only start the interval if we have valid connection details
+            if (camIp && camPort) {
                 statusCheckInterval = setInterval(async () => {
                     const response = await sendWebSocketMessage(camIp!, camPort!, JSON.stringify("GetConfigJson"));
                     if (response.success) {
-                        // streamDeck.logger.info('WebSocket Status response:', response.data.GetConfigJson.value
-                        // );
                         configJson = JSON.parse(response.data.GetConfigJson.value);
-                        // streamDeck.logger.info('Config JSON:', configJson.devices.samplerate);
                         if (typeof configJson === 'object' && configJson?.devices && typeof configJson.devices === 'object' && 'chunksize' in configJson.devices) {
                             evAction?.action.setTitle("Chunksize:\n"+ String(configJson.devices.chunksize));
                         }
-                
-                    } 
-                    // Update all instances of this action
-                    // streamDeck.actions.getAll().forEach(action => {
-                    //     action.setTitle(statusTitle);
-                    // });
+                    }
                 }, 500);
             }
         })

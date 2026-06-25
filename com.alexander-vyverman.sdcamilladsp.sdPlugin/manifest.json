@@ -44,7 +44,7 @@
 			"UUID": "com.alexander-vyverman.sdcamilladsp.status",
 			"Icon": "imgs/actions/volume-button/icons8-volume-up-white-72",
 			"Tooltip": "Shows the current status of the CamillaDSP server.",
-			"PropertyInspectorPath": "ui/pi-volume-button.html",
+			"PropertyInspectorPath": "ui/pi-status.html",
 			"Controllers": [
 				"Keypad"
 			],

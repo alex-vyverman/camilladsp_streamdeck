@@ -1,12 +1,10 @@
-import { action, DidReceiveSettingsEvent, KeyDownEvent, SingletonAction, WillAppearEvent, SendToPluginEvent, Action, DidReceiveGlobalSettingsEvent} from "@elgato/streamdeck";
-import streamDeck, { LogLevel } from "@elgato/streamdeck";
+import { action, DidReceiveSettingsEvent, KeyDownEvent, SingletonAction, WillAppearEvent, DidReceiveGlobalSettingsEvent} from "@elgato/streamdeck";
+import streamDeck from "@elgato/streamdeck";
 import WebSocket from 'ws';
 import * as fs from 'fs';
 import * as yaml from 'js-yaml';
 
 import path from 'path';
-
-streamDeck.logger.setLevel(LogLevel.TRACE);
 
 // Global variables for camilla connection
 let camIp: string | null = null;
@@ -125,9 +123,9 @@ streamDeck.settings.onDidReceiveGlobalSettings((ev: DidReceiveGlobalSettingsEven
 @action({ UUID: "com.alexander-vyverman.sdcamilladsp.change-config" })
 export class ChangeConfig extends SingletonAction<ChangeConfigSettings> {
     override onWillAppear(ev: WillAppearEvent<ChangeConfigSettings>): void | Promise<void> {
-        // streamDeck.logger.info("onWillAppear") 
         const { settings } = ev.payload;
         streamDeck.logger.info("onWillAppear triggered with yamlpath: ", settings.yamlpath);
+        if (!settings.yamlpath) return;
         const filename = path.basename(settings.yamlpath, path.extname(settings.yamlpath))
         ev.action.setTitle(filename);
     }
